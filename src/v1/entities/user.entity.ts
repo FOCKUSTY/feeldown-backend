@@ -1,4 +1,4 @@
-import type { User } from "@/database/generated/client";
+import type { User } from "@1/types";
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
 @ApiSchema({

@@ -1,8 +1,9 @@
-import { PipeTransform } from "@nestjs/common";
+import { Injectable, PipeTransform } from "@nestjs/common";
 import { USERNAME_ERRORS } from "../errors/pipes/username.errors";
 
 import { env } from "@/services";
 
+@Injectable()
 export class UsernamePipe implements PipeTransform {
   public static validate(value: string) {
     const username = value.trim().toLowerCase();

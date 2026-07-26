@@ -21,3 +21,7 @@ export type SwaggerConfig<T = unknown> = {
   factory: OpenApiObject;
   options: SwaggerCustomOptions;
 };
+
+export type Prettify<T> = {
+  [P in keyof T]: T[P];
+} & {};

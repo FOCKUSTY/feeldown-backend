@@ -1,7 +1,7 @@
 import { Public } from "@/decorators";
 import { AuthGuard } from "@1/guards";
 
-import { Controller, Injectable, Get, UseGuards } from "@nestjs/common";
+import { Controller, Injectable, Get, UseGuards, Param } from "@nestjs/common";
 
 import { ApiOperation } from "@nestjs/swagger";
 
@@ -18,7 +18,9 @@ export class TestController {
 
   @Get(ROUTES.GET)
   @ApiOperation(OPERATIONS.GET)
-  public get() {
+  public get(@Param("slug") slug: string) {
+    console.log(slug);
+
     return "Hi from guarded test";
   }
 

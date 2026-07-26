@@ -1,5 +1,4 @@
-import type { Auth } from "@/database/generated/client";
-import type { AuthTypes } from "@1/types";
+import type { AuthTypes, Auth } from "@1/types";
 import type { Profile } from "passport";
 
 import { ApiProperty, ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
