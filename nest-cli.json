@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "bad-fockarch",
+  "sourceRoot": "./src",
+  "language": "ts",
+  "root": "./",
+  "generateOptions": {
+    "baseDir": "v1/routes",
+    "spec": {
+      "controller": true,
+      "service": true,
+      "module": false
+    }
+  },
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "tsConfigPath": "./tsconfig.build.json"
+  }
+}
