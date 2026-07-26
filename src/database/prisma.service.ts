@@ -2,15 +2,15 @@ import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
 import { PrismaClient } from "@/database/generated/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-import { env, PROGRAM_MODE } from "@/services";
+import { env } from "@/services";
 
 const ADAPTER =
-  PROGRAM_MODE === "development"
+  env.PRISMA_CONNECTION_TYPE === "adapter"
     ? new PrismaPg({ connectionString: env.DATABASE_URL })
     : undefined;
 
 const ACCELERATE_URL =
-  PROGRAM_MODE === "development" ? undefined : env.DATABASE_URL;
+  env.PRISMA_CONNECTION_TYPE === "adapter" ? undefined : env.DATABASE_URL;
 
 const OPTIONS = {
   adapter: ADAPTER,

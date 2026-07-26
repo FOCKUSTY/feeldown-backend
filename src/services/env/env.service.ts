@@ -26,6 +26,7 @@ export const env = Env.create(process.env)({
   ] as const,
 
   partial: [
+    "PRISMA_CONNECTION_TYPE",
     "ENCODING_TYPE",
     "PORT",
     "CACHE_TIME_TO_LIVE_IN_MILLISECONDS",
@@ -35,8 +36,9 @@ export const env = Env.create(process.env)({
   ] as const,
 
   default: {
+    PRISMA_CONNECTION_TYPE: "adapter",
     ENCODING_TYPE: "hex",
-    PORT: "3001",
+    PORT: "8080",
     CACHE_TIME_TO_LIVE_IN_MILLISECONDS: "300000",
     THROLLER_TIME_TO_LIVE_IN_MILLISECONDS: "20000",
     THROLLER_LIMIT: "20",
