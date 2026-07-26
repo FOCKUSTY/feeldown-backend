@@ -1,3 +1,9 @@
+import type { INestApplication } from "@nestjs/common";
+import type {
+  OpenAPIObject as OpenApiObject,
+  SwaggerCustomOptions,
+} from "@nestjs/swagger";
+
 type ToFunction<Type> = Type extends unknown
   ? (parameter: Type) => void
   : never;
@@ -7,3 +13,11 @@ type ToFunction<Type> = Type extends unknown
  */
 export type UnionToIntersection<Type> =
   ToFunction<Type> extends (Parameter: infer U) => void ? U : never;
+
+export type SwaggerConfig<T = unknown> = {
+  version: string;
+  pathname: string;
+  app: INestApplication<T>;
+  factory: OpenApiObject;
+  options: SwaggerCustomOptions;
+};

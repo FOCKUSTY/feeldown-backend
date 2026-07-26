@@ -1,3 +1,4 @@
+import type { SwaggerConfig } from "@/types";
 import type { INestApplication } from "@nestjs/common";
 import type {
   DocumentBuilder,
@@ -38,7 +39,7 @@ export const createSwaggerConfig = ({
     app: INestApplication<unknown>;
     options?: SwaggerDocumentOptions;
     setupOptions?: SwaggerCustomOptions;
-  }) => {
+  }): SwaggerConfig => {
     const factory = SwaggerModule.createDocument(app, config, {
       ...documentOptions,
       ...options,
@@ -56,7 +57,7 @@ export const createSwaggerConfig = ({
         jsonDocumentUrl: joinPathname(pathname, "json"),
         yamlDocumentUrl: joinPathname(pathname, "yaml"),
       },
-    } as const;
+    };
   };
 
   return createFactory;

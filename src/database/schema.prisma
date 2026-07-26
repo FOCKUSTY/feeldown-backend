@@ -44,6 +44,136 @@ model User {
   username String @unique
   nickname String
 
+  description String
+
+  posts    Post[]
+  comments Comment[]
+
+  postReactions    PostReaction[]
+  commentReactions CommentReaction[]
+
+  initiatedFriendships Friendship[] @relation("initiator")
+  receivedFriendships  Friendship[] @relation("receiver")
+
+  receivedNotifications Notification[] @relation("recipient")
+  sentNotifications    Notification[] @relation("actor")
+
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime? @updatedAt
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+model Friendship {
+  id String @id @default(uuid())
+
+  initiatorId String
+  receiverId  String
+
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime?        @updatedAt
+
+  initiator User @relation("initiator", fields: [initiatorId], references: [id])
+  receiver  User @relation("receiver", fields: [receiverId], references: [id])
+
+  @@unique([initiatorId, receiverId])
+}
+
+model Post {
+  id       String @id @default(uuid())
+  postname String @unique
+  userId   String
+
+  title   String
+  content String @db.Text
+
+  comments Comment[]
+  user     User      @relation(fields: [userId], references: [id])
+
+  reactions      PostReaction[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Comment {
+  id      String @id @default(uuid())
+  content String @db.Text
+  userId  String
+  postId  String
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  parentId String?
+  parent   Comment?  @relation("CommentTree", fields: [parentId], references: [id])
+  children Comment[] @relation("CommentTree")
+
+  reactions      CommentReaction[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@index([postId])
+  @@index([parentId])
+}
+
+model PostReaction {
+  id        String   @id @default(uuid())
+  userId    String
+  postId    String
+  type      String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@index([postId])
+}
+
+model CommentReaction {
+  id        String   @id @default(uuid())
+  userId    String
+  commentId String
+  type      String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
+  @@index([commentId])
+}
+
+enum NotificationType {
+  REACT_POST
+  REACT_COMMENT
+  COMMENT_POST
+  REPLY_COMMENT
+  FRIEND_REQUEST
+  FRIEND_ACCEPT
+}
+
+model Notification {
+  id           String          @id @default(uuid())
+  recipientId  String
+  actorId      String?
+  type         NotificationType
+  referenceType String
+  referenceId   String
+  readed       Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+
+  recipient    User            @relation("recipient", fields: [recipientId], references: [id])
+  actor        User?           @relation("actor", fields: [actorId], references: [id])
+
+  @@index([recipientId])
+  @@index([recipientId, readed])
+  @@index([createdAt])
 }

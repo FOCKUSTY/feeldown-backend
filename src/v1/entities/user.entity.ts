@@ -9,6 +9,9 @@ export class UserEntity implements User {
   id: string;
 
   @ApiProperty()
+  description: string;
+
+  @ApiProperty()
   username: string;
 
   @ApiProperty()

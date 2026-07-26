@@ -217,6 +217,7 @@ export class AuthStrategy {
       this.prisma.user.create({
         data: {
           id: userId,
+          description: "",
           nickname: nickname || username,
           username: UsernamePipe.validate(username.toLowerCase()),
         },

@@ -36,7 +36,6 @@
     "@nestjs/platform-express": "^11.1.18",
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/throttler": "^6.5.0",
-    "@sentry/nestjs": "^10.47.0",
     "bad-fockarch": "^3.0.0",
     "cache-manager": "^7.2.8",
     "class-transformer": "^0.5.1",

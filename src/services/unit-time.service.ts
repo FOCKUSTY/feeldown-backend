@@ -35,9 +35,7 @@ const UNIT = [
 export type Unit = (typeof UNIT)[number];
 export type UnitAnyCase = Unit | Uppercase<Unit> | Lowercase<Unit>;
 export type StringValue =
-  | `${number}`
-  | `${number}${UnitAnyCase}`
-  | `${number} ${UnitAnyCase}`;
+  `${number}` | `${number}${UnitAnyCase}` | `${number} ${UnitAnyCase}`;
 
 const UNIT_REGEX = /^(\d+)\s*([a-zA-Z]+)$/;
 

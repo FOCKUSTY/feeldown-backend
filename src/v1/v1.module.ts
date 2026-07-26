@@ -3,18 +3,9 @@ import type { NestModule, MiddlewareConsumer } from "@nestjs/common";
 import { Module } from "@nestjs/common";
 import { DocumentBuilder } from "@nestjs/swagger";
 
-import {
-  APP_FILTER,
-  APP_GUARD,
-  APP_INTERCEPTOR,
-  RouterModule,
-} from "@nestjs/core";
 import { CacheModule, CacheInterceptor } from "@nestjs/cache-manager";
-import {
-  SentryGlobalFilter,
-  SentryModule as Sentry,
-} from "@sentry/nestjs/setup";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { APP_GUARD, APP_INTERCEPTOR, RouterModule } from "@nestjs/core";
 
 import { LoggerMiddleware } from "./middlewares";
 
@@ -25,17 +16,16 @@ import { PrismaService } from "@/database";
 
 import { AuthStrategy } from "./strategies";
 
+import { AuthEntity, UserEntity } from "./entities";
 import { GuardsModule } from "./guards";
 import {
   AuthModule,
   CreateUserDto,
   CreateUserCredentials,
-  SentryModule,
   TestModule,
 } from "./routes";
-import { AuthEntity, UserEntity } from "./entities";
 
-export const v1Modules = [AuthModule, SentryModule, TestModule];
+export const v1Modules = [AuthModule, TestModule];
 export const v1Swagger = createSwaggerConfig({
   version: "v1",
   document: new DocumentBuilder().setTitle("OPEN API v1 documentation"),
@@ -60,7 +50,6 @@ export const v1Swagger = createSwaggerConfig({
       ttl: +env.CACHE_TIME_TO_LIVE_IN_MILLISECONDS,
       isGlobal: true,
     }),
-    Sentry.forRoot(),
     GuardsModule,
   ],
   providers: [
@@ -72,10 +61,6 @@ export const v1Swagger = createSwaggerConfig({
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: SentryGlobalFilter,
     },
     {
       provide: APP_GUARD,

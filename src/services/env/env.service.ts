@@ -1,6 +1,10 @@
 import { config } from "dotenv";
 
-import { getEnvFileName, normalizeProgramMode, validateTokenExpiration } from "./validators";
+import {
+  getEnvFileName,
+  normalizeProgramMode,
+  validateTokenExpiration,
+} from "./validators";
 
 config({
   path: getEnvFileName(),
@@ -19,7 +23,6 @@ export const env = Env.create(process.env)({
     "SESSION_SECRET",
     "HASH_KEY",
     "DATABASE_URL",
-    "SENTRY_URL",
   ] as const,
 
   partial: [
