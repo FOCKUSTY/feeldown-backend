@@ -1,48 +1,28 @@
-import type OAuth2 from "passport-oauth2";
-import type { VerifyCallback } from "passport-oauth2";
-
-import type { Profile } from "passport";
-import type { AuthTypes } from "../types";
-
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
 
 import { AuthStrategy } from "../strategies";
 import { STRATEGIES_SERVICE_ERROS } from "../errors";
 import { getPassportEnv, LoggerService } from "@/services";
+import { OAuth2ServiceProperties, PassportAuthTypes, Strategies, VerifyFunction } from "@1/types";
 
-interface PassportStrategyMixin<TValidationResult = unknown> {
-  validate(...args: unknown[]): TValidationResult | Promise<TValidationResult>;
-}
-
-type OAuth2Strategy = OAuth2 & PassportStrategyMixin;
-type Strategies = Map<AuthTypes, OAuth2Strategy>;
-
-type OAuth2ServiceProperties = {
-  path: string;
-  scope: string[];
-};
-
-const oauth2Services: Record<AuthTypes, OAuth2ServiceProperties> = {
+const oauth2Services: Record<PassportAuthTypes, OAuth2ServiceProperties> = {
   google: {
     path: "passport-google-oauth20",
     scope: ["openid", "profile", "email"],
   },
+  github: {
+    path: "passport-github",
+    scope: []
+  }
 };
-
-type VerifyFunction = (
-  accessToken: string,
-  refreshToken: string,
-  profile: Profile,
-  done: VerifyCallback,
-) => void;
 
 @Injectable()
 export class StrategiesService {
   public static readonly strategies: Strategies = new Map();
 
   public static getStrategy(service: string) {
-    const strategy = this.strategies.get(service as AuthTypes);
+    const strategy = this.strategies.get(service as PassportAuthTypes);
     if (!strategy) {
       throw STRATEGIES_SERVICE_ERROS.STRATEGY_NOT_FOUND.execute();
     }
@@ -59,15 +39,15 @@ export class StrategiesService {
 
   public execute() {
     for (const oauth2Service in oauth2Services) {
-      const service = oauth2Service as AuthTypes;
+      const service = oauth2Service as PassportAuthTypes;
       this.createStrategy(service, this.verify(service));
     }
   }
 
-  public createStrategy(service: AuthTypes, verify: VerifyFunction) {
+  public createStrategy(service: PassportAuthTypes, verify: VerifyFunction) {
     const { path, scope } = oauth2Services[service];
     const client = getPassportEnv(
-      service.toUpperCase() as Uppercase<AuthTypes>,
+      service.toUpperCase() as Uppercase<PassportAuthTypes>,
     );
     const { Strategy } = require(path);
 
@@ -87,7 +67,7 @@ export class StrategiesService {
     return ServiceStrategy;
   }
 
-  private verify(service: AuthTypes) {
+  private verify(service: PassportAuthTypes) {
     return async (
       ...[accessToken, refreshToken, profile, done]: Parameters<VerifyFunction>
     ) => {

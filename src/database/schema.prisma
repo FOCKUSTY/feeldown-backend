@@ -12,6 +12,8 @@ datasource db {
 
 enum AuthTypes {
   google
+  github
+  telegram
 }
 
 model Service {
