@@ -10,9 +10,9 @@ config({
   path: getEnvFileName(),
 });
 
+import type { PassportAuthTypes } from "@1/types";
 import { AUTH_PROPERTIES, GROUPED_AUTH_PROPERTIES } from "./env.auth";
 
-import { AuthTypes } from "@1/types";
 import { Env } from "fenviee";
 
 export const env = Env.create(process.env)({
@@ -53,7 +53,7 @@ export const env = Env.create(process.env)({
   dangerousIgnoreErrors: process.env.IGNORE === "true",
 });
 
-export const getPassportEnv = (type: Uppercase<AuthTypes>) => {
+export const getPassportEnv = (type: Uppercase<PassportAuthTypes>) => {
   const { CLIENT_ID, CLIENT_SECRET, CALLBACK_URL } =
     GROUPED_AUTH_PROPERTIES[type];
 

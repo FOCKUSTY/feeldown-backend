@@ -1,42 +1,42 @@
-# BASE
-FROM node:20-slim AS base
+FROM node:20-alpine AS builder
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-
 RUN corepack enable
+
 WORKDIR /app
 
-# DEPENDENCIES
-FROM base AS dependencies
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml prisma.config.ts ./
 
-COPY pnpm-lock.yaml ./
-RUN pnpm fetch --prod
-
-COPY . /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# BUILD
-FROM base AS build
-
-COPY --from=dependencies /app/node_modules /app/node_modules
 COPY . .
+
+ARG DATABASE_URL
+
+RUN npx prisma generate
 
 RUN pnpm run build
 
-# PRODUCTION
-FROM node:20-alpine AS production
+FROM node:20-alpine AS runtime
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-
 RUN corepack enable
+
 WORKDIR /app
 
-COPY --from=build /app/dist /app/dist
-COPY --from=build /app/node_modules /app/node_modules
-COPY ./.env.development /app/
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
 
-# START
-USER node
-CMD [ "node", "dist/main.js" ]
+COPY --from=builder /app/prisma.config.ts ./
+COPY --from=builder /app/src/database/schema.prisma ./src/database/schema.prisma
+COPY --from=builder /app/src/database/migrations ./src/database/migrations
+
+ARG DATABASE_URL
+
+RUN npx prisma generate
+
+EXPOSE 8080
+
+CMD npx prisma migrate deploy && node dist/src/main.js

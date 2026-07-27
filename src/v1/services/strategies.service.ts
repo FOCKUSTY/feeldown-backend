@@ -4,7 +4,12 @@ import { Injectable } from "@nestjs/common";
 import { AuthStrategy } from "../strategies";
 import { STRATEGIES_SERVICE_ERROS } from "../errors";
 import { getPassportEnv, LoggerService } from "@/services";
-import { OAuth2ServiceProperties, PassportAuthTypes, Strategies, VerifyFunction } from "@1/types";
+import {
+  OAuth2ServiceProperties,
+  PassportAuthTypes,
+  Strategies,
+  VerifyFunction,
+} from "@1/types";
 
 const oauth2Services: Record<PassportAuthTypes, OAuth2ServiceProperties> = {
   google: {
@@ -13,8 +18,8 @@ const oauth2Services: Record<PassportAuthTypes, OAuth2ServiceProperties> = {
   },
   github: {
     path: "passport-github",
-    scope: []
-  }
+    scope: [],
+  },
 };
 
 @Injectable()

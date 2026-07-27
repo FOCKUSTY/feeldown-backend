@@ -1,11 +1,26 @@
 import type { PrefixKeys } from "@1/enums";
+import type { ResolvedSlug, ResolvedUsernameSlug, ServerUser } from "@1/types";
+
 import { Prefix } from "@1/enums";
 
 import { PipeTransform } from "@nestjs/common";
 import { UsernamePipe } from "./username.pipe";
-import { ResolvedSlug } from "@1/types/slug.types";
 
-export class SlugPipe<const T extends PrefixKeys> implements PipeTransform {
+export class SlugPipe<T extends PrefixKeys> implements PipeTransform {
+  public static resolveMe(
+    resolvedSlug: ResolvedUsernameSlug,
+    me: ServerUser,
+  ): ResolvedUsernameSlug {
+    if (resolvedSlug.username === "me") {
+      return {
+        id: me.user.id,
+        username: undefined,
+      };
+    }
+
+    return resolvedSlug;
+  }
+
   private readonly _prefix: Prefix;
   private readonly _type: T;
 

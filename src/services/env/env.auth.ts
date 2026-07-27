@@ -1,11 +1,16 @@
+import type { PassportAuthTypes } from "@1/types";
 import { AuthTypes } from "@1/types";
 
 export type AuthData = (typeof AUTH_DATA)[number];
-export type AuthProperty = `${Uppercase<AuthTypes>}_${AuthData}`;
+export type AuthProperty = `${Uppercase<PassportAuthTypes>}_${AuthData}`;
 
-export const AUTH_TYPES = Object.keys(AuthTypes).map(
-  (key) => key.toUpperCase() as Uppercase<AuthTypes>,
-);
+export const EXCLUDED_AUTH_TYPES = ["TELEGRAM"];
+
+export const AUTH_TYPES = Object.keys(AuthTypes)
+  .map((key) => key.toUpperCase() as Uppercase<AuthTypes>)
+  .filter(
+    (key) => !EXCLUDED_AUTH_TYPES.includes(key),
+  ) as Uppercase<PassportAuthTypes>[];
 
 export const AUTH_DATA = [
   "CLIENT_ID",
@@ -22,11 +27,12 @@ export const GROUPED_AUTH_PROPERTIES = Object.fromEntries(
 
     return [type, data] as const;
   }),
-) as Record<Uppercase<AuthTypes>, Record<AuthData, AuthProperty>>;
+) as Record<Uppercase<PassportAuthTypes>, Record<AuthData, AuthProperty>>;
 
 export const AUTH_PROPERTIES = Object.keys(GROUPED_AUTH_PROPERTIES).flatMap(
   (key) => {
-    const properties = GROUPED_AUTH_PROPERTIES[key as Uppercase<AuthTypes>];
+    const properties =
+      GROUPED_AUTH_PROPERTIES[key as Uppercase<PassportAuthTypes>];
     return Object.keys(properties).map(
       (property) => properties[property as AuthData],
     );

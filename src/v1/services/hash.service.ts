@@ -9,8 +9,8 @@ import { verify } from "jsonwebtoken";
 import { createHmac } from "crypto";
 
 const PARSE_ERROR = {
-  id: false,
-  profile_id: false,
+  userId: false,
+  authId: false,
   token: false,
   succeeded: false,
 } as const;

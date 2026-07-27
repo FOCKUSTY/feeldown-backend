@@ -17,6 +17,8 @@ const OPTIONS = {
   accelerateUrl: ACCELERATE_URL,
 } as ConstructorParameters<typeof PrismaClient>[0];
 
+export const prisma = new PrismaClient(OPTIONS);
+
 @Injectable()
 export class PrismaService
   extends PrismaClient
