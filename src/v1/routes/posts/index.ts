@@ -1,11 +1,11 @@
-import { PostsModule } from "./posts.module.ts";
+import { PostsModule } from "./posts.module";
 
 export * from "./dto";
 
-export * from "./posts.controller.ts";
-export * from "./posts.service.ts";
-export * from "./posts.module.ts";
+export * from "./posts.controller";
+export * from "./posts.service";
+export * from "./posts.module";
 
-export * as POSTS_ROUTES from "./posts.routes.ts";
+export * as POSTS_ROUTES from "./posts.routes";
 
 export default PostsModule;
