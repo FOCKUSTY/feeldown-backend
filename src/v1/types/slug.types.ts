@@ -11,3 +11,4 @@ export type ResolvedSlug<T extends PrefixKeys> = Prettify<
 >;
 
 export type ResolvedUsernameSlug = ResolvedSlug<"username">;
+export type ResolvedPostnameSlug = ResolvedSlug<"postname">;

@@ -1,6 +1,6 @@
 import { HttpStatus } from "@nestjs/common";
-import { fockerorFactory } from "@/errors";
 
+import { fockerorFactory } from "@/errors";
 import { env } from "@/services";
 
 export const USERNAME_ERRORS = fockerorFactory.execute("USERNAME EXСEPTION", {

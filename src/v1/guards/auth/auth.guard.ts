@@ -11,6 +11,7 @@ import { HashService } from "@1/services";
 import { SlugPipe } from "@1/pipes";
 
 import { AuthGuardService } from "./auth-guard.service";
+import { AUTH_ERRORS } from "@1/errors";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -60,7 +61,7 @@ export class AuthGuard implements CanActivate {
     const { parameter, type } = metadata;
     const value = request.params[parameter] as string;
     if (!value) {
-      throw new Error("---");
+      throw AUTH_ERRORS.PARAMETER_IS_NOT_DEFINED.execute({ parameter });
     }
 
     const { userId } =

@@ -2,6 +2,7 @@ import { Enumeration } from "@/utils/enumeration.utils";
 
 const PrefixEnumeration = new Enumeration({
   username: "@",
+  postname: "$",
 });
 
 export const Prefix = PrefixEnumeration.enumeration;

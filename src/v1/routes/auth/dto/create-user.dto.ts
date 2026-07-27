@@ -26,7 +26,7 @@ export class CreateUserDto {
 }
 
 export class CreateUserCredentials {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsEmail()
   @IsOptional()
   email?: string;
