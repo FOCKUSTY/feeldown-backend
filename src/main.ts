@@ -26,7 +26,8 @@ import { swagger } from "./swagger";
   app.use(urlencoded());
   app.use(json());
 
-  swagger(app);
+  const setupDocumentation = await swagger(app);
+  setupDocumentation();
 
   await app.listen(env.PORT);
 })();
