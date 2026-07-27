@@ -23,9 +23,10 @@ import {
   CreateUserDto,
   CreateUserCredentials,
   UsersModule,
+  PostsModule,
 } from "./routes";
 
-export const v1Modules = [AuthModule, UsersModule];
+export const v1Modules = [AuthModule, UsersModule, PostsModule];
 export const v1Swagger = createSwaggerConfig({
   version: "v1",
   document: new DocumentBuilder().setTitle("OPEN API v1 documentation"),
