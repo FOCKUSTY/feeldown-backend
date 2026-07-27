@@ -47,8 +47,10 @@ export class UsersController {
   public put(
     @Param(Params.slug, new SlugPipe("username")) slug: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
+    @Me() me: ServerUser,
   ) {
-    return this.service.put(slug, data);
+    const where = SlugPipe.resolveMe(slug, me);
+    return this.service.put(where, data);
   }
 
   @ApiOperation(OPERATIONS.PATCH)
@@ -57,8 +59,10 @@ export class UsersController {
   public patch(
     @Param(Params.slug, new SlugPipe("username")) slug: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
+    @Me() me: ServerUser,
   ) {
-    return this.service.patch(slug, data);
+    const where = SlugPipe.resolveMe(slug, me);
+    return this.service.patch(where, data);
   }
 
   @ApiOperation(OPERATIONS.DELETE)

@@ -4,26 +4,17 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
   route: "users",
 
   routes: {
-    GET: "/",
     GET_ONE: "/:slug",
-
-    POST: "/",
 
     PUT: "/:slug",
     PATCH: "/:slug",
 
-    DELETE: "/:slug",
+    DELETE: "/:id",
   } as const,
 
   operations: {
-    GET: {
-      summary: "Getting an array of user",
-    },
     GET_ONE: {
       summary: "Getting a user by slug",
-    },
-    POST: {
-      summary: "Creaing a user",
     },
     PUT: {
       summary: "Updating a user",
