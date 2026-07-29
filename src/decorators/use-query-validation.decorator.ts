@@ -1,16 +1,17 @@
-import { validateInstanceByClass } from "@/utils";
 import {
   createParamDecorator as createParameterDecorator,
   ExecutionContext,
 } from "@nestjs/common";
 import { ClassConstructor } from "class-transformer";
+import { validateInstanceByClass } from "@/utils";
 
-export const UseHeadersValidation = createParameterDecorator(
+export const UseQueryValidation = createParameterDecorator(
   async (
     classConstuctor: ClassConstructor<object>,
     context: ExecutionContext,
   ) => {
-    const { headers } = context.switchToHttp().getRequest();
-    return validateInstanceByClass(headers, classConstuctor);
+    const request = context.switchToHttp().getRequest();
+    const { query } = request;
+    return validateInstanceByClass(query, classConstuctor);
   },
 );

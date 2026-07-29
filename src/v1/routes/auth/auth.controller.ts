@@ -20,7 +20,7 @@ import { AuthService } from "./auth.service";
 import { CreateUserDto, CreateUserCredentials } from "./dto/create-user.dto";
 
 import { Headers as HeadersEnum } from "@/enums";
-import { Params } from "@1/enums";
+import { Parameters } from "@1/enums";
 
 import { PassportStrategy } from "@1/strategies";
 import { HashService } from "@1/services";
@@ -76,7 +76,7 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
     @Next() next: NextFunction,
-    @Param(Params.method) method: string,
+    @Param(Parameters.method) method: string,
   ) {
     return this.passport.auth(method, req, res, next);
   }
@@ -87,7 +87,7 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
     @Next() next: NextFunction,
-    @Param(Params.method) method: string,
+    @Param(Parameters.method) method: string,
   ) {
     return this.passport.callback(method, req, res, next, (error, data) => {
       if (error || !data) {

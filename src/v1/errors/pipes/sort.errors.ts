@@ -1,7 +1,10 @@
 import { HttpStatus } from "@nestjs/common";
 
 import { fockerorFactory } from "@/errors";
-import { AVAILABLE_SORT_ORDERING, AVAILABLE_SORT_TYPES } from "@1/constants";
+import {
+  AVAILABLE_SORT_ORDERING,
+  AVAILABLE_POST_SORT_TYPES,
+} from "@1/constants";
 
 export const SORT_ERRORS = fockerorFactory.execute("SORT EXCEPTION", {
   SORT_ORDERING_IS_NOT_VALIDED: {
@@ -11,8 +14,8 @@ export const SORT_ERRORS = fockerorFactory.execute("SORT EXCEPTION", {
   },
 
   SORT_TYPE_IS_NOT_VALIDED: {
-    message: `sort type can be: ${AVAILABLE_SORT_TYPES.join(",")}`,
-    description: `сортировка может быть только по: ${AVAILABLE_SORT_TYPES.join(",")}`,
+    message: `sort type can be: ${AVAILABLE_POST_SORT_TYPES.join(",")}`,
+    description: `сортировка может быть только по: ${AVAILABLE_POST_SORT_TYPES.join(",")}`,
     status: HttpStatus.BAD_REQUEST,
   },
 });

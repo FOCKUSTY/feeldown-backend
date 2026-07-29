@@ -1,11 +1,29 @@
+import type { NotificationType } from "@/database/generated/client";
 import type {
-  AVAILABLE_SORT_TYPES,
+  AVAILABLE_NOTIFICATION_SORT_TYPES,
+  AVAILABLE_POST_SORT_TYPES,
   AVAILABLE_SORT_ORDERING,
 } from "@1/constants";
 
-export type Filter = {
+export type BaseFilter = {
   sort: (typeof AVAILABLE_SORT_ORDERING)[number];
-  sortBy: (typeof AVAILABLE_SORT_TYPES)[number];
   limit: number;
   offset: number;
 };
+
+export type PostFilter = BaseFilter & {
+  sortBy: (typeof AVAILABLE_POST_SORT_TYPES)[number];
+};
+
+export type NotificationWhere = {
+  actorId?: string;
+  referenceType?: string;
+  referenceId?: string;
+  readed?: boolean;
+  type?: NotificationType;
+};
+
+export type NotificationFilter = BaseFilter &
+  NotificationWhere & {
+    sortBy: (typeof AVAILABLE_NOTIFICATION_SORT_TYPES)[number];
+  };

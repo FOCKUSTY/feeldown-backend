@@ -5,3 +5,4 @@ export * from "./routes.utils";
 export * from "./create-swagger-config.utils";
 export * from "./transformer.utils";
 export * from "./get-server-user.utils";
+export * from "./validate-instance-by-class.utils";

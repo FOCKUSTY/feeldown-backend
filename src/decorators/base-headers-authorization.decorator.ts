@@ -3,13 +3,13 @@ import type { ExecutionContext } from "@nestjs/common";
 
 import { ClassConstructor } from "class-transformer";
 
-import { createParamDecorator } from "@nestjs/common";
+import { createParamDecorator as createParameterDecorator } from "@nestjs/common";
 import { AuthorizationTypes, Headers } from "@/enums";
 
-import { validateInstanceByClass } from "@/utils/validate-instance-by-class.utils";
+import { validateInstanceByClass } from "@/utils";
 import { BASE_HEADERS_AUTHORIZATION } from "@/errors";
 
-export const BasicHeadersAuthorization = createParamDecorator(
+export const BasicHeadersAuthorization = createParameterDecorator(
   async (
     classConstructor: ClassConstructor<object>,
     context: ExecutionContext,

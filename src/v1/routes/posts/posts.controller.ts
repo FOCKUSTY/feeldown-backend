@@ -1,4 +1,4 @@
-import type { Filter, ResolvedPostnameSlug, ServerUser } from "@1/types";
+import type { PostFilter, ResolvedPostnameSlug, ServerUser } from "@1/types";
 
 import {
   Controller,
@@ -16,7 +16,7 @@ import {
 import { ApiOperation } from "@nestjs/swagger";
 
 import { Me, Public } from "@/decorators";
-import { Params, Queries } from "@1/enums";
+import { Parameters, Queries } from "@1/enums";
 import { SlugPipe, SortByPipe, SortOrderingPipe } from "@1/pipes";
 
 import { PostCreateDto, PostUpdateDto } from "./dto";
@@ -35,8 +35,8 @@ export class PostsController {
   public get(
     @Query(Queries.limit, ParseIntPipe) limit: number,
     @Query(Queries.offset, ParseIntPipe) offset: number,
-    @Query(Queries.sort, SortOrderingPipe) sort: Filter["sort"],
-    @Query(Queries.sortBy, SortByPipe) sortBy: Filter["sortBy"],
+    @Query(Queries.sort, SortOrderingPipe) sort: PostFilter["sort"],
+    @Query(Queries.sortBy, SortByPipe) sortBy: PostFilter["sortBy"],
   ) {
     return this.service.get({
       limit,
@@ -50,7 +50,8 @@ export class PostsController {
   @Get(ROUTES.GET_ONE)
   @Public()
   public getOne(
-    @Param(Params.slug, new SlugPipe("postname")) where: ResolvedPostnameSlug,
+    @Param(Parameters.slug, new SlugPipe("postname"))
+    where: ResolvedPostnameSlug,
   ) {
     return this.service.getOne(where);
   }
@@ -64,7 +65,8 @@ export class PostsController {
   @ApiOperation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
   public put(
-    @Param(Params.slug, new SlugPipe("postname")) where: ResolvedPostnameSlug,
+    @Param(Parameters.slug, new SlugPipe("postname"))
+    where: ResolvedPostnameSlug,
     @Body() data: PostUpdateDto,
     @Me() me: ServerUser,
   ) {
@@ -74,7 +76,8 @@ export class PostsController {
   @ApiOperation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
   public patch(
-    @Param(Params.slug, new SlugPipe("postname")) where: ResolvedPostnameSlug,
+    @Param(Parameters.slug, new SlugPipe("postname"))
+    where: ResolvedPostnameSlug,
     @Body() data: PostUpdateDto,
     @Me() me: ServerUser,
   ) {
@@ -83,7 +86,7 @@ export class PostsController {
 
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
-  public delete(@Param(Params.id) id: string, @Me() me: ServerUser) {
+  public delete(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
     return this.service.delete(id, me.user);
   }
 }

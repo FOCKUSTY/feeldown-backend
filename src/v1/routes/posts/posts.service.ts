@@ -1,4 +1,8 @@
-import type { Filter, ResolvedPostnameSlug, UpdatePostData } from "@1/types";
+import type {
+  PostFilter,
+  ResolvedPostnameSlug,
+  UpdatePostData,
+} from "@1/types";
 import type { Post, User } from "@1/entities";
 import type { PostCreateDto } from "./dto";
 
@@ -10,7 +14,7 @@ import { POST_ERRORS } from "@1/errors";
 export class PostsService {
   public constructor(private readonly prisma: PrismaService) {}
 
-  public async get(filter: Filter): Promise<Post[]> {
+  public async get(filter: PostFilter): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
       skip: filter.offset,
       take: filter.limit,

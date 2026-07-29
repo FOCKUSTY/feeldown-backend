@@ -1,4 +1,4 @@
-export const enum Params {
+export const enum Parameters {
   method = "method",
   slug = "slug",
   id = "id",

@@ -15,7 +15,7 @@ import {
 import { ApiOperation } from "@nestjs/swagger";
 
 import { Public, Me, OnlyMe } from "@/decorators";
-import { Params } from "@1/enums";
+import { Parameters } from "@1/enums";
 import { SlugPipe } from "@1/pipes";
 import { AuthGuard } from "@1/guards";
 
@@ -34,7 +34,8 @@ export class UsersController {
   @Get(ROUTES.GET_ONE)
   @Public()
   public getOne(
-    @Param(Params.slug, new SlugPipe("username")) slug: ResolvedUsernameSlug,
+    @Param(Parameters.slug, new SlugPipe("username"))
+    slug: ResolvedUsernameSlug,
     @Me() me: ServerUser,
   ) {
     const where = SlugPipe.resolveMe(slug, me);
@@ -43,9 +44,10 @@ export class UsersController {
 
   @ApiOperation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
-  @OnlyMe(Params.slug, "slug")
+  @OnlyMe(Parameters.slug, "slug")
   public put(
-    @Param(Params.slug, new SlugPipe("username")) slug: ResolvedUsernameSlug,
+    @Param(Parameters.slug, new SlugPipe("username"))
+    slug: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
     @Me() me: ServerUser,
   ) {
@@ -55,9 +57,10 @@ export class UsersController {
 
   @ApiOperation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
-  @OnlyMe(Params.slug, "slug")
+  @OnlyMe(Parameters.slug, "slug")
   public patch(
-    @Param(Params.slug, new SlugPipe("username")) slug: ResolvedUsernameSlug,
+    @Param(Parameters.slug, new SlugPipe("username"))
+    slug: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
     @Me() me: ServerUser,
   ) {
@@ -67,8 +70,8 @@ export class UsersController {
 
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
-  @OnlyMe(Params.id, "id")
-  public delete(@Param(Params.id) id: string) {
+  @OnlyMe(Parameters.id, "id")
+  public delete(@Param(Parameters.id) id: string) {
     return this.service.delete(id);
   }
 }
