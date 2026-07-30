@@ -1,0 +1,20 @@
+{
+  "explorer.sortOrder": "default",
+  "explorerSort.rules": [
+    {
+      "name": "Index Below Folders",
+      "pathPattern": "**/*",
+      "priorities": [
+        {
+          "condition": "type === 'directory'",
+          "priority": 2000
+        },
+        {
+          "condition": "name === 'index.ts'",
+          "priority": 1000
+        }
+      ]
+    }
+  ],
+  "explorerSort.defaultSort": "name"
+}
