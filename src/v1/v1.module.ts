@@ -3,7 +3,7 @@ import type { NestModule, MiddlewareConsumer } from "@nestjs/common";
 import { Module } from "@nestjs/common";
 import { DocumentBuilder } from "@nestjs/swagger";
 
-import { CacheModule, CacheInterceptor } from "@nestjs/cache-manager";
+import { CacheModule } from "@nestjs/cache-manager";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD, APP_INTERCEPTOR, RouterModule } from "@nestjs/core";
 
@@ -16,6 +16,7 @@ import { PrismaService } from "@/database";
 
 import { AuthStrategy } from "./strategies";
 
+import { CustomCacheInterceptor } from "./interceptors";
 import { AuthEntity, UserEntity } from "./entities";
 import { GuardsModule } from "./guards";
 import {
@@ -69,7 +70,7 @@ export const v1Swagger = createSwaggerConfig({
     HashService,
     {
       provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
+      useClass: CustomCacheInterceptor,
     },
     {
       provide: APP_GUARD,

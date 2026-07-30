@@ -8,6 +8,7 @@
     "url": "https://fockusty.netlify.app"
   },
   "license": "MIT",
+  "type": "commonjs",
   "scripts": {
     "build": "nest build",
     "swagger": "set PROGRAM_MODE=swagger&& nest start",
@@ -66,6 +67,8 @@
     "@nestjs/testing": "^11.1.28",
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
+    "@swc/core": "^1.15.47",
+    "@swc/jest": "^0.2.39",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

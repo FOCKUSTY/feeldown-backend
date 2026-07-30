@@ -5,3 +5,4 @@ export * from "./use-headers-validation.decorator";
 export * from "./only-me.decorator";
 export * from "./update.decorator";
 export * from "./use-query-validation.decorator";
+export * from "./no-cache.decorator";

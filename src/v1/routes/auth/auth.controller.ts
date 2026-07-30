@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import type { ServerUser } from "@1/types";
 
 import {
   Controller,
@@ -10,7 +11,6 @@ import {
   Res,
   Post,
   Body,
-  Headers,
   Param,
 } from "@nestjs/common";
 
@@ -19,14 +19,12 @@ import { AuthService } from "./auth.service";
 
 import { CreateUserDto, CreateUserCredentials } from "./dto/create-user.dto";
 
-import { Headers as HeadersEnum } from "@/enums";
 import { Parameters } from "@1/enums";
-
 import { PassportStrategy } from "@1/strategies";
 import { HashService } from "@1/services";
+import { Me, NoCache, UseHeadersValidation } from "@/decorators";
 
 import { ApiOperation } from "@nestjs/swagger";
-import { UseHeadersValidation } from "@/decorators/use-headers-validation.decorator";
 
 @Injectable()
 @Controller(ROUTE)
@@ -64,10 +62,9 @@ export class AuthController {
 
   @Get(ROUTES.GET_ME)
   @ApiOperation(OPERATIONS.GET_ME)
-  public getMe(@Headers(HeadersEnum.authorization) authorization?: string) {
-    const { authId, userId } =
-      this.hash.resolveHeaderAuthorizationOrThrow(authorization);
-    return this.service.getMe(authId, userId);
+  @NoCache()
+  public getMe(@Me() me: ServerUser) {
+    return me;
   }
 
   @Get(ROUTES.OAUTH2_GET)

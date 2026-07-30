@@ -1,10 +1,11 @@
+import type { PostFilter } from "@1/types";
+
 import {
   AVAILABLE_SORT_ORDERING,
   AVAILABLE_POST_SORT_TYPES,
 } from "@1/constants";
 import { HttpException, PipeTransform } from "@nestjs/common";
 import { SORT_ERRORS } from "@1/errors";
-import { PostFilter } from "@1/types";
 
 abstract class BaseSortPipe<T extends string> implements PipeTransform {
   protected constructor(

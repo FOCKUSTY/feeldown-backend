@@ -1,14 +1,13 @@
-const { createDefaultPreset } = require("ts-jest");
-
-const tsJestTransformCfg = createDefaultPreset().transform;
-
 /** @type {import("jest").Config} **/
 module.exports = {
   testEnvironment: "node",
   transform: {
-    ...tsJestTransformCfg,
-    "^.+\\.(t|j)s$": "ts-jest",
+    "\\.[jt]sx?$": ["babel-jest", { excludeJestPreset: true }],
   },
+  transformIgnorePatterns: [
+    "/node_modules/(?!(uuid)/)",
+    "/node_modules/.pnpm/(?!(uuid@)/)",
+  ],
   moduleNameMapper: {
     "^@1/(.*)$": "<rootDir>/src/v1/$1",
     "^@/(.*)$": "<rootDir>/src/$1",
@@ -16,7 +15,6 @@ module.exports = {
   moduleFileExtensions: ["js", "json", "ts"],
   rootDir: "../",
   testRegex: "\\.test\\.ts$",
-  extensionsToTreatAsEsm: [".ts"],
   collectCoverageFrom: ["src/**/*.(t|j)s"],
   modulePathIgnorePatterns: ["<rootDir>/bad-fockarch/"],
 };

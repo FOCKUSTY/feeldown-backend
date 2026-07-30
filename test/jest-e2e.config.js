@@ -1,22 +1,29 @@
-const { createDefaultPreset } = require("ts-jest");
-
-const tsJestTransformCfg = createDefaultPreset().transform;
-
-/** @type {import("jest").Config} **/
+/** @type {import('jest').Config} **/
 module.exports = {
   testEnvironment: "node",
   transform: {
-    ...tsJestTransformCfg,
+    "^.+\\.(t|j)sx?$": [
+      "@swc/jest",
+      {
+        jsc: {
+          parser: {
+            syntax: "typescript",
+            decorators: true,
+          },
+          transform: {
+            legacyDecorator: true,
+            decoratorMetadata: true,
+          },
+        },
+      },
+    ],
   },
+  transformIgnorePatterns: ["node_modules/(?!(.*uuid))"],
   moduleNameMapper: {
     "^@1/(.*)$": "<rootDir>/src/v1/$1",
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   moduleFileExtensions: ["js", "json", "ts"],
   rootDir: "../",
-  testEnvironment: "node",
-  testRegex: ".e2e-spec.ts$",
-  transform: {
-    "^.+\\.(t|j)s$": "ts-jest",
-  },
+  testRegex: ".spec.ts$",
 };
