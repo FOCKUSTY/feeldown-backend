@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import { NotificationsController } from "./notifications.controller";
-import { NotificationsService } from "./notifications.service";
+import { FriendshipsController } from "./friendships.controller";
+import { FriendshipsService } from "./friendships.service";
 
 import { AUTH_GUARD_PROVIDERS } from "@1/guards";
 import { SERVER_USER_PROVIDERS } from "@1/services";
@@ -9,14 +9,14 @@ import { PrismaService } from "@/database";
 
 @Module({
   imports: [],
-  controllers: [NotificationsController],
+  controllers: [FriendshipsController],
   providers: [
-    NotificationsService,
+    FriendshipsService,
     PrismaService,
     ...AUTH_GUARD_PROVIDERS,
     ...SERVER_USER_PROVIDERS,
   ],
 })
-export class NotificationsModule {}
+export class FriendshipsModule {}
 
-export default NotificationsModule;
+export default FriendshipsModule;

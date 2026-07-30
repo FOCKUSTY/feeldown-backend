@@ -1,0 +1,34 @@
+import type { FriendshipFilter } from "@1/types";
+
+import { AVAILABLE_FRIENDSHIP_SORT_TYPES } from "@1/constants";
+import { FriendRequestStatus } from "@1/types";
+import { BaseFilterDto } from "@1/dto";
+
+import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
+import { IsEnum, IsIn, IsOptional } from "class-validator";
+
+@ApiSchema({
+  name: "FriendsshipFilterSchema",
+})
+export class FriendshipFilterDto
+  extends BaseFilterDto
+  implements FriendshipFilter
+{
+  @ApiPropertyOptional({
+    enum: AVAILABLE_FRIENDSHIP_SORT_TYPES,
+    default: "createdAt",
+    description: "Поле для сортировки",
+  })
+  @IsOptional()
+  @IsIn(AVAILABLE_FRIENDSHIP_SORT_TYPES)
+  sortBy: (typeof AVAILABLE_FRIENDSHIP_SORT_TYPES)[number] = "createdAt";
+
+  @ApiPropertyOptional({
+    enum: FriendRequestStatus,
+    default: FriendRequestStatus.ACCEPTED,
+    description: "Статус дружбы",
+  })
+  @IsOptional()
+  @IsEnum(FriendRequestStatus)
+  status: FriendRequestStatus = FriendRequestStatus.ACCEPTED;
+}

@@ -11,3 +11,9 @@ export const AVAILABLE_NOTIFICATION_SORT_TYPES = [
   "type",
   "referenceType",
 ] as const;
+
+export const AVAILABLE_FRIENDSHIP_SORT_TYPES = [
+  "status",
+  "createdAt",
+  "updatedAt",
+];

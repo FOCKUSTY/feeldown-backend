@@ -2,10 +2,10 @@ import { Module } from "@nestjs/common";
 
 import { PrismaService } from "@/database";
 import { AuthGuardService } from "./auth";
-import { HashService } from "../services";
+import { HashService, ServerUserService } from "../services";
 
 @Module({
-  providers: [AuthGuardService, PrismaService, HashService],
+  providers: [AuthGuardService, PrismaService, HashService, ServerUserService],
 })
 export class GuardsModule {}
 

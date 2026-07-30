@@ -1,10 +1,13 @@
 import type { NotificationWhere } from "@1/types";
 import { NotificationType } from "@1/types";
 
-import { ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsOptional, IsString, IsBoolean, IsEnum } from "class-validator";
 
+@ApiSchema({
+  name: "NotificationWhereSchema",
+})
 export class NotificationWhereDto implements NotificationWhere {
   @ApiPropertyOptional({
     description: "ID пользователя-инициатора",

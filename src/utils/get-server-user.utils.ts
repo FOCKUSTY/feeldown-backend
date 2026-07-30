@@ -6,14 +6,11 @@ import { prisma } from "@/database";
 export const getServerUser = async (
   authorization?: string,
 ): Promise<ServerUserWithToken | null> => {
-  const { authId, userId, succeeded, token } =
-    HashService.resolveHeaderAuthorization(authorization);
-  if (!succeeded) {
-    return null;
-  }
+  const { authId, userId, token } =
+    HashService.resolveHeaderAuthorizationOrThrow(authorization);
 
-  const user = await prisma.user.findUnique({ where: { id: userId } });
   const auth = await prisma.auth.findUnique({ where: { id: authId } });
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user || !auth) {
     return null;
