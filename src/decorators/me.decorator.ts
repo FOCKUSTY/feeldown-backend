@@ -19,7 +19,10 @@ export const Me = createParameterDecorator(
     const { authId, userId, token } =
       HashService.resolveHeaderAuthorizationOrThrow(authorization);
 
-    const service = new ServerUserService(prisma as PrismaService);
+    const service = new ServerUserService(
+      prisma as PrismaService,
+      new HashService(),
+    );
     return service.getOrThrow(authId, userId, token);
   },
 );

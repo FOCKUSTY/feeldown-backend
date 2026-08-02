@@ -1,4 +1,4 @@
-import { validateInstanceByClass } from "@/utils";
+import { validateInstanceByClassOrThrow } from "@/utils";
 import {
   createParamDecorator as createParameterDecorator,
   ExecutionContext,
@@ -7,10 +7,10 @@ import { ClassConstructor } from "class-transformer";
 
 export const UseHeadersValidation = createParameterDecorator(
   async (
-    classConstuctor: ClassConstructor<object>,
+    classConstructor: ClassConstructor<object>,
     context: ExecutionContext,
   ) => {
     const { headers } = context.switchToHttp().getRequest();
-    return validateInstanceByClass(headers, classConstuctor);
+    return validateInstanceByClassOrThrow(headers, classConstructor);
   },
 );

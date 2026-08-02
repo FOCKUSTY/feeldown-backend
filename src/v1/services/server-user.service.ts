@@ -1,12 +1,21 @@
 import type { ServerUser } from "@1/types";
+import type { Request } from "express";
 
-import { PrismaService } from "@/database";
-import { SERVER_USER_ERRORS } from "@1/errors";
 import { Injectable } from "@nestjs/common";
+
+import { tryCatchNullPromise, validateInstanceByClassOrThrow } from "@/utils";
+import { SERVER_USER_ERRORS } from "@1/errors";
+
+import { ServerUserEntity } from "@1/entities";
+import { PrismaService } from "@/database";
+import { HashService } from "./hash.service";
 
 @Injectable()
 export class ServerUserService {
-  public constructor(private readonly prisma: PrismaService) {}
+  public constructor(
+    private readonly prisma: PrismaService,
+    private readonly hash: HashService,
+  ) {}
 
   public async getOrThrow(
     authId: string,
@@ -45,15 +54,36 @@ export class ServerUserService {
   }
 
   public get(authId: string, userId: string, token: string) {
-    try {
-      return this.getOrThrow(authId, userId, token);
-    } catch {
-      return null;
+    return tryCatchNullPromise(() => this.getOrThrow(authId, userId, token));
+  }
+
+  public async getByRequestOrThrow(
+    request: Request,
+  ): Promise<ServerUserEntity> {
+    const serverUser = request.user as ServerUserEntity | undefined;
+    if (serverUser) {
+      const user = await validateInstanceByClassOrThrow<ServerUser>(
+        serverUser,
+        ServerUserEntity,
+      );
+      if (user) {
+        return user;
+      }
     }
+
+    const { authorization } = request.headers;
+    const { authId, userId, token } =
+      this.hash.resolveHeaderAuthorizationOrThrow(authorization);
+    return this.getOrThrow(authId, userId, token);
+  }
+
+  public getByRequest(request: Request): Promise<ServerUser | null> {
+    return tryCatchNullPromise(() => this.getByRequestOrThrow(request));
   }
 }
 
 export const SERVER_USER_PROVIDERS = [
   ServerUserService,
   PrismaService,
+  HashService,
 ] as const;

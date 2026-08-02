@@ -6,7 +6,7 @@ import { ClassConstructor } from "class-transformer";
 import { createParamDecorator as createParameterDecorator } from "@nestjs/common";
 import { AuthorizationTypes, Headers } from "@/enums";
 
-import { validateInstanceByClass } from "@/utils";
+import { validateInstanceByClassOrThrow } from "@/utils";
 import { BASE_HEADERS_AUTHORIZATION } from "@/errors";
 
 export const BasicHeadersAuthorization = createParameterDecorator(
@@ -28,6 +28,6 @@ export const BasicHeadersAuthorization = createParameterDecorator(
     const base64 = data.join(" ");
     const json = JSON.parse(atob(base64));
 
-    return validateInstanceByClass(json, classConstructor);
+    return validateInstanceByClassOrThrow(json, classConstructor);
   },
 );

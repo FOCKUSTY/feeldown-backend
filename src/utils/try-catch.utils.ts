@@ -19,7 +19,7 @@ export const tryCatchThrow = <T>(
   tryFunc: () => T,
   onError?: (error: unknown) => void,
 ): T => {
-  return tryCatch(tryFunc, (error) => {
+  return tryCatch(tryFunc, (error: unknown) => {
     onError?.(error);
     throw new HttpException(
       "Internal server error",
@@ -28,5 +28,25 @@ export const tryCatchThrow = <T>(
         cause: error,
       },
     );
+  });
+};
+
+export const tryCatchNull = <T>(
+  tryFunc: () => T,
+  onError?: (error: unknown) => void,
+): T | null => {
+  return tryCatch(tryFunc, (error: unknown): null => {
+    onError?.(error);
+    return null;
+  });
+};
+
+export const tryCatchNullPromise = <T>(
+  tryFunc: () => Promise<T>,
+  onError?: (error: unknown) => void,
+): Promise<T | null> => {
+  return tryCatchNullPromise(tryFunc, async (error: unknown): Promise<null> => {
+    onError?.(error);
+    return null;
   });
 };

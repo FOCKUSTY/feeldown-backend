@@ -3,7 +3,7 @@ import {
   ExecutionContext,
 } from "@nestjs/common";
 import { ClassConstructor } from "class-transformer";
-import { validateInstanceByClass } from "@/utils";
+import { validateInstanceByClassOrThrow } from "@/utils";
 
 export const UseQueryValidation = createParameterDecorator(
   async (
@@ -12,6 +12,6 @@ export const UseQueryValidation = createParameterDecorator(
   ) => {
     const request = context.switchToHttp().getRequest();
     const { query } = request;
-    return validateInstanceByClass(query, classConstuctor);
+    return validateInstanceByClassOrThrow(query, classConstuctor);
   },
 );
