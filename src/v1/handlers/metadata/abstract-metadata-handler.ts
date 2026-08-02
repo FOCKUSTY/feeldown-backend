@@ -1,8 +1,9 @@
 import { Metadata } from "@/enums";
 import { MetadataHandlerType } from "@1/types";
-import { ExecutionContext } from "@nestjs/common";
+import { ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
+@Injectable()
 export abstract class AbstractMetadataHandler implements MetadataHandlerType {
   public constructor(protected readonly reflector: Reflector) {}
 

@@ -1,28 +1,17 @@
 import type { Request } from "express";
 
-import {
-  createParamDecorator as createParameterDecorator,
-  ExecutionContext,
-  SetMetadata,
-} from "@nestjs/common";
+import { ExecutionContext, SetMetadata } from "@nestjs/common";
 
-import { HashService, ServerUserService } from "@1/services";
-import { prisma, PrismaService } from "@/database";
+import { createParameterDecoratorWithRequiredPipes } from "@/utils";
 import { Metadata } from "@/enums";
+import { MePipe } from "@/pipes";
 
-export const Me = createParameterDecorator(
+export const Me = createParameterDecoratorWithRequiredPipes(
   async (_, context: ExecutionContext) => {
     SetMetadata(Metadata.skipAuthGuard, true);
 
     const request = context.switchToHttp().getRequest<Request>();
-    const authorization = request.headers.authorization;
-    const { authId, userId, token } =
-      HashService.resolveHeaderAuthorizationOrThrow(authorization);
-
-    const service = new ServerUserService(
-      prisma as PrismaService,
-      new HashService(),
-    );
-    return service.getOrThrow(authId, userId, token);
+    return request;
   },
+  [MePipe],
 );

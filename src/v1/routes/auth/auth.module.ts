@@ -7,7 +7,7 @@ import { AuthStrategy, PassportStrategy } from "@1/strategies";
 
 import { PrismaService } from "@/database";
 import { LoggerService } from "@/services";
-import { HashService } from "@1/services";
+import { HashService, ServerUserService } from "@1/services";
 
 @Module({
   controllers: [AuthController],
@@ -18,6 +18,7 @@ import { HashService } from "@1/services";
     AuthStrategy,
     PrismaService,
     AuthService,
+    ServerUserService,
   ],
 })
 export class AuthModule {}
