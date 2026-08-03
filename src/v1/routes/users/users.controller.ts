@@ -38,6 +38,7 @@ export class UsersController {
     slug: ResolvedUsernameSlug,
     @Me() me: ServerUser,
   ) {
+    console.log(me);
     const where = SlugPipe.resolveMe(slug, me);
     return this.service.getOne(where);
   }
