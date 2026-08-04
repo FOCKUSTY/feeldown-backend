@@ -1,9 +1,9 @@
-import type { ResolvedUsernameSlug } from "@1/types";
 import type { UserUpdateDto } from "./dto";
+import type { FunctionsParameters, ResolvedUsernameSlug } from "@1/types";
 
 import { Injectable } from "@nestjs/common";
 
-import { CrudService, FunctionsParameters } from "@1/services";
+import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 
 @Injectable()

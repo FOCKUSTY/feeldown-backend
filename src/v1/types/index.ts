@@ -7,3 +7,4 @@ export * from "./post.types";
 export * from "./notification.types";
 export * from "./handlers.types";
 export * from "./server.types";
+export * from "./crud.types";

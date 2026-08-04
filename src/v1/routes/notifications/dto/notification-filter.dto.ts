@@ -16,7 +16,7 @@ import { BaseFilterDto } from "@1/dto";
 })
 export class NotificationFilterDto
   extends IntersectionType(BaseFilterDto, NotificationWhereDto)
-  implements NotificationFilter
+  implements Omit<NotificationFilter, "recipientId">
 {
   @ApiPropertyOptional({
     enum: AVAILABLE_NOTIFICATION_SORT_TYPES,

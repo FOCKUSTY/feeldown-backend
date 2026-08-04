@@ -8,7 +8,10 @@ import { IsOptional, IsString, IsBoolean, IsEnum } from "class-validator";
 @ApiSchema({
   name: "NotificationWhereSchema",
 })
-export class NotificationWhereDto implements NotificationWhere {
+export class NotificationWhereDto implements Omit<
+  NotificationWhere,
+  "recipientId"
+> {
   @ApiPropertyOptional({
     description: "ID пользователя-инициатора",
     example: "6fbafe80-81a0-4ea8-9571-a8efa56fc66e",

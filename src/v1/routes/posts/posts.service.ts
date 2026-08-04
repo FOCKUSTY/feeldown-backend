@@ -1,16 +1,21 @@
 import type { PostCreateDto, PostUpdateDto } from "./dto";
-import type { PostFilter, ResolvedPostnameSlug } from "@1/types";
+import type {
+  CompareParameters,
+  CompareAdditional,
+  PostFilter,
+  ResolvedPostnameSlug,
+} from "@1/types";
 
 import { Injectable } from "@nestjs/common";
 
-import { Compare, CompareAdditional, CrudService } from "@1/services";
+import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 import { POST_ERRORS } from "@1/errors";
 
 @Injectable()
 export class PostsService extends CrudService<
   "Post",
-  Compare<
+  CompareParameters<
     "Post",
     {
       get: PostFilter;

@@ -1,17 +1,21 @@
 import type { FriendshipUpdateDto, FriendshipCreateDto } from "./dto";
-import type { FriendshipFilter } from "@1/types";
 import type { User } from "@1/entities";
+import type {
+  CompareAdditional,
+  CompareParameters,
+  FriendshipFilter,
+} from "@1/types";
 
 import { Injectable } from "@nestjs/common";
 
-import { Compare, CompareAdditional, CrudService } from "@1/services";
+import { CrudService } from "@1/services";
 import { FriendRequestStatus } from "@1/types";
 import { PrismaService } from "@/database";
 
 @Injectable()
 export class FriendshipsService extends CrudService<
   "FriendRequest",
-  Compare<
+  CompareParameters<
     "FriendRequest",
     {
       getOne: { id: string };

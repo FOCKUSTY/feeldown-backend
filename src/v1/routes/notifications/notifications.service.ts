@@ -1,16 +1,20 @@
 import type { BatchPayload } from "@/database/generated/internal/prismaNamespace";
-import type { NotificationFilter, NotificationWhere } from "@1/types";
 import type { Notification } from "@1/entities";
+import type {
+  CompareParameters,
+  NotificationFilter,
+  NotificationWhere,
+} from "@1/types";
 
 import { Injectable } from "@nestjs/common";
 
-import { Compare, CrudService } from "@1/services";
+import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 
 @Injectable()
 export class NotificationsService extends CrudService<
   "Notification",
-  Compare<
+  CompareParameters<
     "Notification",
     {
       get: NotificationFilter;
