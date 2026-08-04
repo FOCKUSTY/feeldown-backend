@@ -23,13 +23,13 @@ export class AuthStrategy {
 
   public constructor(private readonly prisma: PrismaService) {}
 
-  public signUpByPassword({
+  public async signUpByPassword({
     username,
     password,
     email,
     nickname,
   }: SignUpByPasswordData) {
-    const hash = this.hash.execute(password);
+    const hash = await this.hash.execute(password);
 
     return this.signUp({
       username: username,
@@ -91,7 +91,8 @@ export class AuthStrategy {
       });
     }
 
-    if (auth.password !== this.hash.execute(password)) {
+    const hash = await this.hash.execute(password);
+    if (auth.password !== hash) {
       throw AUTH_STRATEGIES_ERRORS.PASSWORD_ERROR.execute();
     }
 

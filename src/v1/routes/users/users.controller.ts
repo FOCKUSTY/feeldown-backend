@@ -1,6 +1,6 @@
 import type { ResolvedUsernameSlug } from "@1/types";
-import type { ServerUser } from "@1/types/server.types";
 
+import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Injectable,
@@ -12,11 +12,9 @@ import {
   Delete,
   UseGuards,
 } from "@nestjs/common";
-import { ApiOperation } from "@nestjs/swagger";
 
-import { Public, Me, OnlyMe } from "@/decorators";
+import { Public, OnlyMe, UserFindOptions } from "@/decorators";
 import { Parameters } from "@1/enums";
-import { SlugPipe } from "@1/pipes";
 import { AuthGuard } from "@1/guards";
 
 import { UserUpdateDto } from "./dto";
@@ -34,39 +32,29 @@ export class UsersController {
   @Get(ROUTES.GET_ONE)
   @Public()
   public getOne(
-    @Param(Parameters.slug, new SlugPipe("username"))
-    slug: ResolvedUsernameSlug,
-    @Me() me: ServerUser,
+    @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
   ) {
-    console.log(me);
-    const where = SlugPipe.resolveMe(slug, me);
-    return this.service.getOne(where);
+    return this.service.getOne(options);
   }
 
   @ApiOperation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
   @OnlyMe(Parameters.slug, "slug")
   public put(
-    @Param(Parameters.slug, new SlugPipe("username"))
-    slug: ResolvedUsernameSlug,
+    @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
-    @Me() me: ServerUser,
   ) {
-    const where = SlugPipe.resolveMe(slug, me);
-    return this.service.put(where, data);
+    return this.service.put(options, data);
   }
 
   @ApiOperation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
   @OnlyMe(Parameters.slug, "slug")
   public patch(
-    @Param(Parameters.slug, new SlugPipe("username"))
-    slug: ResolvedUsernameSlug,
+    @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
-    @Me() me: ServerUser,
   ) {
-    const where = SlugPipe.resolveMe(slug, me);
-    return this.service.patch(where, data);
+    return this.service.patch(options, data);
   }
 
   @ApiOperation(OPERATIONS.DELETE)

@@ -1,6 +1,7 @@
-import type { ResolvedSlug, ResolvedUsernameSlug, ServerUser } from "@1/types";
+import type { ResolvedSlug, ResolvedUsernameSlug } from "@1/types";
 import type { PrefixKeys } from "@1/enums";
 
+import { SLUG_PIPE_ERRORS } from "@1/errors";
 import { Prefix } from "@1/enums";
 
 import { Injectable, PipeTransform } from "@nestjs/common";
@@ -10,11 +11,15 @@ import { UsernamePipe } from "./username.pipe";
 export class SlugPipe<T extends PrefixKeys> implements PipeTransform {
   public static resolveMe(
     resolvedSlug: ResolvedUsernameSlug,
-    me: ServerUser,
+    meUserId?: string,
   ): ResolvedUsernameSlug {
     if (resolvedSlug.username === "me") {
+      if (!meUserId) {
+        throw SLUG_PIPE_ERRORS.UNAUTHORIZED.exception;
+      }
+
       return {
-        id: me.user.id,
+        id: meUserId,
         username: undefined,
       };
     }

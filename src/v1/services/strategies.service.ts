@@ -2,7 +2,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
 
 import { AuthStrategy } from "../strategies";
-import { STRATEGIES_SERVICE_ERROS } from "../errors";
+import { STRATEGIES_SERVICE_ERRORS } from "../errors";
 import { getPassportEnv, LoggerService } from "@/services";
 import {
   OAuth2ServiceProperties,
@@ -29,7 +29,7 @@ export class StrategiesService {
   public static getStrategy(service: string) {
     const strategy = this.strategies.get(service as PassportAuthTypes);
     if (!strategy) {
-      throw STRATEGIES_SERVICE_ERROS.STRATEGY_NOT_FOUND.execute();
+      throw STRATEGIES_SERVICE_ERRORS.STRATEGY_NOT_FOUND.execute();
     }
 
     return strategy;

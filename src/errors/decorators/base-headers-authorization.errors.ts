@@ -2,7 +2,7 @@ import { HttpStatus } from "@nestjs/common";
 import { fockerorFactory } from "../error.factory";
 
 export const BASE_HEADERS_AUTHORIZATION = fockerorFactory.execute(
-  "BASE HEADERS AUTHORIZATION EXСEPTIONS",
+  "BASE HEADERS AUTHORIZATION EXCEPTIONS",
   {
     AUTHORIZATION_NOT_DEFINED: {
       message: "Authorization is required",

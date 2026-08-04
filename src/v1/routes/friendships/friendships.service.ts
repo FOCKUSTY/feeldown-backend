@@ -3,9 +3,9 @@ import type { User } from "@1/entities";
 
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@/database";
+
 import { FriendRequestStatus } from "@1/types";
-import { FriendshipCreateDto } from "./dto/friendship-create.dto";
-import { FriendshipUpdateDto } from "./dto";
+import { FriendshipUpdateDto, FriendshipCreateDto } from "./dto";
 
 @Injectable()
 export class FriendshipsService {
@@ -15,7 +15,7 @@ export class FriendshipsService {
     const friendships = await this.prisma.friendRequest.findMany({
       where: {
         status: filter.status || FriendRequestStatus.ACCEPTED,
-        OR: [{ receiverId: userId }, { senderId: userId }],
+        OR: this.getOr(userId),
       },
       orderBy: {
         [filter.sortBy]: filter.sort,
@@ -37,8 +37,13 @@ export class FriendshipsService {
     return friends;
   }
 
-  public async getOne(id: string): Promise<FriendRequest | null> {
-    return this.prisma.friendRequest.findUnique({ where: { id } });
+  public async getOne(
+    id: string,
+    userId: string,
+  ): Promise<FriendRequest | null> {
+    return this.prisma.friendRequest.findUnique({
+      where: this.getWhere(id, userId),
+    });
   }
 
   public async post(
@@ -53,14 +58,13 @@ export class FriendshipsService {
     });
   }
 
-  public async put(
+  public async update(
     id: string,
     data: FriendshipUpdateDto,
+    userId: string,
   ): Promise<FriendRequest> {
     return this.prisma.friendRequest.update({
-      where: {
-        id,
-      },
+      where: this.getWhere(id, userId),
       data: {
         status: data.status,
       },
@@ -70,8 +74,27 @@ export class FriendshipsService {
   public async patch(
     id: string,
     data: FriendshipUpdateDto,
+    userId: string,
   ): Promise<FriendRequest> {
-    return this.put(id, data);
+    return this.update(id, data, userId);
+  }
+
+  private getWhere(id: string, userId: string) {
+    return {
+      id,
+      OR: this.getOr(userId),
+    };
+  }
+
+  private getOr(userId: string) {
+    return [
+      {
+        senderId: userId,
+      },
+      {
+        receiverId: userId,
+      },
+    ];
   }
 }
 

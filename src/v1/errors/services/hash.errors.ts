@@ -1,7 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 import { fockerorFactory } from "@/errors";
 
-export const HASH_ERRORS = fockerorFactory.execute("HASH EXСEPTION", {
+export const HASH_ERRORS = fockerorFactory.execute("HASH EXCEPTION", {
   TOKEN_METHOD_NOT_ACCEPTABLE: {
     message: "Token method not acceptable.",
     description: "Метод токена не доступен к использованию.",
@@ -9,13 +9,13 @@ export const HASH_ERRORS = fockerorFactory.execute("HASH EXСEPTION", {
   },
 
   AUTHORIZATION_UNDEFINED: {
-    message: "authroization not defined.",
+    message: "authorization not defined.",
     description: "Заголовок `authorization` не был определен.",
     status: HttpStatus.UNAUTHORIZED,
   },
 
   INVALID_TOKEN: {
-    message: "token not valided.",
+    message: "token is not valid.",
     description: "Токен не прошёл проверку по некоторым свойствам.",
     status: HttpStatus.UNAUTHORIZED,
   },

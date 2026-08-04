@@ -6,7 +6,7 @@ import { tryCatchThrow } from "@/utils";
 import { env } from "@/services";
 
 import { verify } from "jsonwebtoken";
-import { createHmac } from "crypto";
+import { hash } from "bcrypt";
 
 const PARSE_ERROR = {
   userId: false,
@@ -99,14 +99,8 @@ export class HashService {
 
   public constructor() {}
 
-  public execute(data: string) {
-    return createHmac("sha512", env.HASH_KEY).update(data).digest("hex");
-  }
-
-  public generateCode(data: string = (Math.random() * 1000).toString()) {
-    return createHmac("sha512", env.HASH_KEY)
-      .update(new Date().getTime().toString() + data)
-      .digest("base64");
+  public async execute(data: string) {
+    return hash(data, env.HASH_KEY);
   }
 
   public resolveTokenOrThrow(token: string): ParsedToken {

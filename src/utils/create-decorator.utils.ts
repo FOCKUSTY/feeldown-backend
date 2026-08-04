@@ -1,27 +1,24 @@
-import type { CustomParamFactory } from "@nestjs/common/interfaces/features/custom-route-param-factory.interface";
-import type { ParamDecoratorEnhancer, Type } from "@nestjs/common";
-import {
-  createParamDecorator,
-  PipeTransform,
-  SetMetadata,
-} from "@nestjs/common";
+import type { Pipe } from "@/types";
 
-type Pipe =
-  PipeTransform<unknown, unknown> | Type<PipeTransform<unknown, unknown>>;
+import type { CustomParamFactory } from "@nestjs/common/interfaces/features/custom-route-param-factory.interface";
+import type { ParamDecoratorEnhancer } from "@nestjs/common";
+import { createParamDecorator, SetMetadata } from "@nestjs/common";
+
+type DataOrPipes<T> = T extends undefined ? [...Pipe[]] : [T, ...Pipe[]];
 
 export const createParameterDecoratorWithRequiredPipes = <
-  FactoryData = unknown,
+  FactoryData = undefined,
   FactoryOutput = unknown,
 >(
   factory: CustomParamFactory<FactoryData, FactoryOutput>,
   pipes: Pipe[],
   enhancers?: ParamDecoratorEnhancer[],
-) => {
-  const decorator = (...extraPipes: Pipe[]) => {
-    return createParamDecorator(factory, enhancers)(...pipes, ...extraPipes);
-  };
+): ((...dataOrPipes: DataOrPipes<FactoryData>) => ParameterDecorator) => {
+  return (data?, ...extraPipes) => {
+    const parameters = [...(data ? [data] : []), ...pipes, ...extraPipes];
 
-  return decorator;
+    return createParamDecorator(factory, enhancers)(...parameters);
+  };
 };
 
 export const setMetadataInEnchanter = <T>(

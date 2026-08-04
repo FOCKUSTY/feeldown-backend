@@ -10,7 +10,7 @@ export const POST_ERRORS = fockerorFactory.execute("POST EXCEPTION", {
 
   NOT_ACCEPTABLE: {
     message: "You do not have permission to edit the post",
-    description: "Не хватает прав для измнения поста",
+    description: "Не хватает прав для изменения поста",
     status: HttpStatus.NOT_ACCEPTABLE,
   },
 });

@@ -6,3 +6,4 @@ export * from "./filter.types";
 export * from "./post.types";
 export * from "./notification.types";
 export * from "./handlers.types";
+export * from "./server.types";

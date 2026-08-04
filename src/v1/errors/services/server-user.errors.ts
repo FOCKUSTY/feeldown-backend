@@ -1,7 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 import { fockerorFactory } from "@/errors";
 
-export const SERVER_USER_ERRORS = fockerorFactory.execute("AUTH EXСEPTION", {
+export const SERVER_USER_ERRORS = fockerorFactory.execute("AUTH EXCEPTION", {
   AUTH_NOT_FOUND: {
     message: "User not found",
     description:
@@ -12,7 +12,7 @@ export const SERVER_USER_ERRORS = fockerorFactory.execute("AUTH EXСEPTION", {
   USER_ID: {
     message: "Profile id is not equals",
     description:
-      "Пользователь по данным токена был найден, но id пользователя в БД не соотвествует id пользователя в токене",
+      "Пользователь по данным токена был найден, но id пользователя в БД не соответствует id пользователя в токене",
     status: HttpStatus.FORBIDDEN,
   },
 

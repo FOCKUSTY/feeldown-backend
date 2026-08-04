@@ -31,7 +31,7 @@ export class SortOrderingPipe extends BaseSortPipe<PostFilter["sort"]> {
   public constructor() {
     super(
       AVAILABLE_SORT_ORDERING,
-      SORT_ERRORS.SORT_ORDERING_IS_NOT_VALIDED.exception,
+      SORT_ERRORS.SORT_ORDERING_IS_NOT_VALID.exception,
     );
   }
 }
@@ -40,7 +40,7 @@ export class SortByPipe extends BaseSortPipe<PostFilter["sortBy"]> {
   public constructor() {
     super(
       AVAILABLE_POST_SORT_TYPES,
-      SORT_ERRORS.SORT_TYPE_IS_NOT_VALIDED.exception,
+      SORT_ERRORS.SORT_TYPE_IS_NOT_VALID.exception,
     );
   }
 }

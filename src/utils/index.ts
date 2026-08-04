@@ -8,3 +8,4 @@ export * from "./get-server-user.utils";
 export * from "./validate-instance-by-class.utils";
 export * from "./enumeration.utils";
 export * from "./create-decorator.utils";
+export * from "./get-request.utils";

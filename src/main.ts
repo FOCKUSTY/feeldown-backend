@@ -3,8 +3,8 @@ import { env, PROGRAM_MODE } from "@/services";
 import { NestFactory } from "@nestjs/core";
 
 import { json, urlencoded } from "express";
-
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 import { Session } from "./app.session";
 import { AppModule } from "./app.module";
@@ -25,6 +25,7 @@ import { swagger } from "./swagger";
   app.use(cookieParser());
   app.use(urlencoded());
   app.use(json());
+  app.use(helmet());
 
   const setupDocumentation = await swagger(app);
   setupDocumentation();

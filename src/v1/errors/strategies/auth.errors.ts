@@ -2,7 +2,7 @@ import { HttpStatus } from "@nestjs/common";
 import { fockerorFactory } from "@/errors";
 
 export const AUTH_STRATEGIES_ERRORS = fockerorFactory.execute(
-  "AUTH STRATEGY EXСEPTION",
+  "AUTH STRATEGY EXCEPTION",
   {
     AUTH_NOT_FOUND: {
       message: "Authorization not found. (where:{key} with {value})",

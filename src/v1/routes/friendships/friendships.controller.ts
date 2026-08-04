@@ -1,5 +1,6 @@
 import type { ServerUser } from "@1/types";
 
+import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Injectable,
@@ -7,14 +8,11 @@ import {
   Param,
   Post,
   Body,
-  Put,
-  Patch,
   UseGuards,
   Query,
 } from "@nestjs/common";
-import { ApiOperation } from "@nestjs/swagger";
 
-import { Me, OnlyMe, UseQueryValidation } from "@/decorators";
+import { Me, Update, UseQueryValidation } from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -44,9 +42,8 @@ export class FriendshipsController {
 
   @ApiOperation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
-  @OnlyMe(Parameters.id, "id")
-  public getOne(@Param(Parameters.id) id: string) {
-    return this.service.getOne(id);
+  public getOne(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
+    return this.service.getOne(id, me.user.id);
   }
 
   @ApiOperation(OPERATIONS.POST)
@@ -56,23 +53,14 @@ export class FriendshipsController {
   }
 
   @ApiOperation(OPERATIONS.PUT)
-  @Put(ROUTES.PUT)
-  @OnlyMe(Parameters.id, "id")
-  public put(
-    @Param(Parameters.id) id: string,
-    @Query() data: FriendshipUpdateDto,
-  ) {
-    return this.service.put(id, data);
-  }
-
   @ApiOperation(OPERATIONS.PATCH)
-  @Patch(ROUTES.PATCH)
-  @OnlyMe(Parameters.id, "id")
-  public patch(
+  @Update([ROUTES.PUT, ROUTES.PATCH])
+  public update(
     @Param(Parameters.id) id: string,
     @Query() data: FriendshipUpdateDto,
+    @Me() me: ServerUser,
   ) {
-    return this.service.patch(id, data);
+    return this.service.update(id, data, me.user.id);
   }
 }
 
