@@ -4,7 +4,7 @@ import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 
 import { PrismaService } from "@/database";
-import { AUTH_GUARD_PROVIDERS } from "@1/guards";
+import { AUTH_GUARD_PROVIDERS, ONLY_ME_GUARD_PROVIDERS } from "@1/guards";
 import { SERVER_USER_PROVIDERS } from "@1/services";
 
 @Module({
@@ -14,6 +14,7 @@ import { SERVER_USER_PROVIDERS } from "@1/services";
     PrismaService,
     UsersService,
     ...AUTH_GUARD_PROVIDERS,
+    ...ONLY_ME_GUARD_PROVIDERS,
     ...SERVER_USER_PROVIDERS,
   ],
 })
