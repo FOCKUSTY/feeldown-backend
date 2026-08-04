@@ -39,7 +39,7 @@ export class PassportStrategy {
   ): unknown {
     this.validateMethod(method);
     this.validateStrategyByMethod(method);
-    return passport.authenticate(method)(req, res, next);
+    return passport.authenticate(method, { session: true })(req, res, next);
   }
 
   public callback(
@@ -52,7 +52,11 @@ export class PassportStrategy {
     ) => unknown,
   ): unknown {
     this.validateMethod(method);
-    return passport.authenticate(method, callback)(req, res, next);
+    return passport.authenticate(method, { session: true }, callback)(
+      req,
+      res,
+      next,
+    );
   }
 
   private validateMethod(method: string): true {

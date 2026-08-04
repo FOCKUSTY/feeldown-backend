@@ -1,15 +1,41 @@
-import { PassportStrategy } from "@nestjs/passport";
-import { Injectable } from "@nestjs/common";
-
-import { AuthStrategy } from "../strategies";
-import { STRATEGIES_SERVICE_ERRORS } from "../errors";
-import { getPassportEnv, LoggerService } from "@/services";
-import {
+import type {
   OAuth2ServiceProperties,
   PassportAuthTypes,
   Strategies,
   VerifyFunction,
 } from "@1/types";
+
+import { PassportStrategy } from "@nestjs/passport";
+import { Injectable } from "@nestjs/common";
+
+import { getPassportEnv, LoggerService } from "@/services";
+import { STRATEGIES_SERVICE_ERRORS } from "../errors";
+import { AuthStrategy } from "../strategies";
+
+import passport from "passport";
+import { prisma } from "@/database";
+
+passport.serializeUser((user, done) => {
+  done(null, user.auth.id);
+});
+
+passport.deserializeUser(async (id: string, done) => {
+  try {
+    const auth = await prisma.auth.findUnique({ where: { id } });
+    if (!auth) {
+      return done(new Error("Auth not found"), null);
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: auth.userId } });
+    if (!user) {
+      return done(new Error("User not found"), null);
+    }
+
+    done(null, { auth, user });
+  } catch (err) {
+    done(err, null);
+  }
+});
 
 const oauth2Services: Record<PassportAuthTypes, OAuth2ServiceProperties> = {
   google: {

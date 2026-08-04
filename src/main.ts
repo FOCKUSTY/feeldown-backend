@@ -5,6 +5,7 @@ import { NestFactory } from "@nestjs/core";
 import { json, urlencoded } from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import passport from "passport";
 
 import { Session } from "./app.session";
 import { AppModule } from "./app.module";
@@ -21,6 +22,8 @@ import { swagger } from "./swagger";
   });
 
   new Session(env.SESSION_SECRET, app).create();
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.use(cookieParser());
   app.use(urlencoded());

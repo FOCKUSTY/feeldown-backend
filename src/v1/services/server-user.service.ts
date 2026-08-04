@@ -60,7 +60,7 @@ export class ServerUserService {
   public async getByRequestOrThrow(
     request: Request,
   ): Promise<ServerUserEntity> {
-    const serverUser = request.user as ServerUserEntity | undefined;
+    const serverUser = request.user;
     if (serverUser) {
       const user = await validateInstanceByClassOrThrow<ServerUser>(
         serverUser,

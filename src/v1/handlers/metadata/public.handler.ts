@@ -8,6 +8,6 @@ import { Metadata } from "@/enums";
 export class PublicHandler extends AbstractMetadataHandler {
   public async execute(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.get<boolean>(context, Metadata.isPublic);
-    return !isPublic;
+    return isPublic;
   }
 }

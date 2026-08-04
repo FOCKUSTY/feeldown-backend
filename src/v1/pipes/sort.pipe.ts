@@ -18,12 +18,12 @@ abstract class BaseSortPipe<T extends string> implements PipeTransform {
   }
 
   protected validate(value: string) {
-    const valided = (this.available as readonly string[]).includes(value);
-    if (valided) {
+    const valid = (this.available as readonly string[]).includes(value);
+    if (valid) {
       return value as T;
     }
 
-    return this.exception;
+    throw this.exception;
   }
 }
 
