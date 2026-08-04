@@ -37,19 +37,22 @@ export class FriendshipsController {
     @UseQueryValidation(FriendshipFilterDto) query: FriendshipFilterDto,
     @Me() me: ServerUser,
   ) {
-    return this.service.get(query, me.user.id);
+    return this.service.getUsers(query, me.user.id);
   }
 
   @ApiOperation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   public getOne(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
-    return this.service.getOne(id, me.user.id);
+    return this.service.getOne({ id }, me.user.id);
   }
 
   @ApiOperation(OPERATIONS.POST)
   @Post(ROUTES.POST)
   public post(@Body() data: FriendshipCreateDto, @Me() me: ServerUser) {
-    return this.service.post(data, me.user.id);
+    return this.service.create({
+      senderId: me.user.id,
+      ...data,
+    });
   }
 
   @ApiOperation(OPERATIONS.PUT)
@@ -60,7 +63,7 @@ export class FriendshipsController {
     @Query() data: FriendshipUpdateDto,
     @Me() me: ServerUser,
   ) {
-    return this.service.update(id, data, me.user.id);
+    return this.service.update({ id }, data, me.user.id);
   }
 }
 

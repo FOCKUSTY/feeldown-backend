@@ -16,4 +16,4 @@ export const AVAILABLE_FRIENDSHIP_SORT_TYPES = [
   "status",
   "createdAt",
   "updatedAt",
-];
+] as const;

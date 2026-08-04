@@ -1,17 +1,42 @@
-import type { FriendRequest, FriendshipFilter } from "@1/types";
+import type { FriendshipUpdateDto, FriendshipCreateDto } from "./dto";
+import type { FriendshipFilter } from "@1/types";
 import type { User } from "@1/entities";
 
 import { Injectable } from "@nestjs/common";
+
+import { Compare, CompareAdditional, CrudService } from "@1/services";
+import { FriendRequestStatus } from "@1/types";
 import { PrismaService } from "@/database";
 
-import { FriendRequestStatus } from "@1/types";
-import { FriendshipUpdateDto, FriendshipCreateDto } from "./dto";
-
 @Injectable()
-export class FriendshipsService {
-  public constructor(private readonly prisma: PrismaService) {}
+export class FriendshipsService extends CrudService<
+  "FriendRequest",
+  Compare<
+    "FriendRequest",
+    {
+      getOne: { id: string };
+      create: FriendshipCreateDto & { senderId: string };
+      update: [{ id: string }, FriendshipUpdateDto];
+    }
+  >,
+  CompareAdditional<{
+    getOne: [string];
+    update: [string];
+  }>
+> {
+  public constructor(protected readonly prisma: PrismaService) {
+    super(prisma.friendRequest, {
+      where: {
+        getOne: (where, [userId]) => this.getWhere(where, userId),
+        update: ([where], [userId]) => this.getWhere(where, userId),
+      },
+    });
+  }
 
-  public async get(filter: FriendshipFilter, userId: string): Promise<User[]> {
+  public async getUsers(
+    filter: FriendshipFilter,
+    userId: string,
+  ): Promise<User[]> {
     const friendships = await this.prisma.friendRequest.findMany({
       where: {
         status: filter.status || FriendRequestStatus.ACCEPTED,
@@ -37,51 +62,9 @@ export class FriendshipsService {
     return friends;
   }
 
-  public async getOne(
-    id: string,
-    userId: string,
-  ): Promise<FriendRequest | null> {
-    return this.prisma.friendRequest.findUnique({
-      where: this.getWhere(id, userId),
-    });
-  }
-
-  public async post(
-    data: FriendshipCreateDto,
-    userId: string,
-  ): Promise<FriendRequest> {
-    return this.prisma.friendRequest.create({
-      data: {
-        receiverId: data.receiverId,
-        senderId: userId,
-      },
-    });
-  }
-
-  public async update(
-    id: string,
-    data: FriendshipUpdateDto,
-    userId: string,
-  ): Promise<FriendRequest> {
-    return this.prisma.friendRequest.update({
-      where: this.getWhere(id, userId),
-      data: {
-        status: data.status,
-      },
-    });
-  }
-
-  public async patch(
-    id: string,
-    data: FriendshipUpdateDto,
-    userId: string,
-  ): Promise<FriendRequest> {
-    return this.update(id, data, userId);
-  }
-
-  private getWhere(id: string, userId: string) {
+  private getWhere(where: { id: string }, userId: string) {
     return {
-      id,
+      ...where,
       OR: this.getOr(userId),
     };
   }

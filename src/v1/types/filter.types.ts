@@ -20,6 +20,7 @@ export type PostFilter = BaseFilter & {
 };
 
 export type NotificationWhere = {
+  recipientId: string;
   actorId?: string;
   referenceType?: string;
   referenceId?: string;

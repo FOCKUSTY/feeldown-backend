@@ -7,15 +7,13 @@ import {
   Param,
   Post,
   Body,
-  Put,
-  Patch,
   Delete,
   Query,
   ParseIntPipe,
 } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 
-import { Me, Public } from "@/decorators";
+import { Me, Public, Update } from "@/decorators";
 import { Parameters, Queries } from "@1/enums";
 import { SlugPipe, SortByPipe, SortOrderingPipe } from "@1/pipes";
 
@@ -59,35 +57,25 @@ export class PostsController {
   @ApiOperation(OPERATIONS.POST)
   @Post(ROUTES.POST)
   public post(@Body() data: PostCreateDto, @Me() me: ServerUser) {
-    return this.service.post(me.user, data);
+    return this.service.create({ ...data, userId: me.user.id });
   }
 
   @ApiOperation(OPERATIONS.PUT)
-  @Put(ROUTES.PUT)
-  public put(
-    @Param(Parameters.slug, new SlugPipe("postname"))
-    where: ResolvedPostnameSlug,
-    @Body() data: PostUpdateDto,
-    @Me() me: ServerUser,
-  ) {
-    return this.service.put({ where, data, user: me.user });
-  }
-
   @ApiOperation(OPERATIONS.PATCH)
-  @Patch(ROUTES.PATCH)
-  public patch(
+  @Update([ROUTES.PUT, ROUTES.PATCH])
+  public update(
     @Param(Parameters.slug, new SlugPipe("postname"))
     where: ResolvedPostnameSlug,
     @Body() data: PostUpdateDto,
     @Me() me: ServerUser,
   ) {
-    return this.service.patch({ where, data, user: me.user });
+    return this.service.update(where, data, me.user.id);
   }
 
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   public delete(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
-    return this.service.delete(id, me.user);
+    return this.service.delete({ id }, me.user.id);
   }
 }
 

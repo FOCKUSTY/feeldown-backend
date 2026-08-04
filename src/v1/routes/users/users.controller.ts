@@ -7,13 +7,11 @@ import {
   Get,
   Param,
   Body,
-  Put,
-  Patch,
   Delete,
   UseGuards,
 } from "@nestjs/common";
 
-import { Public, OnlyMe, UserFindOptions } from "@/decorators";
+import { Public, OnlyMe, UserFindOptions, Update } from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -38,30 +36,21 @@ export class UsersController {
   }
 
   @ApiOperation(OPERATIONS.PUT)
-  @Put(ROUTES.PUT)
+  @ApiOperation(OPERATIONS.PATCH)
+  @Update([ROUTES.PUT, ROUTES.PATCH])
   @OnlyMe(Parameters.slug, "slug")
   public put(
     @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
   ) {
-    return this.service.put(options, data);
-  }
-
-  @ApiOperation(OPERATIONS.PATCH)
-  @Patch(ROUTES.PATCH)
-  @OnlyMe(Parameters.slug, "slug")
-  public patch(
-    @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
-    @Body() data: UserUpdateDto,
-  ) {
-    return this.service.patch(options, data);
+    return this.service.update(options, data);
   }
 
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   @OnlyMe(Parameters.id, "id")
   public delete(@Param(Parameters.id) id: string) {
-    return this.service.delete(id);
+    return this.service.delete({ id });
   }
 }
 

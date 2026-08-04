@@ -1,75 +1,57 @@
-import type {
-  PostFilter,
-  ResolvedPostnameSlug,
-  UpdatePostData,
-} from "@1/types";
-import type { Post, User } from "@1/entities";
-import type { PostCreateDto } from "./dto";
+import type { PostCreateDto, PostUpdateDto } from "./dto";
+import type { PostFilter, ResolvedPostnameSlug } from "@1/types";
 
 import { Injectable } from "@nestjs/common";
+
+import { Compare, CompareAdditional, CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 import { POST_ERRORS } from "@1/errors";
 
 @Injectable()
-export class PostsService {
-  public constructor(private readonly prisma: PrismaService) {}
-
-  public async get(filter: PostFilter): Promise<Post[]> {
-    const posts = await this.prisma.post.findMany({
-      skip: filter.offset,
-      take: filter.limit,
-      orderBy: {
-        [filter.sortBy]: filter.sort,
-      },
-    });
-
-    return posts;
+export class PostsService extends CrudService<
+  "Post",
+  Compare<
+    "Post",
+    {
+      get: PostFilter;
+      getOne: ResolvedPostnameSlug;
+      create: PostCreateDto & { userId: string };
+      update: [ResolvedPostnameSlug, PostUpdateDto];
+    }
+  >,
+  CompareAdditional<{
+    update: [string];
+    delete: [string];
+  }>
+> {
+  public constructor(protected readonly prisma: PrismaService) {
+    super(prisma.post);
   }
 
-  public async getOne(where: ResolvedPostnameSlug): Promise<Post | null> {
-    const post = await this.prisma.post.findUnique({ where });
-    return post;
+  public async update(
+    where: ResolvedPostnameSlug,
+    data: PostUpdateDto,
+    userId: string,
+  ) {
+    await this.canUpdateOrThrow(where, userId);
+    return this.prisma.post.update({ where, data });
   }
 
-  public async post(user: User, data: PostCreateDto): Promise<Post> {
-    const post = await this.prisma.post.create({
-      data: {
-        userId: user.id,
-        ...data,
-      },
-    });
-
-    return post;
-  }
-
-  public async put({ data, user, where }: UpdatePostData): Promise<Post> {
-    this.canUpdateOrThrow(where, user);
-
-    const post = await this.prisma.post.update({ where, data });
-    return post;
-  }
-
-  public async patch({ data, user, where }: UpdatePostData): Promise<Post> {
-    return this.put({ where, user, data });
-  }
-
-  public async delete(id: string, user: User) {
-    const where = { id };
-    this.canUpdateOrThrow(where, user);
-
+  public async delete(where: { id: string }, userId: string) {
+    await this.canUpdateOrThrow(where, userId);
     return this.prisma.post.delete({ where });
   }
 
   private async canUpdateOrThrow(
     where: ResolvedPostnameSlug,
-    user: User,
+    userId: string,
   ): Promise<boolean> {
     const post = await this.prisma.post.findUnique({ where });
     if (!post) {
       throw POST_ERRORS.POST_NOT_FOUND.exception;
     }
 
-    if (post.userId !== user.id) {
+    if (post.userId !== userId) {
       throw POST_ERRORS.NOT_ACCEPTABLE.exception;
     }
 

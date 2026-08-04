@@ -33,20 +33,23 @@ export class NotificationsController {
     @UseQueryValidation(NotificationFilterDto) query: NotificationFilterDto,
     @Me() me: ServerUser,
   ) {
-    return this.service.get(query, me.user);
+    return this.service.get({
+      recipientId: me.user.id,
+      ...query,
+    });
   }
 
   @ApiOperation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   @OnlyMe(Parameters.id, "id")
   public getOne(@Parameter(Parameters.id) id: string) {
-    return this.service.getOne(id);
+    return this.service.getOne({ id });
   }
 
   @ApiOperation(OPERATIONS.GET_COUNT)
   @Get(ROUTES.GET_COUNT)
   public getCount(@Me() me: ServerUser) {
-    return this.service.unreadCount(me.user);
+    return this.service.unreadCount(me.user.id);
   }
 
   @ApiOperation(OPERATIONS.PATCH)
@@ -59,10 +62,10 @@ export class NotificationsController {
     @Me() me: ServerUser,
   ) {
     if (action === "read") {
-      return this.service.read(id, me.user);
+      return this.service.read(id, me.user.id);
     }
 
-    return this.service.unread(id, me.user);
+    return this.service.unread(id, me.user.id);
   }
 
   @ApiOperation(OPERATIONS.PATCH_MANY)
@@ -75,10 +78,16 @@ export class NotificationsController {
     @Me() me: ServerUser,
   ) {
     if (action === "read") {
-      return this.service.readMany(where, me.user);
+      return this.service.readMany({
+        recipientId: me.user.id,
+        ...where,
+      });
     }
 
-    return this.service.unreadMany(where, me.user);
+    return this.service.unreadMany({
+      recipientId: me.user.id,
+      ...where,
+    });
   }
 }
 
