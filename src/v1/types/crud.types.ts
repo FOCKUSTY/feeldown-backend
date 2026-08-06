@@ -11,9 +11,17 @@ export type Args<
 > = Prisma.Args<Model<ModelName>, T>;
 export type Model<ModelName extends PrismaModel> =
   PrismaService[Uncapitalize<ModelName>];
-export type Where<ModelName extends PrismaModel> = Args<
+export type Where<ModelName extends PrismaModel, O extends Operation> = Args<
+  ModelName,
+  O
+>["where"];
+export type WhereUnique<ModelName extends PrismaModel> = Args<
   ModelName,
   "findUnique"
+>["where"];
+export type WhereMany<ModelName extends PrismaModel> = Args<
+  ModelName,
+  "findMany"
 >["where"];
 export type CreateInput<ModelName extends PrismaModel> = Args<
   ModelName,
@@ -24,23 +32,28 @@ export type UpdateInput<ModelName extends PrismaModel> = Args<
   "update"
 >["data"];
 export type Entity<ModelName extends PrismaModel> = NonNullable<
-  Prisma.Result<Model<ModelName>, { where: Where<ModelName> }, "findUnique">
+  Prisma.Result<
+    Model<ModelName>,
+    { where: WhereUnique<ModelName> },
+    "findUnique"
+  >
 >;
 export type Result<
   ModelName extends PrismaModel,
   Op extends Operation,
-> = Prisma.Result<Model<ModelName>, { where: Where<ModelName> }, Op>;
+> = Prisma.Result<Model<ModelName>, { where: WhereUnique<ModelName> }, Op>;
 
 export type CrudFilter<ModelName extends Prisma.ModelName> = BaseFilter & {
   sortBy: keyof Entity<ModelName>;
+  where?: WhereMany<ModelName>;
 };
 
 export type FunctionsParameters<ModelName extends PrismaModel> = {
   get: CrudFilter<ModelName>;
-  getOne: Where<ModelName>;
+  getOne: WhereUnique<ModelName>;
   create: CreateInput<ModelName>;
-  update: [Where<ModelName>, UpdateInput<ModelName>];
-  delete: Where<ModelName>;
+  update: [Where<ModelName, "update">, UpdateInput<ModelName>];
+  delete: Where<ModelName, "delete">;
 };
 
 export type FunctionsReturn<ModelName extends PrismaModel> = {
@@ -83,7 +96,7 @@ export type Modificator<
 > = Partial<{
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  [P in keyof Types]: (...input: [Types[P], Add[P]]) => Where<ModelName>;
+  [P in keyof Types]: (...input: [Types[P], Add[P]]) => WhereUnique<ModelName>;
 }>;
 
 export type Modificators<

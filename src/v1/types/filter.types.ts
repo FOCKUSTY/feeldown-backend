@@ -7,6 +7,8 @@ import type {
   AVAILABLE_FRIENDSHIP_SORT_TYPES,
   AVAILABLE_POST_SORT_TYPES,
   AVAILABLE_SORT_ORDERING,
+  AVAILABLE_FOLLOW_SORT_TYPES,
+  AVAILABLE_BLOCK_SORT_TYPES,
 } from "@1/constants";
 
 export type BaseFilter = {
@@ -36,4 +38,12 @@ export type NotificationFilter = BaseFilter &
 export type FriendshipFilter = BaseFilter & {
   status?: FriendRequestStatus;
   sortBy: (typeof AVAILABLE_FRIENDSHIP_SORT_TYPES)[number];
+};
+
+export type FollowFilter = BaseFilter & {
+  sortBy: (typeof AVAILABLE_FOLLOW_SORT_TYPES)[number];
+};
+
+export type BlockFilter = BaseFilter & {
+  sortBy: (typeof AVAILABLE_BLOCK_SORT_TYPES)[number];
 };

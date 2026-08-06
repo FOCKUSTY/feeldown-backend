@@ -3,3 +3,5 @@ export * from "./users";
 export * from "./posts";
 export * from "./notifications";
 export * from "./friendships";
+export * from "./follow";
+export * from "./block";

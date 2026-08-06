@@ -27,8 +27,8 @@ export abstract class CrudService<
     filter: Types["get"],
     ...additional: Add["get"]
   ): Promise<Ret["get"]> {
-    const { sort, sortBy, limit, offset, ...where } = filter;
-    const whereClause = this.buildWhere(where);
+    const { sort, sortBy, limit, offset, where } = filter;
+    const whereClause = this.buildWhere({ where });
     const modifiedWhere =
       this.modificators.where?.get?.(filter, additional) || whereClause;
 

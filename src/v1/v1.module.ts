@@ -27,6 +27,8 @@ import {
   PostsModule,
   NotificationsModule,
   FriendshipsModule,
+  BlockModule,
+  FollowModule,
 } from "./routes";
 
 export const v1Modules = [
@@ -35,6 +37,8 @@ export const v1Modules = [
   PostsModule,
   NotificationsModule,
   FriendshipsModule,
+  FollowModule,
+  BlockModule,
 ];
 export const v1Swagger = createSwaggerConfig({
   version: "v1",
