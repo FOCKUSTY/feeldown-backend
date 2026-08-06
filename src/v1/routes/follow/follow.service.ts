@@ -3,12 +3,15 @@ import type { Follow } from "@1/types";
 
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 
-import { CrudService } from "@1/services";
+import { CrudService, RelationshipService } from "@1/services";
 import { PrismaService } from "@/database";
 
 @Injectable()
 export class FollowService extends CrudService<"Follow"> {
-  public constructor(protected readonly prisma: PrismaService) {
+  public constructor(
+    protected readonly prisma: PrismaService,
+    private readonly relationships: RelationshipService,
+  ) {
     super(prisma.follow);
   }
 
@@ -23,6 +26,8 @@ export class FollowService extends CrudService<"Follow"> {
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    await this.relationships.isBlockedOrThrow(followeeId, followerId);
 
     const existing = await this.prisma.follow.findUnique({
       where: {
@@ -51,5 +56,16 @@ export class FollowService extends CrudService<"Follow"> {
     }
 
     return this.prisma.follow.delete({ where });
+  }
+
+  public async deleteByUsers(userA: string, userB: string) {
+    return this.prisma.follow.deleteMany({
+      where: {
+        OR: [
+          { followerId: userA, followeeId: userB },
+          { followerId: userB, followeeId: userA },
+        ],
+      },
+    });
   }
 }

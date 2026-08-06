@@ -6,9 +6,16 @@ import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 
+import { FollowService } from "../follow";
+import { FriendshipsService } from "../friendships";
+
 @Injectable()
 export class BlockService extends CrudService<"Block"> {
-  public constructor(protected readonly prisma: PrismaService) {
+  public constructor(
+    protected readonly prisma: PrismaService,
+    private readonly followService: FollowService,
+    private readonly friendshipsService: FriendshipsService,
+  ) {
     super(prisma.block);
   }
 
@@ -36,6 +43,9 @@ export class BlockService extends CrudService<"Block"> {
     if (existing) {
       throw new HttpException("Block already exists", HttpStatus.CONFLICT);
     }
+
+    await this.followService.deleteByUsers(blockerId, blockedId);
+    await this.friendshipsService.deleteByUsers(blockerId, blockedId);
 
     return this.prisma.block.create({ data });
   }

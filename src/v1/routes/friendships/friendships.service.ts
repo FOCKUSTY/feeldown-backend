@@ -66,6 +66,16 @@ export class FriendshipsService extends CrudService<
     return friends;
   }
 
+  public async deleteByUsers(userA: string, userB: string) {
+    return this.prisma.friendRequest.deleteMany({
+      where: {
+        OR: [
+          { senderId: userA, receiverId: userB },
+          { senderId: userB, receiverId: userA },
+        ],
+      },
+    });
+  }
   private getWhere(where: { id: string }, userId: string) {
     return {
       ...where,
