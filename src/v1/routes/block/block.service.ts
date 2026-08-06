@@ -1,13 +1,14 @@
 import type { BlockCreateDto } from "./dto";
 import type { Block } from "@1/types";
 
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 
 import { FollowService } from "../follow";
 import { FriendshipsService } from "../friendships";
+import { BLOCK_ERRORS } from "@1/errors";
 
 @Injectable()
 export class BlockService extends CrudService<"Block"> {
@@ -25,10 +26,7 @@ export class BlockService extends CrudService<"Block"> {
     const { blockerId, blockedId } = data;
 
     if (blockerId === blockedId) {
-      throw new HttpException(
-        "You cannot block yourself",
-        HttpStatus.BAD_REQUEST,
-      );
+      throw BLOCK_ERRORS.CANNOT_BLOCK_SELF.exception;
     }
 
     const existing = await this.prisma.block.findUnique({
@@ -41,7 +39,7 @@ export class BlockService extends CrudService<"Block"> {
     });
 
     if (existing) {
-      throw new HttpException("Block already exists", HttpStatus.CONFLICT);
+      throw BLOCK_ERRORS.ALREADY_BLOCKED.exception;
     }
 
     await this.followService.deleteByUsers(blockerId, blockedId);
@@ -53,11 +51,11 @@ export class BlockService extends CrudService<"Block"> {
   public async delete(where: { id: string }, userId: string): Promise<Block> {
     const block = await this.prisma.block.findUnique({ where });
     if (!block) {
-      throw new HttpException("Block not found", HttpStatus.NOT_FOUND);
+      throw BLOCK_ERRORS.BLOCK_NOT_FOUND.exception;
     }
 
     if (block.blockerId !== userId) {
-      throw new HttpException("You are not the blocker", HttpStatus.FORBIDDEN);
+      throw BLOCK_ERRORS.NOT_BLOCKER.exception;
     }
 
     return this.prisma.block.delete({ where });

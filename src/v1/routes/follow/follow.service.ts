@@ -1,10 +1,11 @@
 import type { FollowCreateDto } from "./dto";
 import type { Follow } from "@1/types";
 
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { CrudService, RelationshipService } from "@1/services";
 import { PrismaService } from "@/database";
+import { FOLLOW_ERRORS } from "@1/errors";
 
 @Injectable()
 export class FollowService extends CrudService<"Follow"> {
@@ -21,10 +22,7 @@ export class FollowService extends CrudService<"Follow"> {
     const { followerId, followeeId } = data;
 
     if (followerId === followeeId) {
-      throw new HttpException(
-        "You cannot follow yourself",
-        HttpStatus.BAD_REQUEST,
-      );
+      throw FOLLOW_ERRORS.CANNOT_FOLLOW_SELF.exception;
     }
 
     await this.relationships.isBlockedOrThrow(followeeId, followerId);
@@ -39,7 +37,7 @@ export class FollowService extends CrudService<"Follow"> {
     });
 
     if (existing) {
-      throw new HttpException("Follow already exists", HttpStatus.CONFLICT);
+      throw FOLLOW_ERRORS.ALREADY_FOLLOWING.execute();
     }
 
     return this.prisma.follow.create({ data });
@@ -48,11 +46,11 @@ export class FollowService extends CrudService<"Follow"> {
   public async delete(where: { id: string }, userId: string): Promise<Follow> {
     const follow = await this.prisma.follow.findUnique({ where });
     if (!follow) {
-      throw new HttpException("Follow not found", HttpStatus.NOT_FOUND);
+      throw FOLLOW_ERRORS.FOLLOW_NOT_FOUND.execute();
     }
 
     if (follow.followerId !== userId) {
-      throw new HttpException("You are not the follower", HttpStatus.FORBIDDEN);
+      throw FOLLOW_ERRORS.NOT_FOLLOWER.execute();
     }
 
     return this.prisma.follow.delete({ where });
