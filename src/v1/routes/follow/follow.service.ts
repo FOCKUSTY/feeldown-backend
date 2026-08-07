@@ -1,9 +1,9 @@
 import type { FollowCreateDto } from "./dto";
-import type { Follow } from "@1/types";
+import type { Follow, FollowFilter, User } from "@1/types";
 
 import { Injectable } from "@nestjs/common";
 
-import { CrudService, RelationshipService } from "@1/services";
+import { CrudService, RelationshipsValidatorService } from "@1/services";
 import { PrismaService } from "@/database";
 import { FOLLOW_ERRORS } from "@1/errors";
 
@@ -11,9 +11,23 @@ import { FOLLOW_ERRORS } from "@1/errors";
 export class FollowService extends CrudService<"Follow"> {
   public constructor(
     protected readonly prisma: PrismaService,
-    private readonly relationships: RelationshipService,
+    private readonly relationships: RelationshipsValidatorService,
   ) {
     super(prisma.follow);
+  }
+
+  public async getFollowers(
+    filter: FollowFilter,
+    userId: string,
+  ): Promise<User[]> {
+    return this.getRelated(filter, { followeeId: userId }, "follower");
+  }
+
+  public async getFollowing(
+    filter: FollowFilter,
+    userId: string,
+  ): Promise<User[]> {
+    return this.getRelated(filter, { followerId: userId }, "followee");
   }
 
   public async create(

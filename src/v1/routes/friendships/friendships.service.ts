@@ -41,29 +41,16 @@ export class FriendshipsService extends CrudService<
     filter: FriendshipFilter,
     userId: string,
   ): Promise<User[]> {
-    const friendships = await this.prisma.friendRequest.findMany({
+    return this.getRelatedOr({
+      filter: filter,
       where: {
         status: filter.status || FriendRequestStatus.ACCEPTED,
-        OR: this.getOr(userId),
       },
-      orderBy: {
-        [filter.sortBy]: filter.sort,
-      },
-      include: {
-        receiver: true,
-        sender: true,
-      },
+      or: ["receiverId", "senderId"],
+      value: userId,
+      selectFields: ["sender", "receiver"],
+      findBy: "id",
     });
-
-    const friends = friendships.map(({ receiver, sender }) => {
-      if (sender.id === userId) {
-        return sender;
-      }
-
-      return receiver;
-    });
-
-    return friends;
   }
 
   public async deleteByUsers(userA: string, userB: string) {
@@ -76,6 +63,7 @@ export class FriendshipsService extends CrudService<
       },
     });
   }
+
   private getWhere(where: { id: string }, userId: string) {
     return {
       ...where,

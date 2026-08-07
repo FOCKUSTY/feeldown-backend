@@ -11,9 +11,8 @@ export class UsersService extends CrudService<
   "User",
   FunctionsParameters<"User"> & {
     getOne: ResolvedUsernameSlug;
-    updateWhere: ResolvedUsernameSlug;
     delete: { id: string };
-    updateData: UserUpdateDto;
+    update: [ResolvedUsernameSlug, UserUpdateDto];
   }
 > {
   public constructor(protected readonly prisma: PrismaService) {

@@ -38,6 +38,24 @@ export class FollowController {
     });
   }
 
+  @ApiOperation(OPERATIONS.GET_FOLLOWERS)
+  @Get(ROUTES.GET_FOLLOWERS)
+  public getFollowers(
+    @UseQueryValidation(FollowFilterDto) query: FollowFilterDto,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.getFollowers(query, me.user.id);
+  }
+
+  @ApiOperation(OPERATIONS.GET_FOLLOWING)
+  @Get(ROUTES.GET_FOLLOWING)
+  public getFollowing(
+    @UseQueryValidation(FollowFilterDto) query: FollowFilterDto,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.getFollowing(query, me.user.id);
+  }
+
   @ApiOperation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   public getOne(@Param("id") id: string) {

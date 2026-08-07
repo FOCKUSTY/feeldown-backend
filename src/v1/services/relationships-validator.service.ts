@@ -3,7 +3,7 @@ import { PrismaService } from "@/database";
 import { RELATIONSHIPS_ERRORS } from "@1/errors";
 
 @Injectable()
-export class RelationshipService {
+export class RelationshipsValidatorService {
   public constructor(private readonly prisma: PrismaService) {}
 
   public async isBlockedOrThrow(userA: string, userB: string) {

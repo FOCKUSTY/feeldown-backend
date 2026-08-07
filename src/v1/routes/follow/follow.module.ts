@@ -5,14 +5,17 @@ import { FollowService } from "./follow.service";
 
 import { PrismaService } from "@/database";
 import { AUTH_GUARD_PROVIDERS, ONLY_ME_GUARD_PROVIDERS } from "@1/guards";
-import { RelationshipService, SERVER_USER_PROVIDERS } from "@1/services";
+import {
+  RelationshipsValidatorService,
+  SERVER_USER_PROVIDERS,
+} from "@1/services";
 
 @Module({
   controllers: [FollowController],
   providers: [
     FollowService,
     PrismaService,
-    RelationshipService,
+    RelationshipsValidatorService,
     ...AUTH_GUARD_PROVIDERS,
     ...ONLY_ME_GUARD_PROVIDERS,
     ...SERVER_USER_PROVIDERS,

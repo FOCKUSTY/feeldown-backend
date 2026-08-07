@@ -38,18 +38,34 @@ export type Entity<ModelName extends PrismaModel> = NonNullable<
     "findUnique"
   >
 >;
+export type Select<ModelName extends PrismaModel> = NonNullable<
+  Args<ModelName, "findMany">["select"]
+>;
+export type Include<ModelName extends PrismaModel> = NonNullable<
+  Args<ModelName, "findMany">["include"]
+>;
+export type OmitType<ModelName extends PrismaModel> = NonNullable<
+  Args<ModelName, "findMany">["omit"]
+>;
+export type BooleanEntity<ModelName extends PrismaModel> = Record<
+  keyof Entity<ModelName>,
+  boolean
+>;
 export type Result<
   ModelName extends PrismaModel,
   Op extends Operation,
 > = Prisma.Result<Model<ModelName>, { where: WhereUnique<ModelName> }, Op>;
 
-export type CrudFilter<ModelName extends Prisma.ModelName> = BaseFilter & {
+export type FindMany<ModelName extends PrismaModel> = BaseFilter & {
   sortBy: keyof Entity<ModelName>;
   where?: WhereMany<ModelName>;
+  select?: Select<ModelName>;
+  include?: Include<ModelName>;
+  omit?: OmitType<ModelName>;
 };
 
 export type FunctionsParameters<ModelName extends PrismaModel> = {
-  get: CrudFilter<ModelName>;
+  get: FindMany<ModelName>;
   getOne: WhereUnique<ModelName>;
   create: CreateInput<ModelName>;
   update: [Where<ModelName, "update">, UpdateInput<ModelName>];
