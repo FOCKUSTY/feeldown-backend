@@ -217,12 +217,18 @@ enum NotificationType {
   FRIEND_ACCEPT
 }
 
+enum ReferenceType {
+  POST
+  COMMENT
+  FRIENDS
+}
+
 model Notification {
   id            String           @id @default(uuid())
   recipientId   String
   actorId       String?
   type          NotificationType
-  referenceType String
+  referenceType ReferenceType
   referenceId   String
   readed        Boolean          @default(false)
   createdAt     DateTime         @default(now())

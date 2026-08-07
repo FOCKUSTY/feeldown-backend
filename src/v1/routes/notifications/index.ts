@@ -6,7 +6,7 @@ export * from "./notifications.controller";
 export * from "./notifications.service";
 export * from "./notifications.module";
 
-export * from "./notifications.emitter";
+export * from "./emitters";
 
 export * as NOTIFICATIONS_ROUTES from "./notifications.routes";
 

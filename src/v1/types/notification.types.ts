@@ -1,9 +1,12 @@
-import type { NotificationType } from "@/database/generated/client";
+import type {
+  NotificationType,
+  ReferenceType,
+} from "@/database/generated/client";
 
 export type NotificationCreateType = {
   actorId?: string;
   recipientId: string;
-  referenceType: string;
+  referenceType: ReferenceType;
   referenceId: string;
   type: NotificationType;
 };

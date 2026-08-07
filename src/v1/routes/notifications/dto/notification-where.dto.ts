@@ -1,9 +1,9 @@
 import type { NotificationWhere } from "@1/types";
-import { NotificationType } from "@1/types";
+import { NotificationType, ReferenceType } from "@1/types";
 
 import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
-import { Type } from "class-transformer";
 import { IsOptional, IsString, IsBoolean, IsEnum } from "class-validator";
+import { Type } from "class-transformer";
 
 @ApiSchema({
   name: "NotificationWhereSchema",
@@ -21,12 +21,12 @@ export class NotificationWhereDto implements Omit<
   actorId?: string;
 
   @ApiPropertyOptional({
-    description: "Тип сущности (например, Post, Comment)",
-    example: "Post",
+    enum: ReferenceType,
+    description: "Тип сущности (например, POST, COMMENT)",
+    example: ReferenceType.POST,
   })
-  @IsOptional()
-  @IsString()
-  referenceType?: string;
+  @IsEnum(ReferenceType)
+  referenceType: ReferenceType;
 
   @ApiPropertyOptional({
     description: "ID сущности, к которой относится уведомление",

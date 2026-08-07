@@ -1,7 +1,9 @@
 import type {
   FriendRequestStatus,
   NotificationType,
+  ReferenceType,
 } from "@/database/generated/client";
+
 import type {
   AVAILABLE_NOTIFICATION_SORT_TYPES,
   AVAILABLE_FRIENDSHIP_SORT_TYPES,
@@ -24,7 +26,7 @@ export type PostFilter = BaseFilter & {
 export type NotificationWhere = {
   recipientId: string;
   actorId?: string;
-  referenceType?: string;
+  referenceType?: ReferenceType;
   referenceId?: string;
   readed?: boolean;
   type?: NotificationType;
