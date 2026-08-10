@@ -74,6 +74,9 @@ export class FollowController {
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   public delete(@Param("id") id: string, @Me() me: ServerUser) {
-    return this.service.delete({ id }, me.user.id);
+    return this.service.delete({
+      where: { id },
+      meUserId: me.user.id,
+    });
   }
 }

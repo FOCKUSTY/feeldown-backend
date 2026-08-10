@@ -2,6 +2,7 @@ import type { Notification, NotificationCreateType } from "@1/types";
 import { Injectable } from "@nestjs/common";
 
 import { NOTIFICATIONS_ERRORS } from "@1/errors";
+
 import { PrismaService } from "@/database";
 
 @Injectable()

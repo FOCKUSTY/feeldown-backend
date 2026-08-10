@@ -6,6 +6,7 @@ import { FriendshipsService } from "./friendships.service";
 import { AUTH_GUARD_PROVIDERS } from "@1/guards";
 import { SERVER_USER_PROVIDERS } from "@1/services";
 import { PrismaService } from "@/database";
+import { FriendshipNotificationsEmitter } from "../notifications";
 
 @Module({
   imports: [],
@@ -13,6 +14,7 @@ import { PrismaService } from "@/database";
   providers: [
     FriendshipsService,
     PrismaService,
+    FriendshipNotificationsEmitter,
     ...AUTH_GUARD_PROVIDERS,
     ...SERVER_USER_PROVIDERS,
   ],

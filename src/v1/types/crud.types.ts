@@ -1,124 +1,180 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { Operation } from "@prisma/client/runtime/client";
 import type { Prisma } from "@/database/generated/client";
 
-import type { PrismaService } from "@/database";
 import type { BaseFilter } from "./filter.types";
+import type { PrismaService } from "@/database";
+import type { Prettify } from "@/types";
 
 export type PrismaModel = Prisma.ModelName;
-export type Args<
+export type CrudArgs<
   ModelName extends PrismaModel,
   T extends Operation,
-> = Prisma.Args<Model<ModelName>, T>;
-export type Model<ModelName extends PrismaModel> =
+> = Prisma.Args<CrudModel<ModelName>, T>;
+
+export type CrudModel<ModelName extends PrismaModel> =
   PrismaService[Uncapitalize<ModelName>];
-export type Where<ModelName extends PrismaModel, O extends Operation> = Args<
-  ModelName,
-  O
->["where"];
-export type WhereUnique<ModelName extends PrismaModel> = Args<
+
+export type CrudWhere<
+  ModelName extends PrismaModel,
+  O extends Operation,
+> = CrudArgs<ModelName, O>["where"];
+
+export type CrudWhereUnique<ModelName extends PrismaModel> = CrudArgs<
   ModelName,
   "findUnique"
 >["where"];
-export type WhereMany<ModelName extends PrismaModel> = Args<
+
+export type CrudWhereMany<ModelName extends PrismaModel> = CrudArgs<
   ModelName,
   "findMany"
 >["where"];
-export type CreateInput<ModelName extends PrismaModel> = Args<
+
+export type CrudCreateInput<ModelName extends PrismaModel> = CrudArgs<
   ModelName,
   "create"
 >["data"];
-export type UpdateInput<ModelName extends PrismaModel> = Args<
+
+export type CrudUpdateInput<ModelName extends PrismaModel> = CrudArgs<
   ModelName,
   "update"
 >["data"];
-export type Entity<ModelName extends PrismaModel> = NonNullable<
+
+export type CrudEntity<ModelName extends PrismaModel> = NonNullable<
   Prisma.Result<
-    Model<ModelName>,
-    { where: WhereUnique<ModelName> },
+    CrudModel<ModelName>,
+    { where: CrudWhereUnique<ModelName> },
     "findUnique"
   >
 >;
-export type Select<ModelName extends PrismaModel> = NonNullable<
-  Args<ModelName, "findMany">["select"]
+export type CrudSelect<ModelName extends PrismaModel> = NonNullable<
+  CrudArgs<ModelName, "findMany">["select"]
 >;
-export type Include<ModelName extends PrismaModel> = NonNullable<
-  Args<ModelName, "findMany">["include"]
+export type CrudInclude<ModelName extends PrismaModel> = NonNullable<
+  CrudArgs<ModelName, "findMany">["include"]
 >;
-export type OmitType<ModelName extends PrismaModel> = NonNullable<
-  Args<ModelName, "findMany">["omit"]
+export type CrudOmit<ModelName extends PrismaModel> = NonNullable<
+  CrudArgs<ModelName, "findMany">["omit"]
 >;
-export type BooleanEntity<ModelName extends PrismaModel> = Record<
-  keyof Entity<ModelName>,
-  boolean
->;
-export type Result<
-  ModelName extends PrismaModel,
-  Op extends Operation,
-> = Prisma.Result<Model<ModelName>, { where: WhereUnique<ModelName> }, Op>;
 
-export type FindMany<ModelName extends PrismaModel> = BaseFilter & {
-  sortBy: keyof Entity<ModelName>;
-  where?: WhereMany<ModelName>;
-  select?: Select<ModelName>;
-  include?: Include<ModelName>;
-  omit?: OmitType<ModelName>;
+export type CrudFindMany<ModelName extends PrismaModel> = BaseFilter & {
+  sortBy: keyof CrudEntity<ModelName>;
+  where?: CrudWhereMany<ModelName>;
+  select?: CrudSelect<ModelName>;
+  include?: CrudInclude<ModelName>;
+  omit?: CrudOmit<ModelName>;
 };
 
-export type FunctionsParameters<ModelName extends PrismaModel> = {
-  get: FindMany<ModelName>;
-  getOne: WhereUnique<ModelName>;
-  create: CreateInput<ModelName>;
-  update: [Where<ModelName, "update">, UpdateInput<ModelName>];
-  delete: Where<ModelName, "delete">;
-};
+export type CrudMethod<Parameters extends unknown[] = any[], Return = any> = (
+  ...parameters: Parameters
+) => Return;
 
-export type FunctionsReturn<ModelName extends PrismaModel> = {
-  get: Entity<ModelName>[];
-  getOne: Entity<ModelName> | null;
-  create: Result<ModelName, "create">;
-  update: Result<ModelName, "update">;
-  delete: Result<ModelName, "delete">;
-};
-
-export type AdditionalFunctionsParameters<T = never> = Record<
-  keyof FunctionsParameters<PrismaModel>,
-  T[]
+export type CrudMethods = Record<
+  "get" | "getOne" | "create" | "update" | "delete",
+  CrudMethod
 >;
 
-export type CompareParameters<
-  ModelName extends PrismaModel,
-  Types extends Partial<FunctionsParameters<ModelName>>,
-> = {
-  [P in keyof Types]-?: NonNullable<Types[P]>;
-} & Omit<FunctionsParameters<ModelName>, keyof Types>;
+export type CrudMethodsParameters<ModelName extends PrismaModel> = {
+  get: CrudFindMany<ModelName>;
+  getOne: CrudWhereUnique<ModelName>;
+  create: CrudCreateInput<ModelName>;
+  update: {
+    where: CrudWhere<ModelName, "update">;
+    data: CrudUpdateInput<ModelName>;
+  };
+  delete: CrudWhere<ModelName, "delete">;
+};
 
-export type CompareAdditional<
-  Add extends Partial<AdditionalFunctionsParameters<unknown>>,
-> = {
-  [P in keyof Add]-?: NonNullable<Add[P]>;
-} & Omit<AdditionalFunctionsParameters, keyof Add>;
+export type UnknownCrudMethodParameters = Record<keyof CrudMethods, unknown>;
 
-export type CompareReturn<
-  ModelName extends PrismaModel,
-  Ret extends Partial<FunctionsReturn<ModelName>>,
+export type CrudCompare<
+  Types extends Record<string, unknown>,
+  Parameters extends Record<string, unknown>,
 > = {
-  [P in keyof Ret]-?: NonNullable<Ret[P]>;
-} & Omit<FunctionsReturn<ModelName>, keyof Ret>;
+  [Key in keyof Parameters]-?: NonNullable<Parameters[Key]>;
+} & Omit<Types, keyof Parameters>;
 
-export type Modificator<
+export type CrudWhereModificator<
   ModelName extends PrismaModel,
-  Types extends FunctionsParameters<ModelName>,
-  Add extends AdditionalFunctionsParameters<unknown>,
+  Parameters extends Partial<UnknownCrudMethodParameters>,
+  Types extends CrudCompare<CrudMethodsParameters<ModelName>, Parameters>,
+> = Omit<
+  {
+    [Key in keyof Parameters]: (
+      input: Parameters[Key],
+    ) => CrudWhereUnique<ModelName>;
+  } & {
+    [Key in Exclude<keyof Types, keyof Parameters>]?: (
+      input: Types[Key],
+    ) => CrudWhereUnique<ModelName>;
+  },
+  "create"
+>;
+
+export type CrudEventsParameters<
+  Types extends UnknownCrudMethodParameters,
+  Method extends keyof Types,
+> = {
+  before: { base: Types[Method] };
+  after: { base: Types[Method]; result: any };
+};
+
+export type CrudEventsParametersWithoutSomeKey<
+  Types extends UnknownCrudMethodParameters,
+  Method extends keyof Types,
+  ToExclude extends string,
+  Events extends CrudEventsParameters<Types, Method> = CrudEventsParameters<
+    Types,
+    Method
+  >,
+> = {
+  [Key in keyof Events]: Omit<Events[Key], ToExclude>;
+};
+
+export type CrudEvents<Types extends UnknownCrudMethodParameters> = Partial<
+  Prettify<
+    {
+      //@ts-ignore
+      [Key in keyof Types as `after${Capitalize<Key>}`]: (
+        input: CrudEventsParameters<Types, Key>["after"],
+      ) => Promise<void>;
+    } & {
+      //@ts-ignore
+      [Key in keyof Types as `before${Capitalize<Key>}`]: (
+        input: CrudEventsParameters<Types, Key>["before"],
+      ) => Promise<void>;
+    }
+  >
+>;
+
+export type CrudModificators<
+  ModelName extends PrismaModel,
+  Parameters extends Partial<UnknownCrudMethodParameters>,
+  Types extends CrudCompare<CrudMethodsParameters<ModelName>, Parameters>,
+> = {
+  where: CrudWhereModificator<ModelName, Parameters, Types>;
+};
+
+export type CrudValidatorsOrThrow<
+  Types extends Partial<UnknownCrudMethodParameters>,
 > = Partial<{
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  [P in keyof Types]: (...input: [Types[P], Add[P]]) => WhereUnique<ModelName>;
+  //@ts-ignore
+  [Key in keyof Types as `validate${Capitalize<Key>}`]: (
+    input: Types[Key],
+  ) => Promise<true>;
 }>;
 
-export type Modificators<
-  ModelName extends PrismaModel,
-  Types extends FunctionsParameters<ModelName>,
-  Add extends AdditionalFunctionsParameters<unknown>,
-> = Partial<{
-  where: Modificator<ModelName, Types, Add>;
-}>;
+export type CrudValidator<Methods extends keyof CrudMethods> = {
+  [Key in Methods as `validate${Capitalize<Key>}`]: (
+    input: any,
+  ) => Promise<true>;
+};
+
+export type CrudEventsMethods =
+  `${"after" | "before"}${Capitalize<keyof CrudMethods>}`;
+
+export type CrudListener<Methods extends CrudEventsMethods> = {
+  [Key in Methods]: (input: any) => Promise<void>;
+};
+
+export type { Operation, Prisma };

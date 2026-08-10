@@ -1,66 +1,33 @@
-import type { PostCreateDto, PostUpdateDto } from "./dto";
-import type {
-  CompareParameters,
-  CompareAdditional,
-  PostFilter,
-  ResolvedPostnameSlug,
-} from "@1/types";
+import type { PostsDeleteInput, PostsUpdateInput } from "@1/types";
 
 import { Injectable } from "@nestjs/common";
 
 import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
-import { POST_ERRORS } from "@1/errors";
+
+import { PostsValidator } from "./posts.validator";
 
 @Injectable()
 export class PostsService extends CrudService<
   "Post",
-  CompareParameters<
-    "Post",
-    {
-      get: PostFilter;
-      getOne: ResolvedPostnameSlug;
-      create: PostCreateDto & { userId: string };
-      update: [ResolvedPostnameSlug, PostUpdateDto];
-    }
-  >,
-  CompareAdditional<{
-    update: [string];
-    delete: [string];
-  }>
+  {
+    update: PostsUpdateInput;
+    delete: PostsDeleteInput;
+  }
 > {
-  public constructor(protected readonly prisma: PrismaService) {
-    super(prisma.post);
-  }
-
-  public async update(
-    where: ResolvedPostnameSlug,
-    data: PostUpdateDto,
-    userId: string,
+  public constructor(
+    protected readonly prisma: PrismaService,
+    validator: PostsValidator,
   ) {
-    await this.canUpdateOrThrow(where, userId);
-    return this.prisma.post.update({ where, data });
-  }
-
-  public async delete(where: { id: string }, userId: string) {
-    await this.canUpdateOrThrow(where, userId);
-    return this.prisma.post.delete({ where });
-  }
-
-  private async canUpdateOrThrow(
-    where: ResolvedPostnameSlug,
-    userId: string,
-  ): Promise<boolean> {
-    const post = await this.prisma.post.findUnique({ where });
-    if (!post) {
-      throw POST_ERRORS.POST_NOT_FOUND.exception;
-    }
-
-    if (post.userId !== userId) {
-      throw POST_ERRORS.NOT_ACCEPTABLE.exception;
-    }
-
-    return true;
+    super(prisma.post, {
+      modificators: {
+        where: {
+          update: (data) => data.where,
+          delete: (data) => data.where,
+        },
+      },
+      validatorsOrThrow: validator,
+    });
   }
 }
 

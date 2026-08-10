@@ -1,115 +1,125 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import type {
-  AdditionalFunctionsParameters,
-  Entity,
-  FindMany,
-  FunctionsParameters,
-  Model,
-  Modificators,
+  CrudCompare,
+  CrudMethods,
+  CrudMethodsParameters,
+  CrudEvents,
+  CrudFindMany,
+  CrudModel,
+  CrudModificators,
   Prisma,
   PrismaModel,
-  Select,
-  Where,
-  WhereMany,
+  CrudSelect,
+  UnknownCrudMethodParameters,
+  CrudValidatorsOrThrow,
+  CrudEventsParametersWithoutSomeKey,
 } from "@1/types";
-import { isRFC3339 } from "class-validator";
-
-export type NN<T> = T & {};
 
 export abstract class CrudService<
   ModelName extends PrismaModel,
-  Types extends FunctionsParameters<ModelName> = FunctionsParameters<ModelName>,
-  Add extends AdditionalFunctionsParameters<unknown> =
-    AdditionalFunctionsParameters,
-> {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  Parameters extends Partial<UnknownCrudMethodParameters> = {},
+  Types extends CrudCompare<CrudMethodsParameters<ModelName>, Parameters> =
+    CrudCompare<CrudMethodsParameters<ModelName>, Parameters>,
+> implements CrudMethods {
+  public static readonly DEFAULT_DEPENDENCIES = {
+    modificators: {
+      where: {},
+    },
+    events: {},
+  };
+
+  protected readonly _modificators: CrudModificators<
+    ModelName,
+    Parameters,
+    Types
+  >;
+  protected readonly _events: CrudEvents<Types>;
+  protected readonly _validators: CrudValidatorsOrThrow<Types>;
+
   public constructor(
-    protected readonly model: Model<ModelName>,
-    protected readonly modificators: Modificators<ModelName, Types, Add> = {},
-  ) {}
+    protected readonly model: CrudModel<ModelName>,
+    dependencies: {
+      modificators: CrudModificators<ModelName, Parameters, Types>;
+      validatorsOrThrow?: CrudValidatorsOrThrow<Types>;
+      events?: CrudEvents<Types>;
+    },
+  ) {
+    this._modificators = dependencies?.modificators;
+    this._validators = dependencies?.validatorsOrThrow ?? {};
+    this._events = dependencies?.events ?? {};
+  }
 
   public async get<
     F extends Types["get"],
-    R = Prisma.Result<Model<ModelName>, F, "findMany">,
-  >(filter: F, ...additional: Add["get"]): Promise<R> {
+    R = Prisma.Result<CrudModel<ModelName>, F, "findMany">,
+  >(filter: F): Promise<R> {
+    await this.validateOrThrow("get", filter);
     const { sort, sortBy, limit, offset, where, include, omit, select } =
       filter;
     const whereClause = this.buildWhere({ where });
     const modifiedWhere =
-      this.modificators.where?.get?.(filter, additional) || whereClause;
+      this._modificators.where?.get?.(filter) || whereClause;
 
-    //@ts-ignore
-    return this.model.findMany({
-      where: modifiedWhere,
-      orderBy: { [sortBy]: sort },
-      skip: offset,
-      take: limit,
-      include,
-      omit,
-      select,
+    const execute = () =>
+      //@ts-ignore
+      this.model.findMany({
+        where: modifiedWhere,
+        orderBy: { [sortBy]: sort },
+        skip: offset,
+        take: limit,
+        include,
+        omit,
+        select,
+      });
+
+    return this.applyEvents({
+      method: "get",
+      data: {
+        before: { base: filter },
+        after: { base: filter },
+      },
+      execute,
     });
   }
 
   public async getOne<
     W extends Types["getOne"],
-    R = Prisma.Result<Model<ModelName>, { where: W }, "findUnique">,
-  >(where: W, ...additional: Add["getOne"]): Promise<R | null> {
-    const modifiedWhere =
-      this.modificators.where?.getOne?.(where, additional) || where;
+    R = Prisma.Result<CrudModel<ModelName>, W, "findMany">,
+  >(where: W): Promise<R | null> {
+    await this.validateOrThrow("getOne", where);
+    const modifiedWhere = this._modificators.where?.getOne?.(where) || where;
+
     //@ts-ignore
-    return this.model.findUnique({ where: modifiedWhere });
+    const execute = () => this.model.findUnique({ where: modifiedWhere });
+    return this.applyEvents({
+      method: "getOne",
+      data: {
+        before: { base: where },
+        after: { base: where },
+      },
+      execute,
+    });
   }
 
-  public async create(
-    data: Types["create"],
-    ..._: Add["create"]
-  ): Promise<
-    Prisma.Result<Model<ModelName>, { data: Types["create"] }, "create">
-  > {
-    //@ts-ignore
-    return this.model.create({ data });
-  }
-
-  public async update(
-    where: Types["update"][0],
-    data: Types["update"][1],
-    ...additional: Add["update"]
-  ): Promise<
-    Prisma.Result<
-      Model<ModelName>,
-      { where: Types["update"][0]; data: Types["update"][1] },
-      "update"
-    >
-  > {
-    const modifiedWhere =
-      this.modificators.where?.update?.([where, data], additional) || where;
-    //@ts-ignore
-    return this.model.update({ where: modifiedWhere, data });
-  }
-
-  public async delete(
-    where: Types["delete"],
-    ...additional: Add["delete"]
-  ): Promise<
-    Prisma.Result<Model<ModelName>, { where: Types["delete"] }, "delete">
-  > {
-    const modifiedWhere =
-      this.modificators.where?.delete?.(where, additional) || where;
-    //@ts-ignore
-    return this.model.delete({ where: modifiedWhere });
-  }
-
-  protected async getRelated<
+  public async getRelated<
     F extends Omit<Types["get"], "where">,
-    W extends NN<Types["get"]["where"]>,
-    S extends keyof Select<ModelName>,
+    W extends NonNullable<Types["get"]["where"]>,
+    S extends keyof CrudSelect<ModelName>,
     R = Prisma.Result<
-      Model<ModelName>,
+      CrudModel<ModelName>,
       F & { where: W; select: Record<S, true> },
       "findUnique"
     >,
-  >(filter: Omit<Types["get"], "where">, where: W, selectField: S): Promise<R> {
+  >({
+    filter,
+    where,
+    selectField,
+  }: {
+    filter: F;
+    where: W;
+    selectField: S;
+  }): Promise<R> {
     const items = await this.get({
       ...filter,
       where,
@@ -122,57 +132,139 @@ export abstract class CrudService<
     return items.map((item) => item[selectField]);
   }
 
-  protected async getRelatedOr<
-    F extends Omit<Types["get"], "where">,
-    W extends NN<Types["get"]["where"]>,
-    Or extends keyof Entity<ModelName>,
-    OrValue extends Entity<ModelName>[Or],
-    S extends keyof Select<ModelName>,
-    //@ts-ignore
-    FB extends keyof NN<
-      Prisma.Result<Model<ModelName>, { select: Record<S, true> }, "findUnique">
-    >[S],
-    //@ts-ignore
-    R = NN<
-      Prisma.Result<
-        Model<ModelName>,
-        F & { where: W & { OR: Record<Or, OrValue> }; select: Record<S, true> },
-        "findUnique"
-      >
-    >[S][],
-  >(data: {
-    filter: F;
-    where: W;
-    or: Or[];
-    value: OrValue;
-    selectFields: S[];
-    findBy: FB;
-  }): Promise<R> {
-    const items = await this.get({
-      ...data.filter,
-      where: {
-        ...data.where,
-        OR: data.or.map((k) => ({ [k]: data.value })),
-      },
-      select: Object.fromEntries(data.selectFields.map((s) => [s, true])),
-    });
+  public async create(
+    data: Types["create"],
+  ): Promise<
+    Prisma.Result<CrudModel<ModelName>, { data: Types["create"] }, "create">
+  > {
+    await this.validateOrThrow("create", data);
 
     //@ts-ignore
-    return items.map((item) => {
-      const field = data.selectFields.filter(
-        //@ts-ignore
-        (field) => item[field][data.findBy] === data.or.value,
-      );
-      //@ts-ignore
-      return item[field];
+    const execute = () => this.model.create({ data });
+    return this.applyEvents({
+      method: "create",
+      data: {
+        after: { base: data },
+        before: { base: data },
+      },
+      execute,
     });
   }
 
-  private buildWhere(
-    where: Omit<FindMany<ModelName>, "sort" | "sortBy" | "limit" | "offset">,
+  public async update(
+    update: Types["update"],
+  ): Promise<Prisma.Result<CrudModel<ModelName>, Types["update"], "update">> {
+    await this.validateOrThrow("update", update);
+    const modifiedWhere =
+      this._modificators.where?.update?.(update) || update.where;
+
+    const execute = () =>
+      //@ts-ignore
+      this.model.update({
+        where: modifiedWhere,
+        data: update.data,
+      });
+
+    return this.applyEvents({
+      method: "update",
+      data: {
+        after: { base: update },
+        before: { base: update },
+      },
+      execute,
+    });
+  }
+
+  public async delete(
+    where: Types["delete"],
+  ): Promise<
+    Prisma.Result<CrudModel<ModelName>, { where: Types["delete"] }, "delete">
+  > {
+    await this.validateOrThrow("delete", where);
+    const modifiedWhere = this._modificators.where?.delete?.(where) || where;
+
+    //@ts-ignore
+    const execute = () => this.model.delete({ where: modifiedWhere });
+    return this.applyEvents({
+      method: "delete",
+      data: {
+        after: { base: where },
+        before: { base: where },
+      },
+      execute,
+    });
+  }
+
+  protected async validateOrThrow<Method extends keyof CrudMethods>(
+    method: Method,
+    data: Types[Method],
+  ) {
+    const key = this.getValidatorKey(method);
+    //@ts-ignore
+    const validated = await this._validators?.[key]?.(data);
+    if (validated === undefined) {
+      return true;
+    }
+
+    if (!validated) {
+      throw new Error("500");
+    }
+
+    return validated;
+  }
+
+  protected buildWhere(
+    where: Omit<
+      CrudFindMany<ModelName>,
+      "sort" | "sortBy" | "limit" | "offset"
+    >,
   ) {
     return Object.fromEntries(
       Object.entries(where).filter(([, value]) => value !== undefined),
     );
+  }
+
+  private async applyEvents<Method extends keyof CrudMethods, Result>({
+    data,
+    method,
+    execute,
+  }: {
+    method: Method;
+    data: CrudEventsParametersWithoutSomeKey<Types, Method, "result">;
+    execute: () => Promise<Result>;
+  }) {
+    const keys = this.getEventsKey(method);
+
+    //@ts-ignore
+    await this._events?.[keys.before]?.(data.before);
+
+    const result = await execute();
+
+    //@ts-ignore
+    await this._events?.[keys.after]?.({
+      ...data.after,
+      result,
+    });
+
+    return result;
+  }
+
+  private getEventsKey<Method extends keyof CrudMethods>(method: Method) {
+    const before = this.setPrefixAndCapitalize("before", method);
+    const after = this.setPrefixAndCapitalize("after", method);
+    return { before, after };
+  }
+
+  private getValidatorKey<Method extends keyof CrudMethods>(method: Method) {
+    return this.setPrefixAndCapitalize("validate", method);
+  }
+
+  private setPrefixAndCapitalize<Prefix extends string, Value extends string>(
+    prefix: Prefix,
+    value: Value,
+  ) {
+    const [first, ...other] = value;
+    const output = prefix + first.toUpperCase() + other;
+    return output as `${Prefix}${Capitalize<Value>}`;
   }
 }

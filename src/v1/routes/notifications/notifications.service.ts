@@ -1,10 +1,6 @@
 import type { BatchPayload } from "@/database/generated/internal/prismaNamespace";
 import type { Notification } from "@1/entities";
-import type {
-  CompareParameters,
-  NotificationFilter,
-  NotificationWhere,
-} from "@1/types";
+import type { NotificationWhere } from "@1/types";
 
 import { Injectable } from "@nestjs/common";
 
@@ -12,18 +8,9 @@ import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 
 @Injectable()
-export class NotificationsService extends CrudService<
-  "Notification",
-  CompareParameters<
-    "Notification",
-    {
-      get: NotificationFilter;
-      getOne: { id: string };
-    }
-  >
-> {
+export class NotificationsService extends CrudService<"Notification"> {
   public constructor(protected readonly prisma: PrismaService) {
-    super(prisma.notification);
+    super(prisma.notification, CrudService.DEFAULT_DEPENDENCIES);
   }
 
   public async unreadCount(userId: string): Promise<number> {

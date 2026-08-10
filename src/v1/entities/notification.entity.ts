@@ -1,4 +1,4 @@
-import type { Notification } from "@1/types";
+import { Notification, ReferenceType } from "@1/types";
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
 import { NotificationType } from "@1/types";
@@ -34,11 +34,12 @@ export class NotificationEntity implements Notification {
   type: NotificationType;
 
   @ApiProperty({
-    example: "Post",
+    enum: ReferenceType,
+    example: ReferenceType.POST,
     description:
-      "Тип сущности, к которой относится уведомление (например, Post, Comment)",
+      "Тип сущности, к которой относится уведомление (например, POST, COMMENT)",
   })
-  referenceType: string;
+  referenceType: ReferenceType;
 
   @ApiProperty({
     example: "b85227f2-6852-4242-a169-a0d9c0c88e31",

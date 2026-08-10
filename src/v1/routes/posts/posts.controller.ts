@@ -69,13 +69,20 @@ export class PostsController {
     @Body() data: PostUpdateDto,
     @Me() me: ServerUser,
   ) {
-    return this.service.update(where, data, me.user.id);
+    return this.service.update({
+      where,
+      data,
+      meUserId: me.user.id,
+    });
   }
 
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   public delete(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
-    return this.service.delete({ id }, me.user.id);
+    return this.service.delete({
+      where: { id },
+      meUserId: me.user.id,
+    });
   }
 }
 

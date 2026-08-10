@@ -43,7 +43,10 @@ export class FriendshipsController {
   @ApiOperation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   public getOne(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
-    return this.service.getOne({ id }, me.user.id);
+    return this.service.getOne({
+      where: { id },
+      meUserId: me.user.id,
+    });
   }
 
   @ApiOperation(OPERATIONS.POST)
@@ -63,7 +66,11 @@ export class FriendshipsController {
     @Query() data: FriendshipUpdateDto,
     @Me() me: ServerUser,
   ) {
-    return this.service.update({ id }, data, me.user.id);
+    return this.service.update({
+      where: { id },
+      data,
+      meUserId: me.user.id,
+    });
   }
 }
 

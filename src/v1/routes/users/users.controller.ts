@@ -43,7 +43,10 @@ export class UsersController {
     @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
   ) {
-    return this.service.update(options, data);
+    return this.service.update({
+      where: options,
+      data,
+    });
   }
 
   @ApiOperation(OPERATIONS.DELETE)
