@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 
 import { FollowController } from "./follow.controller";
+import { FollowValidator } from "./follow.validator";
 import { FollowService } from "./follow.service";
 
 import { PrismaService } from "@/database";
@@ -13,9 +14,10 @@ import {
 @Module({
   controllers: [FollowController],
   providers: [
+    RelationshipsValidatorService,
+    FollowValidator,
     FollowService,
     PrismaService,
-    RelationshipsValidatorService,
     ...AUTH_GUARD_PROVIDERS,
     ...ONLY_ME_GUARD_PROVIDERS,
     ...SERVER_USER_PROVIDERS,

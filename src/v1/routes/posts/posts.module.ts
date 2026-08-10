@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 
 import { PostsController } from "./posts.controller";
+import { PostsValidator } from "./posts.validator";
 import { PostsService } from "./posts.service";
 
 import { PrismaService } from "@/database";
@@ -11,6 +12,7 @@ import { SERVER_USER_PROVIDERS } from "@1/services";
   imports: [],
   controllers: [PostsController],
   providers: [
+    PostsValidator,
     PostsService,
     PrismaService,
     ...AUTH_GUARD_PROVIDERS,
