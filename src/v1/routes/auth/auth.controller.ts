@@ -21,7 +21,6 @@ import { CreateUserDto, CreateUserCredentials } from "./dto/create-user.dto";
 
 import { Parameters } from "@1/enums";
 import { PassportStrategy } from "@1/strategies";
-import { HashService } from "@1/services";
 import { Me, NoCache, UseHeadersValidation } from "@/decorators";
 
 import { ApiOperation } from "@nestjs/swagger";
@@ -31,7 +30,6 @@ import { ApiOperation } from "@nestjs/swagger";
 export class AuthController {
   public constructor(
     private readonly service: AuthService,
-    private readonly hash: HashService,
     private readonly passport: PassportStrategy,
   ) {}
 

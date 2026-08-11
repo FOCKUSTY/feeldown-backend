@@ -1,14 +1,18 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UsersService } from "./users.service";
 import { PrismaService } from "@/database";
+import { v4 as uuid } from "uuid";
 
 describe("UsersService", () => {
   let service: UsersService;
 
+  const userId = uuid();
+  const badUserId = uuid();
+
   const mockUser = {
-    id: "user-1",
-    username: "test",
-    nickname: "Test",
+    id: userId,
+    username: "fockusty",
+    nickname: "FOCKUSTY",
     description: "",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -43,31 +47,31 @@ describe("UsersService", () => {
     it("should return a user by id", async () => {
       mockPrisma.user.findUnique.mockResolvedValue(mockUser);
 
-      const result = await service.getOne({ id: "user-1" });
+      const result = await service.getOne({ id: userId });
       expect(result).toEqual(mockUser);
       expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
-        where: { id: "user-1" },
+        where: { id: userId },
       });
     });
 
     it("should throw if user not found", async () => {
       mockPrisma.user.findUnique.mockResolvedValue(null);
-      await expect(service.getOne({ id: "not-exist" })).rejects.toThrow();
+      await expect(service.getOne({ id: badUserId })).rejects.toThrow();
     });
   });
 
   describe("update", () => {
     it("should update user", async () => {
-      const updateData = { nickname: "NewName" };
+      const updateData = { nickname: "FOCKUSTYx" };
       mockPrisma.user.update.mockResolvedValue({ ...mockUser, ...updateData });
 
       const result = await service.update({
-        where: { id: "user-1" },
+        where: { id: userId },
         data: updateData,
       });
-      expect(result.nickname).toBe("NewName");
+      expect(result.nickname).toBe("FOCKUSTYx");
       expect(mockPrisma.user.update).toHaveBeenCalledWith({
-        where: { id: "user-1" },
+        where: { id: userId },
         data: updateData,
       });
     });

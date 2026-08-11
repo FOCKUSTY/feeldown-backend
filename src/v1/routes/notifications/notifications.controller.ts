@@ -1,5 +1,6 @@
 import type { ServerUser } from "@1/types";
 
+import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Injectable,
@@ -8,17 +9,19 @@ import {
   UseGuards,
   Query,
   ParseEnumPipe,
+  Patch,
+  Put,
 } from "@nestjs/common";
-import { ApiOperation } from "@nestjs/swagger";
 
-import { Me, OnlyMe, Public, Update, UseQueryValidation } from "@/decorators";
-import { Parameters } from "@1/enums";
+import { Me, OnlyMe, Public, UseQueryValidation } from "@/decorators";
+import { ACTIONS } from "@1/constants";
 import { AuthGuard } from "@1/guards";
+import { Parameters } from "@1/enums";
+
+import { NotificationWhereDto, NotificationFilterDto } from "./dto";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./notifications.routes";
 import { NotificationsService as Service } from "./notifications.service";
-import { NotificationWhereDto, NotificationFilterDto } from "./dto";
-import { ACTIONS } from "@1/constants/notification.constants";
 
 @Injectable()
 @Controller(ROUTE)
@@ -53,8 +56,9 @@ export class NotificationsController {
   }
 
   @ApiOperation(OPERATIONS.PATCH)
+  @Patch(ROUTES.PATCH)
   @ApiOperation(OPERATIONS.PUT)
-  @Update([ROUTES.PATCH, ROUTES.PUT])
+  @Put(ROUTES.PUT)
   public read(
     @Parameter(Parameters.id) id: string,
     @Query("action", new ParseEnumPipe(ACTIONS))
@@ -69,8 +73,9 @@ export class NotificationsController {
   }
 
   @ApiOperation(OPERATIONS.PATCH_MANY)
+  @Patch(ROUTES.PATCH_MANY)
   @ApiOperation(OPERATIONS.PUT_MANY)
-  @Update([ROUTES.PATCH_MANY, ROUTES.PUT_MANY])
+  @Put(ROUTES.PUT_MANY)
   public readMany(
     @UseQueryValidation(NotificationWhereDto) where: NotificationWhereDto,
     @Query("action", new ParseEnumPipe(ACTIONS))

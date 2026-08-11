@@ -5,7 +5,7 @@ import {
   Controller,
   Injectable,
   Get,
-  Param,
+  Param as Parameter,
   Body,
   Delete,
   UseGuards,
@@ -39,21 +39,10 @@ export class UsersController {
 
   @ApiOperation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
-  @OnlyMe(Parameters.slug, "slug")
-  public put(
-    @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
-    @Body() data: UserUpdateDto,
-  ) {
-    return this.service.update({
-      where: options,
-      data,
-    });
-  }
-
   @ApiOperation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
   @OnlyMe(Parameters.slug, "slug")
-  public patch(
+  public update(
     @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
   ) {
@@ -66,7 +55,7 @@ export class UsersController {
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   @OnlyMe(Parameters.id, "id")
-  public delete(@Param(Parameters.id) id: string) {
+  public delete(@Parameter(Parameters.id) id: string) {
     return this.service.delete({ id });
   }
 }

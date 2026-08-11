@@ -10,9 +10,11 @@ import {
   Body,
   UseGuards,
   Query,
+  Put,
+  Patch,
 } from "@nestjs/common";
 
-import { Me, Update, UseQueryValidation } from "@/decorators";
+import { Me, UseQueryValidation } from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -59,8 +61,9 @@ export class FriendshipsController {
   }
 
   @ApiOperation(OPERATIONS.PUT)
+  @Put(ROUTES.PUT)
   @ApiOperation(OPERATIONS.PATCH)
-  @Update([ROUTES.PUT, ROUTES.PATCH])
+  @Patch(ROUTES.PATCH)
   public update(
     @Param(Parameters.id) id: string,
     @Query() data: FriendshipUpdateDto,
