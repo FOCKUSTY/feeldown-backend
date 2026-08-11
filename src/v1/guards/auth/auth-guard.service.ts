@@ -8,13 +8,14 @@ import { HashService, ServerUserService } from "@1/services";
 export class AuthGuardService {
   public constructor(private readonly serverUserService: ServerUserService) {}
 
-  public async validateRequest(request: Request) {
+  public async execute(request: Request) {
     const { authId, userId, token } =
       HashService.resolveHeaderAuthorizationOrThrow(
         request.headers.authorization,
       );
 
-    await this.serverUserService.getOrThrow(authId, userId, token);
+    const user = await this.serverUserService.getOrThrow(authId, userId, token);
+    this.serverUserService.setInRequest(request, user);
 
     return true;
   }

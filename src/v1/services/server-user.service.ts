@@ -74,11 +74,19 @@ export class ServerUserService {
     const { authorization } = request.headers;
     const { authId, userId, token } =
       this.hash.resolveHeaderAuthorizationOrThrow(authorization);
-    return this.getOrThrow(authId, userId, token);
+
+    const user = await this.getOrThrow(authId, userId, token);
+    this.setInRequest(request, user);
+
+    return user;
   }
 
   public getByRequest(request: Request): Promise<ServerUser | null> {
     return tryCatchNullPromise(() => this.getByRequestOrThrow(request));
+  }
+
+  public setInRequest(request: Request, user: ServerUser) {
+    request.user = user;
   }
 }
 

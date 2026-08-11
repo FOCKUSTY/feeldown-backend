@@ -31,7 +31,7 @@ export class UserEntity implements User {
   nickname: string;
 
   @ApiProperty()
-  updatedAt: Date | null;
+  updatedAt: Date;
 
   @ApiProperty()
   createdAt: Date;
