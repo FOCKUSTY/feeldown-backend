@@ -1,46 +1,42 @@
 import type { Post } from "@1/types";
-import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
-@ApiSchema({
-  name: "PostSchema",
-})
+import { ApiProperty, ApiSchema } from "@nestjs/swagger";
+import { IsUUID, IsString, Length, IsDate } from "class-validator";
+import { Type } from "class-transformer";
+
+@ApiSchema({ name: "PostSchema" })
 export class PostEntity implements Post {
-  @ApiProperty({
-    example: "b85227f2-6852-4242-a169-a0d9c0c88e31",
-  })
+  @ApiProperty()
+  @IsUUID()
   id: string;
 
-  @ApiProperty({
-    example: "6fbafe80-81a0-4ea8-9571-a8efa56fc66e",
-  })
+  @ApiProperty()
+  @IsUUID()
   userId: string;
 
-  @ApiProperty({
-    minLength: 1,
-    maxLength: 256,
-    example: "Самый крутой пост",
-  })
+  @ApiProperty()
+  @IsString()
+  @Length(1, 256)
   title: string;
 
-  @ApiProperty({
-    minLength: 1,
-    maxLength: 256,
-    example: "best_post",
-  })
+  @ApiProperty()
+  @IsString()
+  @Length(1, 256)
   postname: string;
 
-  @ApiProperty({
-    minLength: 1,
-    maxLength: 8192,
-    example:
-      "IyDQn9C+0YfQtdC80YMgYmFzZTY0Pw0KDQrQmtCw0LbQtdGC0YHRjyDQvtC9INGD0LbQuNC80LDQtdGCINCx0L7Qu9GM0YjQvtC5INC+0LHRitC10Lwg0YLQtdC60YHRgtCwLCDQstC+0YIg0L/QviDRjdGC0L7QvNGD",
-  })
+  @ApiProperty()
+  @IsString()
+  @Length(1, 8192)
   content: string;
 
   @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
   createdAt: Date;
 
   @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
   updatedAt: Date;
 }
 

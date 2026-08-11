@@ -3,6 +3,9 @@ import type { Profile } from "passport";
 
 import { ApiProperty, ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 
+import { IsDate, IsOptional, IsString, IsUUID } from "class-validator";
+import { Type } from "class-transformer";
+
 export interface PasswordCredentials {
   username: string;
   password: string;
@@ -38,29 +41,38 @@ export interface SignUpData {
   service?: ServiceMeta & PassportCredentials;
 }
 
-@ApiSchema({
-  name: "AuthSchema",
-})
+@ApiSchema({ name: "AuthSchema" })
 export class AuthEntity implements Auth {
   @ApiProperty()
+  @IsUUID()
   id: string;
 
   @ApiProperty()
+  @IsUUID()
   userId: string;
 
   @ApiProperty()
+  @IsString()
   token: string;
 
   @ApiPropertyOptional({ type: "string", nullable: true })
+  @IsOptional()
+  @IsString()
   email: string | null;
 
   @ApiPropertyOptional({ type: "string", nullable: true })
+  @IsOptional()
+  @IsString()
   password: string | null;
 
   @ApiProperty()
+  @Type(() => Date)
+  @IsDate()
   createdAt: Date;
 
   @ApiProperty()
+  @Type(() => Date)
+  @IsDate()
   updatedAt: Date;
 }
 

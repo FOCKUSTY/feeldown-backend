@@ -37,7 +37,7 @@ export class OnlyMeGuard implements CanActivate {
       return true;
     }
 
-    const validated = this.service.execute(metadata, request);
+    const validated = await this.service.execute(metadata, request);
     return validated;
   }
 }

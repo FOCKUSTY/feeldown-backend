@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { ClassConstructor, plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { tryCatchNullPromise } from "./try-catch.utils";
+import { tryCatchNullAsync } from "./try-catch.utils";
 
 type BaseInstance = {
   [key: string]: unknown;
@@ -31,7 +31,7 @@ export const validateInstanceByClass = async <T extends BaseInstance>(
   plain: T,
   classConstructor: ClassConstructor<T>,
 ): Promise<T | null> => {
-  return tryCatchNullPromise(() =>
+  return tryCatchNullAsync(() =>
     validateInstanceByClassOrThrow(plain, classConstructor),
   );
 };

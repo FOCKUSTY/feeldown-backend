@@ -3,7 +3,6 @@ import type { Request } from "express";
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 
 import { PrismaService } from "@/database";
-import { tryCatchThrow } from "@/utils";
 
 import {
   MetadataHandler,
@@ -29,12 +28,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    const validate = () => {
-      return this.service.execute(request);
-    };
-
-    const validated = tryCatchThrow(validate);
-    return validated;
+    return this.service.execute(request);
   }
 
   private async validateMetadata(context: ExecutionContext) {

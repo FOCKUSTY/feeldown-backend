@@ -7,4 +7,9 @@ export const CRUD_ERRORS = fockerorFactory.execute("CRUD EXCEPTION", {
     description: "Валидатор вернул false вместо выброса ошибки",
     status: HttpStatus.INTERNAL_SERVER_ERROR,
   },
+  NOT_FOUND: {
+    message: "Resource not found",
+    description: "Запрашиваемый ресурс не был найден",
+    status: HttpStatus.NOT_FOUND,
+  },
 });

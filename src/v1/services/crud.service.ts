@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { CRUD_ERRORS } from "@1/errors";
 import type {
   CrudCompare,
   CrudMethods,
@@ -15,6 +14,8 @@ import type {
   CrudValidatorsOrThrow,
   CrudEventsParametersWithoutSomeKey,
 } from "@1/types";
+
+import { CRUD_ERRORS } from "@1/errors";
 
 export abstract class CrudService<
   ModelName extends PrismaModel,
@@ -87,13 +88,13 @@ export abstract class CrudService<
   public async getOne<
     W extends Types["getOne"],
     R = Prisma.Result<CrudModel<ModelName>, W, "findMany">,
-  >(where: W): Promise<R | null> {
+  >(where: W): Promise<R> {
     await this.validateOrThrow("getOne", where);
     const modifiedWhere = this._modificators.where?.getOne?.(where) || where;
 
     //@ts-ignore
     const execute = () => this.model.findUnique({ where: modifiedWhere });
-    return this.applyEvents({
+    const result = await this.applyEvents({
       method: "getOne",
       data: {
         before: { base: where },
@@ -101,6 +102,13 @@ export abstract class CrudService<
       },
       execute,
     });
+
+    if (!result) {
+      throw CRUD_ERRORS.NOT_FOUND.exception;
+    }
+
+    //@ts-ignore
+    return result;
   }
 
   public async getRelated<

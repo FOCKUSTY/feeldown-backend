@@ -1,39 +1,38 @@
 import type { User } from "@1/types";
-import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
-@ApiSchema({
-  name: "UserSchema",
-})
+import { ApiProperty, ApiSchema } from "@nestjs/swagger";
+import { IsDate, IsString, IsUUID, Length } from "class-validator";
+import { Type } from "class-transformer";
+
+@ApiSchema({ name: "UserSchema" })
 export class UserEntity implements User {
-  @ApiProperty({
-    example: "cdb0fa08-cefb-46d0-b75c-a0cb8c57c024",
-  })
+  @ApiProperty()
+  @IsUUID()
   id: string;
 
-  @ApiProperty({
-    minLength: 1,
-    maxLength: 1024,
-  })
+  @ApiProperty()
+  @IsString()
+  @Length(0, 1024)
   description: string;
 
-  @ApiProperty({
-    minLength: 3,
-    maxLength: 32,
-    example: "fockusty",
-  })
+  @ApiProperty()
+  @IsString()
+  @Length(3, 32)
   username: string;
 
-  @ApiProperty({
-    minLength: 1,
-    maxLength: 128,
-    example: "FOCKUSTY",
-  })
+  @ApiProperty()
+  @IsString()
+  @Length(1, 128)
   nickname: string;
 
   @ApiProperty()
+  @Type(() => Date)
+  @IsDate()
   updatedAt: Date;
 
   @ApiProperty()
+  @Type(() => Date)
+  @IsDate()
   createdAt: Date;
 }
 

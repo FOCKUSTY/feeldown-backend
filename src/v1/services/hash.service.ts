@@ -100,7 +100,7 @@ export class HashService {
   public constructor() {}
 
   public async execute(data: string) {
-    return hash(data, env.HASH_KEY);
+    return hash(data, env.SALT_ROUNDS);
   }
 
   public resolveTokenOrThrow(token: string): ParsedToken {

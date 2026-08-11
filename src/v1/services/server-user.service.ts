@@ -3,7 +3,7 @@ import type { Request } from "express";
 
 import { Injectable } from "@nestjs/common";
 
-import { tryCatchNullPromise, validateInstanceByClassOrThrow } from "@/utils";
+import { tryCatchNullAsync, validateInstanceByClassOrThrow } from "@/utils";
 import { SERVER_USER_ERRORS } from "@1/errors";
 
 import { ServerUserEntity } from "@1/entities";
@@ -54,7 +54,7 @@ export class ServerUserService {
   }
 
   public get(authId: string, userId: string, token: string) {
-    return tryCatchNullPromise(() => this.getOrThrow(authId, userId, token));
+    return tryCatchNullAsync(() => this.getOrThrow(authId, userId, token));
   }
 
   public async getByRequestOrThrow(
@@ -82,7 +82,7 @@ export class ServerUserService {
   }
 
   public getByRequest(request: Request): Promise<ServerUser | null> {
-    return tryCatchNullPromise(() => this.getByRequestOrThrow(request));
+    return tryCatchNullAsync(() => this.getByRequestOrThrow(request));
   }
 
   public setInRequest(request: Request, user: ServerUser) {

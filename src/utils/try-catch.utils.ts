@@ -7,11 +7,20 @@ export const tryCatch = <T, P>(
   try {
     return tryFunc();
   } catch (error) {
-    if (error instanceof HttpException) {
-      throw error;
-    }
-
     return catchFunc(error);
+  }
+};
+
+export const tryCatchAsync = async <T, P>(
+  tryFunc: () => Promise<T>,
+  catchFunc: (error: unknown) => Promise<P>,
+): Promise<T | P> => {
+  try {
+    const result = await tryFunc();
+    return result;
+  } catch (error) {
+    const result = await catchFunc(error);
+    return result;
   }
 };
 
@@ -19,8 +28,15 @@ export const tryCatchThrow = <T>(
   tryFunc: () => T,
   onError?: (error: unknown) => void,
 ): T => {
-  return tryCatch(tryFunc, (error: unknown) => {
+  try {
+    return tryFunc();
+  } catch (error) {
     onError?.(error);
+
+    if (error instanceof HttpException) {
+      throw error;
+    }
+
     throw new HttpException(
       "Internal server error",
       HttpStatus.INTERNAL_SERVER_ERROR,
@@ -28,7 +44,7 @@ export const tryCatchThrow = <T>(
         cause: error,
       },
     );
-  });
+  }
 };
 
 export const tryCatchNull = <T>(
@@ -41,11 +57,11 @@ export const tryCatchNull = <T>(
   });
 };
 
-export const tryCatchNullPromise = <T>(
+export const tryCatchNullAsync = <T>(
   tryFunc: () => Promise<T>,
   onError?: (error: unknown) => void,
 ): Promise<T | null> => {
-  return tryCatchNullPromise(tryFunc, async (error: unknown): Promise<null> => {
+  return tryCatchAsync(tryFunc, async (error: unknown): Promise<null> => {
     onError?.(error);
     return null;
   });

@@ -13,7 +13,7 @@ config({
 import type { PassportAuthTypes } from "@1/types";
 import { AUTH_PROPERTIES, GROUPED_AUTH_PROPERTIES } from "./env.auth";
 
-import { Env } from "fenviee";
+import { Env, isInteger } from "fenviee";
 
 export const env = Env.create(process.env)({
   required: [
@@ -48,6 +48,13 @@ export const env = Env.create(process.env)({
   unique: {
     TOKEN_EXPIRATION: validateTokenExpiration,
     PROGRAM_MODE: normalizeProgramMode,
+    SALT_ROUNDS: (value?: string) => {
+      if (value === undefined) {
+        return 12;
+      }
+
+      return isInteger(value);
+    },
   },
 
   dangerousIgnoreErrors: process.env.IGNORE === "true",

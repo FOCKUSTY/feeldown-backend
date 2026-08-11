@@ -5,22 +5,22 @@ import { IsOptional, IsString, Length } from "class-validator";
 import { Trim } from "@/utils";
 
 export class UserUpdateDto implements Partial<User> {
-  @ApiProperty()
   @IsOptional()
+  @ApiProperty()
   @IsString()
   @Length(1, 100)
   @Trim()
-  nickname: string;
+  nickname?: string;
 
-  @ApiProperty()
   @IsOptional()
+  @ApiProperty()
   @IsString()
   @Length(3, 30)
   @Trim()
-  username: string;
+  username?: string;
 
-  @ApiProperty()
   @IsOptional()
+  @ApiProperty()
   @IsString()
   @Length(0, 2048)
   @Trim()
