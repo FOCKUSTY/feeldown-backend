@@ -9,10 +9,9 @@ import {
   Delete,
   Param as Parameter,
   UseGuards,
-  Query,
 } from "@nestjs/common";
 
-import { Me } from "@/decorators";
+import { Me, Queries } from "@/decorators";
 import { AuthGuard } from "@1/guards";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./follow.routes";
@@ -27,7 +26,10 @@ export class FollowController {
 
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
-  public get(@Query() query: FollowFilterDto, @Me() me: ServerUser) {
+  public get(
+    @Queries(FollowFilterDto) query: FollowFilterDto,
+    @Me() me: ServerUser,
+  ) {
     return this.service.get({
       ...query,
       where: {
@@ -38,13 +40,19 @@ export class FollowController {
 
   @ApiOperation(OPERATIONS.GET_FOLLOWERS)
   @Get(ROUTES.GET_FOLLOWERS)
-  public getFollowers(@Query() query: FollowFilterDto, @Me() me: ServerUser) {
+  public getFollowers(
+    @Queries(FollowFilterDto) query: FollowFilterDto,
+    @Me() me: ServerUser,
+  ) {
     return this.service.getFollowers(query, me.user.id);
   }
 
   @ApiOperation(OPERATIONS.GET_FOLLOWING)
   @Get(ROUTES.GET_FOLLOWING)
-  public getFollowing(@Query() query: FollowFilterDto, @Me() me: ServerUser) {
+  public getFollowing(
+    @Queries(FollowFilterDto) query: FollowFilterDto,
+    @Me() me: ServerUser,
+  ) {
     return this.service.getFollowing(query, me.user.id);
   }
 

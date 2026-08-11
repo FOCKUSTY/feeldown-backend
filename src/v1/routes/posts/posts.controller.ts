@@ -7,7 +7,6 @@ import {
   Get,
   Param as Parameter,
   Post,
-  Query,
   Body,
   Delete,
   Put,
@@ -16,7 +15,7 @@ import {
 
 import { SlugPipe } from "@1/pipes";
 import { Parameters } from "@1/enums";
-import { Me, Public } from "@/decorators";
+import { Me, Public, Queries } from "@/decorators";
 
 import { PostCreateDto, PostUpdateDto, PostsFilterDto } from "./dto";
 
@@ -31,7 +30,7 @@ export class PostsController {
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   @Public()
-  public get(@Query() query: PostsFilterDto) {
+  public get(@Queries(PostsFilterDto) query: PostsFilterDto) {
     return this.service.get(query);
   }
 

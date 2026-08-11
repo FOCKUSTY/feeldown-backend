@@ -9,12 +9,11 @@ import {
   Post,
   Body,
   UseGuards,
-  Query,
   Put,
   Patch,
 } from "@nestjs/common";
 
-import { Me } from "@/decorators";
+import { Me, Queries } from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -26,6 +25,7 @@ import {
 
 import { ROUTE, ROUTES, OPERATIONS } from "./friendships.routes";
 import { FriendshipsService as Service } from "./friendships.service";
+import { FollowFilterDto } from "../follow";
 
 @Injectable()
 @Controller(ROUTE)
@@ -35,7 +35,10 @@ export class FriendshipsController {
 
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
-  public get(@Query() query: FriendshipFilterDto, @Me() me: ServerUser) {
+  public get(
+    @Queries(FollowFilterDto) query: FriendshipFilterDto,
+    @Me() me: ServerUser,
+  ) {
     return this.service.getUsers(query, me.user.id);
   }
 
@@ -63,7 +66,7 @@ export class FriendshipsController {
   @Patch(ROUTES.PATCH)
   public update(
     @Param(Parameters.id) id: string,
-    @Query() data: FriendshipUpdateDto,
+    @Queries(FriendshipUpdateDto) data: FriendshipUpdateDto,
     @Me() me: ServerUser,
   ) {
     return this.service.update({

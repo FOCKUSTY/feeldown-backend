@@ -13,7 +13,7 @@ import {
   Put,
 } from "@nestjs/common";
 
-import { Me, OnlyMe, Public } from "@/decorators";
+import { Me, OnlyMe, Public, Queries } from "@/decorators";
 import { ACTIONS } from "@1/constants";
 import { AuthGuard } from "@1/guards";
 import { Parameters } from "@1/enums";
@@ -32,7 +32,10 @@ export class NotificationsController {
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   @Public()
-  public get(@Query() query: NotificationFilterDto, @Me() me: ServerUser) {
+  public get(
+    @Queries(NotificationFilterDto) query: NotificationFilterDto,
+    @Me() me: ServerUser,
+  ) {
     return this.service.get({
       recipientId: me.user.id,
       ...query,
@@ -74,7 +77,7 @@ export class NotificationsController {
   @ApiOperation(OPERATIONS.PUT_MANY)
   @Put(ROUTES.PUT_MANY)
   public readMany(
-    @Query() where: NotificationWhereDto,
+    @Queries(NotificationWhereDto) where: NotificationWhereDto,
     @Query("action", new ParseEnumPipe(ACTIONS))
     action: (typeof ACTIONS)[number],
     @Me() me: ServerUser,

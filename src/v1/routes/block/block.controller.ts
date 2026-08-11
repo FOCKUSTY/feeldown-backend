@@ -9,10 +9,9 @@ import {
   Delete,
   Param as Parameter,
   UseGuards,
-  Query,
 } from "@nestjs/common";
 
-import { Me } from "@/decorators";
+import { Me, Queries } from "@/decorators";
 import { AuthGuard } from "@1/guards";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./block.routes";
@@ -26,7 +25,10 @@ export class BlockController {
 
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
-  public get(@Query() query: BlockFilterDto, @Me() me: ServerUser) {
+  public get(
+    @Queries(BlockFilterDto) query: BlockFilterDto,
+    @Me() me: ServerUser,
+  ) {
     return this.service.get({
       ...query,
       where: {

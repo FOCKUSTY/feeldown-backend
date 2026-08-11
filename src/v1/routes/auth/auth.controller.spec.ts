@@ -48,8 +48,8 @@ describe("AuthController (e2e)", () => {
     it("should register a new user", async () => {
       const response = await request(app.getHttpServer())
         .post("/api/v1/auth/")
-        .set("email", "fockusty@example.com")
-        .set("password", "FOCKUSTY SECRET")
+        .set(Headers.email, "fockusty@example.com")
+        .set(Headers.password, "FOCKUSTY SECRET")
         .send({ username: "fockusty", nickname: "FOCKUSTY" })
         .expect(HttpStatus.CREATED);
 
@@ -70,8 +70,8 @@ describe("AuthController (e2e)", () => {
     it("should fail with 409 if username already exists", async () => {
       await request(app.getHttpServer())
         .post("/api/v1/auth/")
-        .set("email", "another@example.com")
-        .set("password", "pass123")
+        .set(Headers.email, "another@example.com")
+        .set(Headers.password, "pass123")
         .send({ username: "fockusty" })
         .expect(HttpStatus.CONFLICT);
     });
@@ -79,8 +79,8 @@ describe("AuthController (e2e)", () => {
     it("should fail with 400 if username contains invalid symbols", async () => {
       await request(app.getHttpServer())
         .post("/api/v1/auth/")
-        .set("email", "test2@example.com")
-        .set("password", "pass123")
+        .set(Headers.email, "test2@example.com")
+        .set(Headers.password, "pass123")
         .send({ username: "invalid user!" })
         .expect(HttpStatus.BAD_REQUEST);
     });
@@ -97,9 +97,9 @@ describe("AuthController (e2e)", () => {
     beforeAll(async () => {
       await request(app.getHttpServer())
         .post("/api/v1/auth/")
-        .set(Headers.authorization, `Bearer ${me.auth.token}`)
+        .set(Headers.password, `SUPER SECRET`)
         .send({ username: "meuser", nickname: "Me" })
-        .expect(HttpStatus.BAD_REQUEST);
+        .expect(HttpStatus.CREATED);
     });
 
     it("should return current user data with valid token", async () => {

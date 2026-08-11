@@ -11,18 +11,17 @@ import {
   Res,
   Post,
   Body,
-  Headers,
   Param,
 } from "@nestjs/common";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./auth.routes";
 import { AuthService } from "./auth.service";
 
-import { CreateUserDto, CreateUserCredentials } from "./dto/create-user.dto";
+import { CreateUserDto, CreateUserCredentials } from "./dto";
 
 import { Parameters } from "@1/enums";
 import { PassportStrategy } from "@1/strategies";
-import { Me, NoCache } from "@/decorators";
+import { Me, NoCache, Headers } from "@/decorators";
 
 import { ApiOperation } from "@nestjs/swagger";
 
@@ -50,10 +49,10 @@ export class AuthController {
   @ApiOperation(OPERATIONS.POST)
   public post(
     @Body() body: CreateUserDto,
-    @Headers() credential: CreateUserCredentials,
+    @Headers(CreateUserCredentials) credentials: CreateUserCredentials,
   ) {
     return this.service.createUser({
-      ...credential,
+      ...credentials,
       ...body,
     });
   }

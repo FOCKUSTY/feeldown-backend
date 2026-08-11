@@ -4,3 +4,5 @@ export * from "./me.decorator";
 export * from "./only-me.decorator";
 export * from "./no-cache.decorator";
 export * from "./user-find-options.decorator";
+export * from "./headers.decorator";
+export * from "./queries.decorator";
