@@ -5,9 +5,11 @@ import type {
   ResolvedPostnameSlug,
 } from "@1/types";
 
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@/database";
 import { POST_ERRORS } from "@1/errors";
 
+@Injectable()
 export class PostsValidator implements CrudValidator<"update" | "delete"> {
   public constructor(private readonly prisma: PrismaService) {}
 

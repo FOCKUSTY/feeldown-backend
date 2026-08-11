@@ -1,21 +1,24 @@
 import type { Post } from "@1/entities";
 
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString, Length } from "class-validator";
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString, Length } from "class-validator";
 
 export class PostUpdateDto implements Partial<Post> {
-  @ApiProperty()
+  @IsOptional()
+  @ApiPropertyOptional()
   @IsString()
   @Length(1, 256)
-  title: string;
+  title?: string;
 
-  @ApiProperty()
+  @IsOptional()
+  @ApiPropertyOptional()
   @IsString()
   @Length(1, 256)
-  postname: string;
+  postname?: string;
 
-  @ApiProperty()
+  @IsOptional()
+  @ApiPropertyOptional()
   @IsString()
   @Length(1, 2048)
-  content: string;
+  content?: string;
 }

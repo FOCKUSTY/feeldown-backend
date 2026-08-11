@@ -1,7 +1,7 @@
 import type { Post } from "@1/entities";
 
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString, Length } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString, Length } from "class-validator";
 
 export class PostCreateDto implements Partial<Post> {
   @ApiProperty()
@@ -9,10 +9,11 @@ export class PostCreateDto implements Partial<Post> {
   @Length(1, 256)
   title: string;
 
-  @ApiProperty()
+  @IsOptional()
+  @ApiPropertyOptional()
   @IsString()
   @Length(1, 256)
-  postname: string;
+  postname?: string;
 
   @ApiProperty()
   @IsString()

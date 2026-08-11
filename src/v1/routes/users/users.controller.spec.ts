@@ -1,5 +1,5 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { HttpStatus, INestApplication, ValidationPipe } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
 
 import { AppModule } from "@/app.module";
 import { PrismaService } from "@/database";
@@ -55,7 +55,7 @@ describe("UsersController (e2e)", () => {
   describe("GET /api/v1/users/:slug", () => {
     it("should return user by slug @username", async () => {
       const response = await request(app.getHttpServer())
-        .get("/api/v1/users/@testuser")
+        .get("/api/v1/users/.testuser")
         .expect(HttpStatus.OK);
 
       expect(response.body).toMatchObject({
@@ -66,7 +66,7 @@ describe("UsersController (e2e)", () => {
 
     it("should return 404 if user not found", async () => {
       await request(app.getHttpServer())
-        .get("/api/v1/users/@unknown")
+        .get("/api/v1/users/.unknown")
         .expect(HttpStatus.NOT_FOUND);
     });
   });
@@ -74,7 +74,7 @@ describe("UsersController (e2e)", () => {
   describe("PUT /api/v1/users/:slug", () => {
     it("should update own profile", async () => {
       const response = await request(app.getHttpServer())
-        .put("/api/v1/users/@testuser")
+        .put("/api/v1/users/.testuser")
         .set("Authorization", `Bearer ${authToken}`)
         .send({ nickname: "UpdatedName" })
         .expect(HttpStatus.OK);
@@ -92,7 +92,7 @@ describe("UsersController (e2e)", () => {
       const token = responseTwo.body.auth.token;
 
       await request(app.getHttpServer())
-        .put("/api/v1/users/@testuser")
+        .put("/api/v1/users/.testuser")
         .set("Authorization", `Bearer ${token}`)
         .send({ nickname: "Hack" })
         .expect(HttpStatus.FORBIDDEN);

@@ -13,9 +13,9 @@ import {
   Patch,
 } from "@nestjs/common";
 
-import { SlugPipe } from "@1/pipes";
-import { Parameters } from "@1/enums";
 import { Me, Public, Queries } from "@/decorators";
+import { PostnameSlugPipe } from "@1/pipes";
+import { Parameters } from "@1/enums";
 
 import { PostCreateDto, PostUpdateDto, PostsFilterDto } from "./dto";
 
@@ -38,7 +38,7 @@ export class PostsController {
   @Get(ROUTES.GET_ONE)
   @Public()
   public getOne(
-    @Parameter(Parameters.slug, new SlugPipe("postname"))
+    @Parameter(Parameters.slug, PostnameSlugPipe)
     where: ResolvedPostnameSlug,
   ) {
     return this.service.getOne(where);
@@ -52,10 +52,23 @@ export class PostsController {
 
   @ApiOperation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
+  public put(
+    @Parameter(Parameters.slug, PostnameSlugPipe)
+    where: ResolvedPostnameSlug,
+    @Body() data: PostUpdateDto,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.update({
+      where,
+      data,
+      meUserId: me.user.id,
+    });
+  }
+
   @ApiOperation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
-  public update(
-    @Parameter(Parameters.slug, new SlugPipe("postname"))
+  public patch(
+    @Parameter(Parameters.slug, PostnameSlugPipe)
     where: ResolvedPostnameSlug,
     @Body() data: PostUpdateDto,
     @Me() me: ServerUser,

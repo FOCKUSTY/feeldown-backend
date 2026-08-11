@@ -87,7 +87,7 @@ export abstract class CrudService<
 
   public async getOne<
     W extends Types["getOne"],
-    R = Prisma.Result<CrudModel<ModelName>, W, "findMany">,
+    R = Prisma.Result<CrudModel<ModelName>, W, "findUnique">,
   >(where: W): Promise<R> {
     await this.validateOrThrow("getOne", where);
     const modifiedWhere = this._modificators.where?.getOne?.(where) || where;
@@ -273,7 +273,7 @@ export abstract class CrudService<
     value: Value,
   ) {
     const [first, ...other] = value;
-    const output = prefix + first.toUpperCase() + other;
+    const output = prefix + first.toUpperCase() + other.join("");
     return output as `${Prefix}${Capitalize<Value>}`;
   }
 }

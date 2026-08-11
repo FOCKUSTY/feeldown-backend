@@ -12,7 +12,7 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
     PUT: "/:slug",
     PATCH: "/:slug",
 
-    DELETE: "/:slug",
+    DELETE: "/:id",
   } as const,
 
   operations: {
