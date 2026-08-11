@@ -14,7 +14,7 @@ import {
   Patch,
 } from "@nestjs/common";
 
-import { Me, UseQueryValidation } from "@/decorators";
+import { Me } from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -35,10 +35,7 @@ export class FriendshipsController {
 
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
-  public get(
-    @UseQueryValidation(FriendshipFilterDto) query: FriendshipFilterDto,
-    @Me() me: ServerUser,
-  ) {
+  public get(@Query() query: FriendshipFilterDto, @Me() me: ServerUser) {
     return this.service.getUsers(query, me.user.id);
   }
 

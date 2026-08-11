@@ -11,6 +11,7 @@ import {
   Res,
   Post,
   Body,
+  Headers,
   Param,
 } from "@nestjs/common";
 
@@ -21,7 +22,7 @@ import { CreateUserDto, CreateUserCredentials } from "./dto/create-user.dto";
 
 import { Parameters } from "@1/enums";
 import { PassportStrategy } from "@1/strategies";
-import { Me, NoCache, UseHeadersValidation } from "@/decorators";
+import { Me, NoCache } from "@/decorators";
 
 import { ApiOperation } from "@nestjs/swagger";
 
@@ -49,8 +50,7 @@ export class AuthController {
   @ApiOperation(OPERATIONS.POST)
   public post(
     @Body() body: CreateUserDto,
-    @UseHeadersValidation(CreateUserCredentials)
-    credential: CreateUserCredentials,
+    @Headers() credential: CreateUserCredentials,
   ) {
     return this.service.createUser({
       ...credential,

@@ -7,11 +7,12 @@ import {
   Post,
   Body,
   Delete,
-  Param,
+  Param as Parameter,
   UseGuards,
+  Query,
 } from "@nestjs/common";
 
-import { Me, UseQueryValidation } from "@/decorators";
+import { Me } from "@/decorators";
 import { AuthGuard } from "@1/guards";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./block.routes";
@@ -25,10 +26,7 @@ export class BlockController {
 
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
-  public get(
-    @UseQueryValidation(BlockFilterDto) query: BlockFilterDto,
-    @Me() me: ServerUser,
-  ) {
+  public get(@Query() query: BlockFilterDto, @Me() me: ServerUser) {
     return this.service.get({
       ...query,
       where: {
@@ -39,7 +37,7 @@ export class BlockController {
 
   @ApiOperation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
-  public getOne(@Param("id") id: string) {
+  public getOne(@Parameter("id") id: string) {
     return this.service.getOne({ id });
   }
 
@@ -54,7 +52,7 @@ export class BlockController {
 
   @ApiOperation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
-  public delete(@Param("id") id: string, @Me() me: ServerUser) {
+  public delete(@Parameter("id") id: string, @Me() me: ServerUser) {
     return this.service.delete({
       where: { id },
       meUserId: me.user.id,

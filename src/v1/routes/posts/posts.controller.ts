@@ -1,4 +1,4 @@
-import type { PostFilter, ResolvedPostnameSlug, ServerUser } from "@1/types";
+import type { ResolvedPostnameSlug, ServerUser } from "@1/types";
 
 import { ApiOperation } from "@nestjs/swagger";
 import {
@@ -7,19 +7,18 @@ import {
   Get,
   Param as Parameter,
   Post,
+  Query,
   Body,
   Delete,
-  Query,
-  ParseIntPipe,
   Put,
   Patch,
 } from "@nestjs/common";
 
-import { SlugPipe, SortByPipe, SortOrderingPipe } from "@1/pipes";
-import { Parameters, Queries } from "@1/enums";
+import { SlugPipe } from "@1/pipes";
+import { Parameters } from "@1/enums";
 import { Me, Public } from "@/decorators";
 
-import { PostCreateDto, PostUpdateDto } from "./dto";
+import { PostCreateDto, PostUpdateDto, PostsFilterDto } from "./dto";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./posts.routes";
 import { PostsService as Service } from "./posts.service";
@@ -32,18 +31,8 @@ export class PostsController {
   @ApiOperation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   @Public()
-  public get(
-    @Query(Queries.limit, ParseIntPipe) limit: number,
-    @Query(Queries.offset, ParseIntPipe) offset: number,
-    @Query(Queries.sort, SortOrderingPipe) sort: PostFilter["sort"],
-    @Query(Queries.sortBy, SortByPipe) sortBy: PostFilter["sortBy"],
-  ) {
-    return this.service.get({
-      limit,
-      offset,
-      sort,
-      sortBy,
-    });
+  public get(@Query() query: PostsFilterDto) {
+    return this.service.get(query);
   }
 
   @ApiOperation(OPERATIONS.GET_ONE)
