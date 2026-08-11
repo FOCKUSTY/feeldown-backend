@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { CRUD_ERRORS } from "@1/errors";
 import type {
   CrudCompare,
   CrudMethods,
@@ -207,7 +208,7 @@ export abstract class CrudService<
     }
 
     if (!validated) {
-      throw new Error("500");
+      throw CRUD_ERRORS.NOT_VALID.exception;
     }
 
     return validated;

@@ -5,3 +5,4 @@ export * from "./server-user.errors";
 export * from "./follow.errors";
 export * from "./block.errors";
 export * from "./relationships.errors";
+export * from "./crud.errors";
