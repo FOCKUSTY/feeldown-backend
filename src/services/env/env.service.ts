@@ -14,6 +14,7 @@ import type { PassportAuthTypes } from "@1/types";
 import { AUTH_PROPERTIES, GROUPED_AUTH_PROPERTIES } from "./env.auth";
 
 import { Env, isInteger } from "fenviee";
+import { escapeRegex } from "@/utils/escape-regex.utils";
 
 export const env = Env.create(process.env)({
   required: [
@@ -32,7 +33,6 @@ export const env = Env.create(process.env)({
     "CACHE_TIME_TO_LIVE_IN_MILLISECONDS",
     "THROLLER_TIME_TO_LIVE_IN_MILLISECONDS",
     "THROLLER_LIMIT",
-    "AVAILABLE_USERNAME_SYMBOLS",
   ] as const,
 
   default: {
@@ -42,10 +42,14 @@ export const env = Env.create(process.env)({
     CACHE_TIME_TO_LIVE_IN_MILLISECONDS: "300000",
     THROLLER_TIME_TO_LIVE_IN_MILLISECONDS: "20000",
     THROLLER_LIMIT: "20",
-    AVAILABLE_USERNAME_SYMBOLS: "abcdefghijklmnopqrstuvwxyz",
   },
 
   unique: {
+    AVAILABLE_USERNAME_SYMBOLS: (value?: string) => {
+      const string = value ?? "abcdefghijklmnopqrstuvwxyz";
+      const safeSymbols = escapeRegex(string).replace(/-/g, "\\-");
+      return new RegExp(`^[${safeSymbols}]+$`);
+    },
     TOKEN_EXPIRATION: validateTokenExpiration,
     PROGRAM_MODE: normalizeProgramMode,
     SALT_ROUNDS: (value?: string) => {

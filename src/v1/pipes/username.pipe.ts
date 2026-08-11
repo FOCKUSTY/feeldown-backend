@@ -7,10 +7,10 @@ import { env } from "@/services";
 export class UsernamePipe implements PipeTransform {
   public static validate(value: string) {
     const username = value.trim().toLowerCase();
-    const usernameValided = Array.from(username).every((char) =>
-      env.AVAILABLE_USERNAME_SYMBOLS.includes(char),
+    const usernameValid = Array.from(username).every((char) =>
+      env.AVAILABLE_USERNAME_SYMBOLS.test(char),
     );
-    if (!usernameValided) {
+    if (!usernameValid) {
       throw USERNAME_ERRORS.INVALID_USERNAME.execute();
     }
 

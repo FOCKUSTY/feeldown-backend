@@ -2,6 +2,7 @@ import type { Post } from "@1/entities";
 
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional, IsString, Length } from "class-validator";
+import { IsName } from "@/decorators";
 
 export class PostUpdateDto implements Partial<Post> {
   @IsOptional()
@@ -14,6 +15,7 @@ export class PostUpdateDto implements Partial<Post> {
   @ApiPropertyOptional()
   @IsString()
   @Length(1, 256)
+  @IsName()
   postname?: string;
 
   @IsOptional()

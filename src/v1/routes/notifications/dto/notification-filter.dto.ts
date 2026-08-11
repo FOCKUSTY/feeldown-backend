@@ -1,12 +1,12 @@
 import type { NotificationFilter } from "@1/types";
 import { AVAILABLE_NOTIFICATION_SORT_TYPES } from "@1/constants";
 
+import { IsIn, IsOptional } from "class-validator";
 import {
   ApiPropertyOptional,
   ApiSchema,
   IntersectionType,
 } from "@nestjs/swagger";
-import { IsIn, IsOptional } from "class-validator";
 
 import { NotificationWhereDto } from "./notification-where.dto";
 import { BaseFilterDto } from "@1/dto";

@@ -6,3 +6,5 @@ export * from "./no-cache.decorator";
 export * from "./user-find-options.decorator";
 export * from "./headers.decorator";
 export * from "./queries.decorator";
+export * from "./is-name.decorator";
+export * from "./trim.decorator";
