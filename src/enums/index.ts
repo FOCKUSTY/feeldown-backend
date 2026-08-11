@@ -1,3 +1,3 @@
 export * from "./headers.enum";
-export * from "./autorization-types.enum";
+export * from "./authorization-types.enum";
 export * from "./metadata.enum";
