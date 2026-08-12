@@ -16,6 +16,7 @@ import { PrismaService } from "@/database";
 
 import { AuthStrategy } from "./strategies";
 
+import { applyAppFilters } from "./filters";
 import { CustomCacheInterceptor } from "./interceptors";
 import { AuthEntity, UserEntity } from "./entities";
 import { GuardsModule } from "./guards";
@@ -72,6 +73,7 @@ export const v1Swagger = createSwaggerConfig({
     PrismaService,
     LoggerService,
     HashService,
+    ...applyAppFilters(),
     {
       provide: APP_INTERCEPTOR,
       useClass: CustomCacheInterceptor,
