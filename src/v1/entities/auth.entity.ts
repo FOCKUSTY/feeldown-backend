@@ -3,7 +3,12 @@ import type { Profile } from "passport";
 
 import { ApiProperty, ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 
-import { IsDate, IsOptional, IsString, IsUUID as IsUuid } from "class-validator";
+import {
+  IsDate,
+  IsOptional,
+  IsString,
+  IsUUID as IsUuid,
+} from "class-validator";
 import { Type } from "class-transformer";
 import { Schema } from "@1/enums";
 

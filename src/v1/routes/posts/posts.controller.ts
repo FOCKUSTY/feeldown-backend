@@ -29,8 +29,13 @@ export class PostsController {
   @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   @Public()
-  public get(@Queries(PostsFilterDto) query: PostsFilterDto) {
-    return this.service.get(query);
+  public async get(@Queries(PostsFilterDto) query: PostsFilterDto) {
+    try {
+      return await this.service.get(query);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   @ApiDocumentation(OPERATIONS.GET_ONE)

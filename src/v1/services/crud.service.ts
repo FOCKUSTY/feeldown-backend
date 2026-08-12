@@ -57,18 +57,32 @@ export abstract class CrudService<
     R = Prisma.Result<CrudModel<ModelName>, F, "findMany">,
   >(filter: F): Promise<R> {
     await this.validateOrThrow("get", filter);
-    const { sort, sortBy, limit, offset, where, include, omit, select } =
+    const { sort, sortBy, limit, where, include, omit, select, cursor } =
       filter;
     const whereClause = this.buildWhere({ where });
     const modifiedWhere =
       this._modificators.where?.get?.(filter) || whereClause;
 
+    const cursorObject = cursor ? { id: cursor } : undefined;
+    const skip = cursor ? 1 : 0;
+    const orderBy = cursor
+      ? [
+          {
+            [sortBy]: sort,
+          },
+          {
+            id: sort,
+          },
+        ]
+      : { [sortBy]: sort };
+
     const execute = () =>
       //@ts-ignore
       this.model.findMany({
         where: modifiedWhere,
-        orderBy: { [sortBy]: sort },
-        skip: offset,
+        orderBy,
+        skip,
+        cursor: cursorObject,
         take: limit,
         include,
         omit,

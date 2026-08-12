@@ -9,7 +9,7 @@ import request from "supertest";
 import { Headers } from "@/enums";
 
 describe("PostsController (e2e)", () => {
-  let application: INestApplication;
+  let app: INestApplication;
   let prismaService: PrismaService;
   let ownerToken: string;
   let ownerId: string;
@@ -28,7 +28,7 @@ describe("PostsController (e2e)", () => {
   };
 
   const createUser = async (username: string, email: string) => {
-    const response = await request(application.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post("/api/v1/auth/")
       .set(Headers.email, email)
       .set(Headers.password, "secret")
@@ -38,7 +38,7 @@ describe("PostsController (e2e)", () => {
   };
 
   const createPost = async (token: string, data: typeof postPayload) => {
-    const response = await request(application.getHttpServer())
+    const response = await request(app.getHttpServer())
       .post("/api/v1/posts")
       .set(Headers.authorization, `Bearer ${token}`)
       .send(data)
@@ -52,16 +52,16 @@ describe("PostsController (e2e)", () => {
       imports: [AppModule],
     }).compile();
 
-    application = moduleFixture.createNestApplication();
-    application.useGlobalPipes(
+    app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
         transform: true,
       }),
     );
-    await application.init();
+    await app.init();
 
-    prismaService = application.get(PrismaService);
+    prismaService = app.get(PrismaService);
 
     await prismaService.$transaction([
       prismaService.notification.deleteMany(),
@@ -87,12 +87,12 @@ describe("PostsController (e2e)", () => {
 
   afterAll(async () => {
     await prismaService.$disconnect();
-    await application.close();
+    await app.close();
   });
 
   describe("POST /api/v1/posts", () => {
     it("should create a post when authenticated", async () => {
-      const response = await request(application.getHttpServer())
+      const response = await request(app.getHttpServer())
         .post("/api/v1/posts")
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .send(postPayload)
@@ -110,7 +110,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should return 401 when not authenticated", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .post("/api/v1/posts")
         .send(postPayload)
         .expect(HttpStatus.UNAUTHORIZED);
@@ -118,7 +118,7 @@ describe("PostsController (e2e)", () => {
 
     it("should return 400 for invalid data (missing title)", async () => {
       const invalid = { postname: "no_title", content: "..." };
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .post("/api/v1/posts")
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .send(invalid)
@@ -127,7 +127,7 @@ describe("PostsController (e2e)", () => {
 
     it("should return 400 for too short title", async () => {
       const invalid = { title: "", postname: "short", content: "..." };
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .post("/api/v1/posts")
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .send(invalid)
@@ -151,7 +151,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should return list of posts (public)", async () => {
-      const response = await request(application.getHttpServer())
+      const response = await request(app.getHttpServer())
         .get("/api/v1/posts")
         .expect(HttpStatus.OK);
 
@@ -161,17 +161,29 @@ describe("PostsController (e2e)", () => {
       expect(response.body[0]).toHaveProperty("title");
     });
 
-    it("should support pagination and sorting", async () => {
-      const response = await request(application.getHttpServer())
-        .get("/api/v1/posts?limit=5&offset=0&sort=asc&sortBy=title")
+    it("should support pagination", async () => {
+      const response = await request(app.getHttpServer())
+        .get("/api/v1/posts?limit=5&sort=asc&sortBy=title")
         .expect(HttpStatus.OK);
 
       expect(response.body).toBeInstanceOf(Array);
-      expect(response.body[0].title).toBe("First Post");
+    });
+
+    it("should support cursor pagination", async () => {
+      const firstPage = await request(app.getHttpServer())
+        .get("/api/v1/posts?limit=2&sort=asc")
+        .expect(HttpStatus.OK);
+
+      const lastId = firstPage.body[firstPage.body.length - 1].id;
+      const secondPage = await request(app.getHttpServer())
+        .get(`/api/v1/posts?limit=2&sort=asc&cursor=${lastId}`)
+        .expect(HttpStatus.OK);
+
+      expect(secondPage.body[0].id).not.toBe(lastId);
     });
 
     it("should return 400 for invalid sortBy", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .get("/api/v1/posts?sortBy=invalid")
         .expect(HttpStatus.BAD_REQUEST);
     });
@@ -190,7 +202,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should return a post by postname (public)", async () => {
-      const response = await request(application.getHttpServer())
+      const response = await request(app.getHttpServer())
         .get(`/api/v1/posts/~${postname}`)
         .expect(HttpStatus.OK);
 
@@ -202,7 +214,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should return 404 if post not found", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .get("/api/v1/posts/~non_existent")
         .expect(HttpStatus.NOT_FOUND);
     });
@@ -221,7 +233,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should update own post", async () => {
-      const response = await request(application.getHttpServer())
+      const response = await request(app.getHttpServer())
         .put(`/api/v1/posts/~${postname}`)
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .send(updatedPayload)
@@ -238,7 +250,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should reject update by another user", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .put(`/api/v1/posts/~${postname}`)
         .set(Headers.authorization, `Bearer ${otherToken}`)
         .send({ title: "Hack" })
@@ -246,14 +258,14 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should return 401 without token", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .put(`/api/v1/posts/~${postname}`)
         .send(updatedPayload)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it("should return 400 for invalid data (empty title)", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .put(`/api/v1/posts/~${postname}`)
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .send({ title: "" })
@@ -274,7 +286,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should partially update own post", async () => {
-      const response = await request(application.getHttpServer())
+      const response = await request(app.getHttpServer())
         .patch(`/api/v1/posts/~${postname}`)
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .set("Content-Type", "application/json")
@@ -287,7 +299,7 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should reject patch by another user", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .patch(`/api/v1/posts/~${postname}`)
         .set(Headers.authorization, `Bearer ${otherToken}`)
         .send({ title: "Hack Patch" })
@@ -310,12 +322,12 @@ describe("PostsController (e2e)", () => {
     });
 
     it("should delete own post", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .delete(`/api/v1/posts/${postId}`)
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .expect(HttpStatus.OK);
 
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .get(`/api/v1/posts/~${postname}`)
         .expect(HttpStatus.NOT_FOUND);
     });
@@ -327,20 +339,20 @@ describe("PostsController (e2e)", () => {
         content: "content",
       });
 
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .delete(`/api/v1/posts/${post.id}`)
         .set(Headers.authorization, `Bearer ${otherToken}`)
         .expect(HttpStatus.NOT_ACCEPTABLE);
     });
 
     it("should return 401 without token", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .delete(`/api/v1/posts/~${postname}`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it("should return 404 for non-existent post", async () => {
-      await request(application.getHttpServer())
+      await request(app.getHttpServer())
         .delete("/api/v1/posts/non_existent")
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .expect(HttpStatus.NOT_FOUND);

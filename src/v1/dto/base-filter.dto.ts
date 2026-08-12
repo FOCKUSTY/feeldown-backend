@@ -4,7 +4,14 @@ import { AVAILABLE_SORT_ORDERING } from "@1/constants";
 import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 
 import { Type } from "class-transformer";
-import { IsIn, IsInt, IsOptional, Min } from "class-validator";
+import {
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsUUID as IsUuid,
+  Max,
+  Min,
+} from "class-validator";
 
 @ApiSchema({
   name: "BaseFilterSchema",
@@ -21,23 +28,18 @@ export class BaseFilterDto implements BaseFilter {
 
   @ApiPropertyOptional({
     default: 20,
-    minimum: 5,
+    minimum: 1,
+    maximum: 100,
     description: "Количество записей на страницу",
   })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(5)
+  @Min(1)
+  @Max(100)
   limit: number = 20;
 
-  @ApiPropertyOptional({
-    default: 0,
-    minimum: 0,
-    description: "Смещение (пропустить N записей)",
-  })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(0)
-  offset: number = 0;
+  @IsUuid(7)
+  cursor?: string;
 }

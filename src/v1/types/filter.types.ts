@@ -16,7 +16,7 @@ import type {
 export type BaseFilter = {
   sort: (typeof AVAILABLE_SORT_ORDERING)[number];
   limit: number;
-  offset: number;
+  cursor?: string;
 };
 
 export type PostFilter = BaseFilter & {
