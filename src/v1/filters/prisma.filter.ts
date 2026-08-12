@@ -24,7 +24,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       throw exception;
     }
 
-    const { statusCode, message } = handled;    
+    const { statusCode, message } = handled;
     this.logger.error([
       new Error(`[Prisma Exception] ${statusCode} - ${message}`),
       exception as Error,

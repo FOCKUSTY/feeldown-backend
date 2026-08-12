@@ -30,12 +30,12 @@ export class DefaultExceptionFilter implements ExceptionFilter {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Internal Server Error",
         timestamp: new Date().toISOString(),
-        path: request.url
+        path: request.url,
       });
       return;
     }
 
-    const { statusCode, message } = handled;    
+    const { statusCode, message } = handled;
     this.logger.error([
       new Error(`[Default Exception] ${statusCode}`),
       exception as Error,
