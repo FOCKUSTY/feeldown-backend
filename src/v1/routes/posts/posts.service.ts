@@ -8,7 +8,7 @@ import { PrismaService } from "@/database";
 import { PostsValidator } from "./posts.validator";
 import { PostCreateDto } from "./dto";
 
-import { v4 as uuid } from "uuid";
+import { v7 as uuid } from "uuid";
 
 @Injectable()
 export class PostsService extends CrudService<

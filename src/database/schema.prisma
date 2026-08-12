@@ -28,7 +28,7 @@ model Service {
 }
 
 model Auth {
-  id     String  @id @default(uuid())
+  id     String  @id @default(uuid(7))
   userId String  @unique
   email  String? @unique
 
@@ -44,7 +44,7 @@ model Auth {
 }
 
 model User {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7))
 
   username String @unique
   nickname String
@@ -76,7 +76,7 @@ model User {
 }
 
 model Follow {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7))
 
   followerId String
   followeeId String
@@ -98,7 +98,7 @@ enum FriendRequestStatus {
 }
 
 model FriendRequest {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7))
 
   senderId   String
   receiverId String
@@ -122,7 +122,7 @@ model FriendRequest {
 }
 
 model Block {
-  id String @id @default(uuid())
+  id String @id @default(uuid(7))
 
   blockerId String
   blockedId String
@@ -138,7 +138,7 @@ model Block {
 }
 
 model Post {
-  id       String @id @default(uuid())
+  id       String @id @default(uuid(7))
   postname String @unique
   userId   String
 
@@ -159,7 +159,7 @@ model Post {
 }
 
 model Comment {
-  id      String @id @default(uuid())
+  id      String @id @default(uuid(7))
   content String @db.Text
   userId  String
   postId  String
@@ -181,7 +181,7 @@ model Comment {
 }
 
 model PostReaction {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   userId    String
   postId    String
   type      String
@@ -195,7 +195,7 @@ model PostReaction {
 }
 
 model CommentReaction {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid(7))
   userId    String
   commentId String
   type      String
@@ -224,7 +224,7 @@ enum ReferenceType {
 }
 
 model Notification {
-  id            String           @id @default(uuid())
+  id            String           @id @default(uuid(7))
   recipientId   String
   actorId       String?
   type          NotificationType

@@ -15,7 +15,7 @@ import { HashService } from "@1/services";
 import { PrismaService } from "@/database";
 import { env } from "@/services";
 
-import { v4 as uuid } from "uuid";
+import { v7 as uuid } from "uuid";
 
 @Injectable()
 export class AuthStrategy {

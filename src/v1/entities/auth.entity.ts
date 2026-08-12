@@ -3,7 +3,7 @@ import type { Profile } from "passport";
 
 import { ApiProperty, ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 
-import { IsDate, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsDate, IsOptional, IsString, IsUUID as IsUuid } from "class-validator";
 import { Type } from "class-transformer";
 import { Schema } from "@1/enums";
 
@@ -45,11 +45,11 @@ export interface SignUpData {
 @ApiSchema({ name: Schema.AUTH })
 export class AuthEntity implements Auth {
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   id: string;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   userId: string;
 
   @ApiProperty()

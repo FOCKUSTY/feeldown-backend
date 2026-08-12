@@ -1,21 +1,21 @@
 import type { Block } from "@1/types";
 
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
-import { IsDate, IsUUID } from "class-validator";
+import { IsDate, IsUUID as IsUuid } from "class-validator";
 import { Type } from "class-transformer";
 
 @ApiSchema({ name: "BlockSchema" })
 export class BlockEntity implements Block {
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   id: string;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   blockerId: string;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   blockedId: string;
 
   @ApiProperty()

@@ -3,7 +3,7 @@ import { NotificationType, ReferenceType } from "@1/types";
 
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 import {
-  IsUUID,
+  IsUUID as IsUuid,
   IsString,
   IsOptional,
   IsEnum,
@@ -16,15 +16,15 @@ import { Schema } from "@1/enums";
 @ApiSchema({ name: Schema.NOTIFICATION })
 export class NotificationEntity implements Notification {
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   id: string;
 
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   recipientId: string;
 
   @ApiProperty({ nullable: true })
-  @IsUUID()
+  @IsUuid(7)
   @IsOptional()
   actorId: string | null;
 

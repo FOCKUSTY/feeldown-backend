@@ -1,14 +1,14 @@
 import type { User } from "@1/types";
 
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
-import { IsDate, IsString, IsUUID, Length } from "class-validator";
+import { IsDate, IsString, IsUUID as IsUuid, Length } from "class-validator";
 import { Type } from "class-transformer";
 import { Schema } from "@1/enums";
 
 @ApiSchema({ name: Schema.USER })
 export class UserEntity implements User {
   @ApiProperty()
-  @IsUUID()
+  @IsUuid(7)
   id: string;
 
   @ApiProperty()
