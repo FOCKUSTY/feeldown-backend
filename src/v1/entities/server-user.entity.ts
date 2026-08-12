@@ -7,8 +7,9 @@ import { Type } from "class-transformer";
 
 import { AuthEntity } from "./auth.entity";
 import { UserEntity } from "./user.entity";
+import { Schema } from "@1/enums";
 
-@ApiSchema({ name: "ServerUserSchema" })
+@ApiSchema({ name: Schema.SERVER_USER })
 export class ServerUserEntity implements ServerUser {
   @ApiProperty({ type: AuthEntity })
   @ValidateNested()

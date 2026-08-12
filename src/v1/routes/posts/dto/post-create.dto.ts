@@ -1,9 +1,11 @@
 import type { Post } from "@1/entities";
 
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 import { IsOptional, IsString, Length } from "class-validator";
 import { IsName, Trim } from "@/decorators";
+import { Schema } from "@1/enums";
 
+@ApiSchema({ name: Schema.POST_CREATE })
 export class PostCreateDto implements Partial<Post> {
   @ApiProperty()
   @IsString()

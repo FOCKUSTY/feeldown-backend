@@ -1,6 +1,5 @@
 import type { ServerUser } from "@1/types";
 
-import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Get,
@@ -11,7 +10,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-import { Me, Queries } from "@/decorators";
+import { ApiDocumentation, Me, Queries } from "@/decorators";
 import { AuthGuard } from "@1/guards";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./follow.routes";
@@ -24,7 +23,7 @@ import { FollowCreateDto, FollowFilterDto } from "./dto";
 export class FollowController {
   public constructor(private readonly service: FollowService) {}
 
-  @ApiOperation(OPERATIONS.GET)
+  @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   public get(
     @Queries(FollowFilterDto) query: FollowFilterDto,
@@ -38,7 +37,7 @@ export class FollowController {
     });
   }
 
-  @ApiOperation(OPERATIONS.GET_FOLLOWERS)
+  @ApiDocumentation(OPERATIONS.GET_FOLLOWERS)
   @Get(ROUTES.GET_FOLLOWERS)
   public getFollowers(
     @Queries(FollowFilterDto) query: FollowFilterDto,
@@ -47,7 +46,7 @@ export class FollowController {
     return this.service.getFollowers(query, me.user.id);
   }
 
-  @ApiOperation(OPERATIONS.GET_FOLLOWING)
+  @ApiDocumentation(OPERATIONS.GET_FOLLOWING)
   @Get(ROUTES.GET_FOLLOWING)
   public getFollowing(
     @Queries(FollowFilterDto) query: FollowFilterDto,
@@ -56,13 +55,13 @@ export class FollowController {
     return this.service.getFollowing(query, me.user.id);
   }
 
-  @ApiOperation(OPERATIONS.GET_ONE)
+  @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   public getOne(@Parameter("id") id: string) {
     return this.service.getOne({ id });
   }
 
-  @ApiOperation(OPERATIONS.POST)
+  @ApiDocumentation(OPERATIONS.POST)
   @Post(ROUTES.POST)
   public post(@Body() data: FollowCreateDto, @Me() me: ServerUser) {
     return this.service.create({
@@ -71,7 +70,7 @@ export class FollowController {
     });
   }
 
-  @ApiOperation(OPERATIONS.DELETE)
+  @ApiDocumentation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   public delete(@Parameter("id") id: string, @Me() me: ServerUser) {
     return this.service.delete({

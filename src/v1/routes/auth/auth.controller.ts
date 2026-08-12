@@ -17,13 +17,11 @@ import {
 import { ROUTE, ROUTES, OPERATIONS } from "./auth.routes";
 import { AuthService } from "./auth.service";
 
-import { CreateUserDto, CreateUserCredentials } from "./dto";
+import { UserCreateDto, UserCreateCredentialsDto } from "./dto";
 
 import { Parameters } from "@1/enums";
 import { PassportStrategy } from "@1/strategies";
-import { Me, NoCache, Headers } from "@/decorators";
-
-import { ApiOperation } from "@nestjs/swagger";
+import { Me, NoCache, Headers, ApiDocumentation } from "@/decorators";
 
 @Injectable()
 @Controller(ROUTE)
@@ -33,8 +31,8 @@ export class AuthController {
     private readonly passport: PassportStrategy,
   ) {}
 
+  @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
-  @ApiOperation(OPERATIONS.GET)
   public get() {
     const methods = this.service.getAllMethods();
 
@@ -45,11 +43,11 @@ export class AuthController {
     };
   }
 
+  @ApiDocumentation(OPERATIONS.POST)
   @Post(ROUTES.POST)
-  @ApiOperation(OPERATIONS.POST)
   public post(
-    @Body() body: CreateUserDto,
-    @Headers(CreateUserCredentials) credentials: CreateUserCredentials,
+    @Body() body: UserCreateDto,
+    @Headers(UserCreateCredentialsDto) credentials: UserCreateCredentialsDto,
   ) {
     return this.service.createUser({
       ...credentials,
@@ -57,15 +55,15 @@ export class AuthController {
     });
   }
 
+  @ApiDocumentation(OPERATIONS.GET_ME)
   @Get(ROUTES.GET_ME)
-  @ApiOperation(OPERATIONS.GET_ME)
   @NoCache()
   public getMe(@Me() me: ServerUser) {
     return me;
   }
 
+  @ApiDocumentation(OPERATIONS.OAUTH2_GET)
   @Get(ROUTES.OAUTH2_GET)
-  @ApiOperation(OPERATIONS.OAUTH2_GET)
   public auth(
     @Req() req: Request,
     @Res() res: Response,
@@ -75,8 +73,8 @@ export class AuthController {
     return this.passport.auth(method, req, res, next);
   }
 
+  @ApiDocumentation(OPERATIONS.OAUTH2_GET_CALLBACK)
   @Get(ROUTES.OAUTH2_GET_CALLBACK)
-  @ApiOperation(OPERATIONS.OAUTH2_GET_CALLBACK)
   public callback(
     @Req() req: Request,
     @Res() res: Response,

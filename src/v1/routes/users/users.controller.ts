@@ -1,6 +1,5 @@
 import type { ResolvedUsernameSlug } from "@1/types";
 
-import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Injectable,
@@ -13,7 +12,12 @@ import {
   Patch,
 } from "@nestjs/common";
 
-import { Public, OnlyMe, UserFindOptions } from "@/decorators";
+import {
+  Public,
+  OnlyMe,
+  UserFindOptions,
+  ApiDocumentation,
+} from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -28,7 +32,7 @@ import { UsersService as Service } from "./users.service";
 export class UsersController {
   public constructor(private readonly service: Service) {}
 
-  @ApiOperation(OPERATIONS.GET_ONE)
+  @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   @Public()
   public getOne(
@@ -37,12 +41,10 @@ export class UsersController {
     return this.service.getOne(options);
   }
 
-  @ApiOperation(OPERATIONS.PUT)
+  @ApiDocumentation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
-  @ApiOperation(OPERATIONS.PATCH)
-  @Patch(ROUTES.PATCH)
   @OnlyMe(Parameters.slug, "slug")
-  public update(
+  public put(
     @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
     @Body() data: UserUpdateDto,
   ) {
@@ -52,7 +54,20 @@ export class UsersController {
     });
   }
 
-  @ApiOperation(OPERATIONS.DELETE)
+  @ApiDocumentation(OPERATIONS.PATCH)
+  @Patch(ROUTES.PATCH)
+  @OnlyMe(Parameters.slug, "slug")
+  public patch(
+    @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
+    @Body() data: UserUpdateDto,
+  ) {
+    return this.service.update({
+      where: options,
+      data,
+    });
+  }
+
+  @ApiDocumentation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   @OnlyMe(Parameters.id, "id")
   public delete(@Parameter(Parameters.id) id: string) {

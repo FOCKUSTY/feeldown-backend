@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 import {
   IsEmail,
   IsOptional,
@@ -8,8 +8,12 @@ import {
 } from "class-validator";
 
 import { Transform } from "class-transformer";
+import { Schema } from "@1/enums";
 
-export class CreateUserDto {
+@ApiSchema({
+  name: Schema.USER_CREATE,
+})
+export class UserCreateDto {
   @ApiProperty()
   @IsString()
   @MaxLength(64)
@@ -25,7 +29,10 @@ export class CreateUserDto {
   nickname?: string;
 }
 
-export class CreateUserCredentials {
+@ApiSchema({
+  name: Schema.USER_CREDENTIALS,
+})
+export class UserCreateCredentialsDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsEmail()

@@ -6,9 +6,10 @@ import { BaseFilterDto } from "@1/dto";
 
 import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 import { IsEnum, IsIn, IsOptional } from "class-validator";
+import { Schema } from "@1/enums";
 
 @ApiSchema({
-  name: "FriendsshipFilterSchema",
+  name: Schema.FRIENDSHIP_FILTER,
 })
 export class FriendshipFilterDto
   extends BaseFilterDto

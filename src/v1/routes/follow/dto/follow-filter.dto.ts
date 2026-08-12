@@ -4,8 +4,9 @@ import { AVAILABLE_FOLLOW_SORT_TYPES } from "@1/constants";
 
 import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 import { IsIn, IsOptional } from "class-validator";
+import { Schema } from "@1/enums";
 
-@ApiSchema({ name: "FollowFilterSchema" })
+@ApiSchema({ name: Schema.FOLLOW_FILTER })
 export class FollowFilterDto extends BaseFilterDto implements FollowFilter {
   @ApiPropertyOptional({
     enum: AVAILABLE_FOLLOW_SORT_TYPES,

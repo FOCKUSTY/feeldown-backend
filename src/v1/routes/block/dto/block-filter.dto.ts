@@ -4,8 +4,9 @@ import { BaseFilterDto } from "@1/dto";
 import { AVAILABLE_BLOCK_SORT_TYPES } from "@1/constants";
 import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 import { IsIn, IsOptional } from "class-validator";
+import { Schema } from "@1/enums";
 
-@ApiSchema({ name: "BlockFilterSchema" })
+@ApiSchema({ name: Schema.BLOCK_FILTER })
 export class BlockFilterDto extends BaseFilterDto implements BlockFilter {
   @ApiPropertyOptional({
     enum: AVAILABLE_BLOCK_SORT_TYPES,

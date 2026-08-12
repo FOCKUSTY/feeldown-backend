@@ -1,11 +1,11 @@
 import type { FriendRequest } from "@1/types";
-import { UpdateFriendship } from "@1/enums";
+import { Schema, UpdateFriendship } from "@1/enums";
 
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 import { IsEnum } from "class-validator";
 
 @ApiSchema({
-  name: "FriendshipUpdateDto",
+  name: Schema.FRIENDSHIP_UPDATE,
 })
 export class FriendshipUpdateDto implements Partial<FriendRequest> {
   @ApiProperty({

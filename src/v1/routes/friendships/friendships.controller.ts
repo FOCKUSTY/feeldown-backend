@@ -1,6 +1,5 @@
 import type { ServerUser } from "@1/types";
 
-import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Injectable,
@@ -13,7 +12,7 @@ import {
   Patch,
 } from "@nestjs/common";
 
-import { Me, Queries, UserFindOptions } from "@/decorators";
+import { ApiDocumentation, Me, Queries, UserFindOptions } from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -34,7 +33,7 @@ import { ResolvedSlugToIdPipe } from "@1/pipes";
 export class FriendshipsController {
   public constructor(private readonly service: Service) {}
 
-  @ApiOperation(OPERATIONS.GET_USER_FRIENDS)
+  @ApiDocumentation(OPERATIONS.GET_USER_FRIENDS)
   @Get(ROUTES.GET_USER_FRIENDS)
   public get(
     @Queries(FollowFilterDto) query: FriendshipFilterDto,
@@ -43,7 +42,7 @@ export class FriendshipsController {
     return this.service.getUsers(query, id);
   }
 
-  @ApiOperation(OPERATIONS.GET_ONE)
+  @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   public getOne(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
     return this.service.getOne({
@@ -52,7 +51,7 @@ export class FriendshipsController {
     });
   }
 
-  @ApiOperation(OPERATIONS.POST)
+  @ApiDocumentation(OPERATIONS.POST)
   @Post(ROUTES.POST)
   public post(@Body() data: FriendshipCreateDto, @Me() me: ServerUser) {
     return this.service.create({
@@ -61,11 +60,23 @@ export class FriendshipsController {
     });
   }
 
-  @ApiOperation(OPERATIONS.PUT)
+  @ApiDocumentation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
-  @ApiOperation(OPERATIONS.PATCH)
+  public put(
+    @Param(Parameters.id) id: string,
+    @Queries(FriendshipUpdateDto) data: FriendshipUpdateDto,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.update({
+      where: { id },
+      data,
+      meUserId: me.user.id,
+    });
+  }
+
+  @ApiDocumentation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
-  public update(
+  public patch(
     @Param(Parameters.id) id: string,
     @Queries(FriendshipUpdateDto) data: FriendshipUpdateDto,
     @Me() me: ServerUser,

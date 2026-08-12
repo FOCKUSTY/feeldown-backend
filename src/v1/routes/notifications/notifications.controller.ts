@@ -1,6 +1,5 @@
 import type { ServerUser } from "@1/types";
 
-import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Injectable,
@@ -13,7 +12,7 @@ import {
   Put,
 } from "@nestjs/common";
 
-import { Me, OnlyMe, Public, Queries } from "@/decorators";
+import { ApiDocumentation, Me, OnlyMe, Public, Queries } from "@/decorators";
 import { ACTIONS } from "@1/constants";
 import { AuthGuard } from "@1/guards";
 import { Parameters } from "@1/enums";
@@ -29,7 +28,7 @@ import { NotificationsService as Service } from "./notifications.service";
 export class NotificationsController {
   public constructor(private readonly service: Service) {}
 
-  @ApiOperation(OPERATIONS.GET)
+  @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   @Public()
   public get(
@@ -42,24 +41,22 @@ export class NotificationsController {
     });
   }
 
-  @ApiOperation(OPERATIONS.GET_ONE)
+  @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   @OnlyMe(Parameters.id, "id")
   public getOne(@Parameter(Parameters.id) id: string) {
     return this.service.getOne({ id });
   }
 
-  @ApiOperation(OPERATIONS.GET_COUNT)
+  @ApiDocumentation(OPERATIONS.GET_COUNT)
   @Get(ROUTES.GET_COUNT)
   public getCount(@Me() me: ServerUser) {
     return this.service.unreadCount(me.user.id);
   }
 
-  @ApiOperation(OPERATIONS.PATCH)
+  @ApiDocumentation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
-  @ApiOperation(OPERATIONS.PUT)
-  @Put(ROUTES.PUT)
-  public read(
+  public readPatch(
     @Parameter(Parameters.id) id: string,
     @Query("action", new ParseEnumPipe(ACTIONS))
     action: (typeof ACTIONS)[number],
@@ -72,11 +69,45 @@ export class NotificationsController {
     return this.service.unread(id, me.user.id);
   }
 
-  @ApiOperation(OPERATIONS.PATCH_MANY)
+  @ApiDocumentation(OPERATIONS.PUT)
+  @Put(ROUTES.PUT)
+  public readPut(
+    @Parameter(Parameters.id) id: string,
+    @Query("action", new ParseEnumPipe(ACTIONS))
+    action: (typeof ACTIONS)[number],
+    @Me() me: ServerUser,
+  ) {
+    if (action === "read") {
+      return this.service.read(id, me.user.id);
+    }
+
+    return this.service.unread(id, me.user.id);
+  }
+
+  @ApiDocumentation(OPERATIONS.PATCH_MANY)
   @Patch(ROUTES.PATCH_MANY)
-  @ApiOperation(OPERATIONS.PUT_MANY)
+  public readManyPatch(
+    @Queries(NotificationWhereDto) where: NotificationWhereDto,
+    @Query("action", new ParseEnumPipe(ACTIONS))
+    action: (typeof ACTIONS)[number],
+    @Me() me: ServerUser,
+  ) {
+    if (action === "read") {
+      return this.service.readMany({
+        recipientId: me.user.id,
+        ...where,
+      });
+    }
+
+    return this.service.unreadMany({
+      recipientId: me.user.id,
+      ...where,
+    });
+  }
+
+  @ApiDocumentation(OPERATIONS.PUT_MANY)
   @Put(ROUTES.PUT_MANY)
-  public readMany(
+  public readManyPut(
     @Queries(NotificationWhereDto) where: NotificationWhereDto,
     @Query("action", new ParseEnumPipe(ACTIONS))
     action: (typeof ACTIONS)[number],

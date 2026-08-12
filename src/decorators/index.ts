@@ -8,3 +8,4 @@ export * from "./headers.decorator";
 export * from "./queries.decorator";
 export * from "./is-name.decorator";
 export * from "./trim.decorator";
+export * from "./api-documentation.decorator";

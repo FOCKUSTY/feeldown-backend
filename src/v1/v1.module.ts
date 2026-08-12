@@ -18,18 +18,17 @@ import { AuthStrategy } from "./strategies";
 
 import { applyAppFilters } from "./filters";
 import { CustomCacheInterceptor } from "./interceptors";
-import { AuthEntity, UserEntity } from "./entities";
+import { ENTITIES } from "./entities";
 import { GuardsModule } from "./guards";
 import {
   AuthModule,
-  CreateUserDto,
-  CreateUserCredentials,
   UsersModule,
   PostsModule,
   NotificationsModule,
   FriendshipsModule,
   BlockModule,
   FollowModule,
+  DTO,
 } from "./routes";
 
 export const v1Modules = [
@@ -43,9 +42,11 @@ export const v1Modules = [
 ];
 export const v1Swagger = createSwaggerConfig({
   version: "v1",
-  document: new DocumentBuilder().setTitle("OPEN API v1 documentation"),
+  document: new DocumentBuilder()
+    .setTitle("OPEN API v1 documentation")
+    .addBearerAuth(),
   documentOptions: {
-    extraModels: [CreateUserDto, CreateUserCredentials, UserEntity, AuthEntity],
+    extraModels: [...ENTITIES, ...DTO],
   },
 });
 

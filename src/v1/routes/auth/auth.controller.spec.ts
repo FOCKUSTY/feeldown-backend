@@ -9,6 +9,9 @@ import { AppModule } from "@/app.module";
 import { PrismaService } from "@/database";
 
 import { Headers } from "@/enums";
+import { Prefix } from "@1/enums";
+
+const p = Prefix.username;
 
 describe("AuthController (e2e)", () => {
   let app: INestApplication;
@@ -93,7 +96,7 @@ describe("AuthController (e2e)", () => {
     });
   });
 
-  describe("GET /api/v1/auth/@me", () => {
+  describe(`GET /api/v1/auth/${p}me`, () => {
     beforeAll(async () => {
       await request(app.getHttpServer())
         .post("/api/v1/auth/")
@@ -104,7 +107,7 @@ describe("AuthController (e2e)", () => {
 
     it("should return current user data with valid token", async () => {
       const response = await request(app.getHttpServer())
-        .get("/api/v1/auth/@me")
+        .get(`/api/v1/auth/${p}me`)
         .set(Headers.authorization, `Bearer ${me.auth.token}`)
         .expect(HttpStatus.OK);
 
@@ -116,13 +119,13 @@ describe("AuthController (e2e)", () => {
 
     it("should return 401 if no token provided", async () => {
       await request(app.getHttpServer())
-        .get("/api/v1/auth/@me")
+        .get(`/api/v1/auth/${p}me`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     it("should return 400 if invalid token provided", async () => {
       await request(app.getHttpServer())
-        .get("/api/v1/auth/@me")
+        .get(`/api/v1/auth/${p}me`)
         .set(Headers.authorization, "Bearer invalid.token.here")
         .expect(HttpStatus.BAD_REQUEST);
     });

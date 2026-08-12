@@ -7,6 +7,7 @@ import { AUTH_GUARD_PROVIDERS } from "@1/guards";
 import { SERVER_USER_PROVIDERS } from "@1/services";
 import { PrismaService } from "@/database";
 import { FriendshipNotificationsEmitter } from "../notifications";
+import { UsernameSlugPipe } from "@1/pipes";
 
 @Module({
   imports: [],
@@ -15,6 +16,7 @@ import { FriendshipNotificationsEmitter } from "../notifications";
     FriendshipsService,
     PrismaService,
     FriendshipNotificationsEmitter,
+    UsernameSlugPipe,
     ...AUTH_GUARD_PROVIDERS,
     ...SERVER_USER_PROVIDERS,
   ],

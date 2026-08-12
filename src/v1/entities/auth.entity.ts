@@ -5,6 +5,7 @@ import { ApiProperty, ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 
 import { IsDate, IsOptional, IsString, IsUUID } from "class-validator";
 import { Type } from "class-transformer";
+import { Schema } from "@1/enums";
 
 export interface PasswordCredentials {
   username: string;
@@ -41,7 +42,7 @@ export interface SignUpData {
   service?: ServiceMeta & PassportCredentials;
 }
 
-@ApiSchema({ name: "AuthSchema" })
+@ApiSchema({ name: Schema.AUTH })
 export class AuthEntity implements Auth {
   @ApiProperty()
   @IsUUID()

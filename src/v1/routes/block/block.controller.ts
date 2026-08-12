@@ -1,6 +1,5 @@
 import type { ServerUser } from "@1/types";
 
-import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Get,
@@ -11,7 +10,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-import { Me, Queries } from "@/decorators";
+import { ApiDocumentation, Me, Queries } from "@/decorators";
 import { AuthGuard } from "@1/guards";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./block.routes";
@@ -23,7 +22,7 @@ import { BlockCreateDto, BlockFilterDto } from "./dto";
 export class BlockController {
   public constructor(private readonly service: BlockService) {}
 
-  @ApiOperation(OPERATIONS.GET)
+  @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   public get(
     @Queries(BlockFilterDto) query: BlockFilterDto,
@@ -37,13 +36,13 @@ export class BlockController {
     });
   }
 
-  @ApiOperation(OPERATIONS.GET_ONE)
+  @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   public getOne(@Parameter("id") id: string) {
     return this.service.getOne({ id });
   }
 
-  @ApiOperation(OPERATIONS.POST)
+  @ApiDocumentation(OPERATIONS.POST)
   @Post(ROUTES.POST)
   public post(@Body() data: BlockCreateDto, @Me() me: ServerUser) {
     return this.service.create({
@@ -52,7 +51,7 @@ export class BlockController {
     });
   }
 
-  @ApiOperation(OPERATIONS.DELETE)
+  @ApiDocumentation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   public delete(@Parameter("id") id: string, @Me() me: ServerUser) {
     return this.service.delete({

@@ -1,6 +1,5 @@
 import type { ResolvedPostnameSlug, ServerUser } from "@1/types";
 
-import { ApiOperation } from "@nestjs/swagger";
 import {
   Controller,
   Injectable,
@@ -13,7 +12,7 @@ import {
   Patch,
 } from "@nestjs/common";
 
-import { Me, Public, Queries } from "@/decorators";
+import { ApiDocumentation, Me, Public, Queries } from "@/decorators";
 import { PostnameSlugPipe } from "@1/pipes";
 import { Parameters } from "@1/enums";
 
@@ -27,14 +26,14 @@ import { PostsService as Service } from "./posts.service";
 export class PostsController {
   public constructor(private readonly service: Service) {}
 
-  @ApiOperation(OPERATIONS.GET)
+  @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   @Public()
   public get(@Queries(PostsFilterDto) query: PostsFilterDto) {
     return this.service.get(query);
   }
 
-  @ApiOperation(OPERATIONS.GET_ONE)
+  @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   @Public()
   public getOne(
@@ -44,13 +43,13 @@ export class PostsController {
     return this.service.getOne(where);
   }
 
-  @ApiOperation(OPERATIONS.POST)
+  @ApiDocumentation(OPERATIONS.POST)
   @Post(ROUTES.POST)
   public post(@Body() data: PostCreateDto, @Me() me: ServerUser) {
     return this.service.create({ ...data, userId: me.user.id });
   }
 
-  @ApiOperation(OPERATIONS.PUT)
+  @ApiDocumentation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
   public put(
     @Parameter(Parameters.slug, PostnameSlugPipe)
@@ -65,7 +64,7 @@ export class PostsController {
     });
   }
 
-  @ApiOperation(OPERATIONS.PATCH)
+  @ApiDocumentation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
   public patch(
     @Parameter(Parameters.slug, PostnameSlugPipe)
@@ -80,7 +79,7 @@ export class PostsController {
     });
   }
 
-  @ApiOperation(OPERATIONS.DELETE)
+  @ApiDocumentation(OPERATIONS.DELETE)
   @Delete(ROUTES.DELETE)
   public delete(@Parameter(Parameters.id) id: string, @Me() me: ServerUser) {
     return this.service.delete({

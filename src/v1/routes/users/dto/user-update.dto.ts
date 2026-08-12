@@ -1,9 +1,11 @@
 import type { User } from "@1/entities";
 
-import { ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 import { IsOptional, IsString, Length } from "class-validator";
 import { IsName, Trim } from "@/decorators";
+import { Schema } from "@1/enums";
 
+@ApiSchema({ name: Schema.USER_UPDATE })
 export class UserUpdateDto implements Partial<User> {
   @ApiPropertyOptional()
   @IsOptional()

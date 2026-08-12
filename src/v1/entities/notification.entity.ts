@@ -11,8 +11,9 @@ import {
   IsDate,
 } from "class-validator";
 import { Type } from "class-transformer";
+import { Schema } from "@1/enums";
 
-@ApiSchema({ name: "NotificationSchema" })
+@ApiSchema({ name: Schema.NOTIFICATION })
 export class NotificationEntity implements Notification {
   @ApiProperty()
   @IsUUID()

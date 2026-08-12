@@ -3,8 +3,9 @@ import type { Post } from "@1/types";
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 import { IsUUID, IsString, Length, IsDate } from "class-validator";
 import { Type } from "class-transformer";
+import { Schema } from "@1/enums";
 
-@ApiSchema({ name: "PostSchema" })
+@ApiSchema({ name: Schema.POST })
 export class PostEntity implements Post {
   @ApiProperty()
   @IsUUID()
