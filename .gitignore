@@ -6,6 +6,8 @@
 # dryrun
 dryrun
 
+*.ignore.ts
+
 # logger
 /loggers.json
 

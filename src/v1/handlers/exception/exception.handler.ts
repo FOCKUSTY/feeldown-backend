@@ -12,7 +12,7 @@ export class ExceptionHandlerRegistry {
   public handle(
     exception: unknown,
     host: ArgumentsHost,
-  ): ExceptionHandlerResult {
+  ): ExceptionHandlerResult | false {
     for (const handler of this.handlers) {
       if (!handler.isValid(exception)) {
         continue;
@@ -21,9 +21,6 @@ export class ExceptionHandlerRegistry {
       return handler.execute(exception, host);
     }
 
-    return {
-      statusCode: 500,
-      message: "Unexpected error",
-    };
+    return false;
   }
 }

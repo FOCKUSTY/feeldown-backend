@@ -1,13 +1,14 @@
 import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
 
 import { Catch } from "@nestjs/common";
+import { LoggerService } from "@/services";
 import { ExceptionHandlerRegistry, PrismaExceptionHandler } from "@1/handlers";
 
 @Catch()
 export class PrismaExceptionFilter implements ExceptionFilter {
   private readonly registry: ExceptionHandlerRegistry;
 
-  public constructor() {
+  public constructor(private readonly logger: LoggerService) {
     this.registry = new ExceptionHandlerRegistry().apply(
       new PrismaExceptionHandler(),
     );
@@ -18,7 +19,16 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     const response = context.getResponse();
     const request = context.getRequest();
 
-    const { statusCode, message } = this.registry.handle(exception, host);
+    const handled = this.registry.handle(exception, host);
+    if (!handled) {
+      throw exception;
+    }
+
+    const { statusCode, message } = handled;    
+    this.logger.error([
+      new Error(`[Prisma Exception] ${statusCode} - ${message}`),
+      exception as Error,
+    ]);
 
     response.status(statusCode).json({
       statusCode,

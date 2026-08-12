@@ -5,7 +5,7 @@ export const POST_ERRORS = fockerorFactory.execute("POST EXCEPTION", {
   POST_NOT_FOUND: {
     message: "Post not found",
     description: "Пост не был найден",
-    status: HttpStatus.BAD_REQUEST,
+    status: HttpStatus.NOT_FOUND,
   },
 
   NOT_ACCEPTABLE: {

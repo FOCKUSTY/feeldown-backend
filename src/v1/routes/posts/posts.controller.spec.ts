@@ -203,7 +203,7 @@ describe("PostsController (e2e)", () => {
 
     it("should return 404 if post not found", async () => {
       await request(application.getHttpServer())
-        .get("/api/v1/posts/non_existent")
+        .get("/api/v1/posts/~non_existent")
         .expect(HttpStatus.NOT_FOUND);
     });
   });
@@ -227,6 +227,8 @@ describe("PostsController (e2e)", () => {
         .send(updatedPayload)
         .expect(HttpStatus.OK);
 
+      postname = updatedPayload.postname;
+
       expect(response.body).toMatchObject({
         title: updatedPayload.title,
         postname: updatedPayload.postname,
@@ -240,7 +242,7 @@ describe("PostsController (e2e)", () => {
         .put(`/api/v1/posts/~${postname}`)
         .set(Headers.authorization, `Bearer ${otherToken}`)
         .send({ title: "Hack" })
-        .expect(HttpStatus.BAD_REQUEST);
+        .expect(HttpStatus.NOT_ACCEPTABLE);
     });
 
     it("should return 401 without token", async () => {
@@ -339,7 +341,7 @@ describe("PostsController (e2e)", () => {
 
     it("should return 404 for non-existent post", async () => {
       await request(application.getHttpServer())
-        .delete("/api/v1/posts/~non_existent")
+        .delete("/api/v1/posts/non_existent")
         .set(Headers.authorization, `Bearer ${ownerToken}`)
         .expect(HttpStatus.NOT_FOUND);
     });
