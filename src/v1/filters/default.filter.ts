@@ -28,6 +28,7 @@ export class DefaultExceptionFilter implements ExceptionFilter {
     if (!handled) {
       response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        body: "Internal Server Error",
         message: "Internal Server Error",
         timestamp: new Date().toISOString(),
         path: request.url,
@@ -43,6 +44,7 @@ export class DefaultExceptionFilter implements ExceptionFilter {
 
     response.status(statusCode).json({
       statusCode,
+      body: message,
       message,
       timestamp: new Date().toISOString(),
       path: request.url,

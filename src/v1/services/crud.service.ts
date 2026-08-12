@@ -88,7 +88,7 @@ export abstract class CrudService<
   public async getOne<
     W extends Types["getOne"],
     R = Prisma.Result<CrudModel<ModelName>, W, "findUnique">,
-  >(where: W): Promise<R> {
+  >(where: W): Promise<NonNullable<R>> {
     await this.validateOrThrow("getOne", where);
     const modifiedWhere = this._modificators.where?.getOne?.(where) || where;
 

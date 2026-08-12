@@ -48,10 +48,8 @@ export class FriendshipsService extends CrudService<
   ): Promise<User[]> {
     const friendships = await this.get({
       ...filter,
-      where: {
-        status: filter.status || FriendRequestStatus.ACCEPTED,
-        OR: this.getOr(userId),
-      },
+      status: filter.status || FriendRequestStatus.ACCEPTED,
+      OR: this.getOr(userId),
       select: {
         sender: true,
         receiver: true,

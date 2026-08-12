@@ -13,7 +13,7 @@ import {
   Patch,
 } from "@nestjs/common";
 
-import { Me, Queries } from "@/decorators";
+import { Me, Queries, UserFindOptions } from "@/decorators";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -26,6 +26,7 @@ import {
 import { ROUTE, ROUTES, OPERATIONS } from "./friendships.routes";
 import { FriendshipsService as Service } from "./friendships.service";
 import { FollowFilterDto } from "../follow";
+import { ResolvedSlugToIdPipe } from "@1/pipes";
 
 @Injectable()
 @Controller(ROUTE)
@@ -33,13 +34,13 @@ import { FollowFilterDto } from "../follow";
 export class FriendshipsController {
   public constructor(private readonly service: Service) {}
 
-  @ApiOperation(OPERATIONS.GET)
-  @Get(ROUTES.GET)
+  @ApiOperation(OPERATIONS.GET_USER_FRIENDS)
+  @Get(ROUTES.GET_USER_FRIENDS)
   public get(
     @Queries(FollowFilterDto) query: FriendshipFilterDto,
-    @Me() me: ServerUser,
+    @UserFindOptions(Parameters.userSlug, ResolvedSlugToIdPipe) id: string,
   ) {
-    return this.service.getUsers(query, me.user.id);
+    return this.service.getUsers(query, id);
   }
 
   @ApiOperation(OPERATIONS.GET_ONE)

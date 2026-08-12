@@ -32,6 +32,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
 
     response.status(statusCode).json({
       statusCode,
+      body: message,
       message,
       timestamp: new Date().toISOString(),
       path: request.url,

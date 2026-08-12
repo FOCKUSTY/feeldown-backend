@@ -4,8 +4,9 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
   route: "friendships",
 
   routes: {
-    GET: "/",
     GET_ONE: "/:id",
+
+    GET_USER_FRIENDS: "/:userSlug/friends",
 
     POST: "/",
 
@@ -14,11 +15,11 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
   } as const,
 
   operations: {
-    GET: {
-      summary: "Getting an array of friend",
-    },
     GET_ONE: {
       summary: "Getting a friend by id",
+    },
+    GET_USER_FRIENDS: {
+      summary: "Getting a user friends",
     },
     POST: {
       summary: "Creaing a friend",
