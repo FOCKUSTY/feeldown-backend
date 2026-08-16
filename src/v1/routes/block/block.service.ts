@@ -19,7 +19,7 @@ export class BlockService extends CrudService<
   public constructor(
     protected readonly prisma: PrismaService,
     validator: BlockValidator,
-    private readonly events: BlockListener,
+    events: BlockListener,
   ) {
     super(prisma.block, {
       modificators: {
@@ -29,7 +29,7 @@ export class BlockService extends CrudService<
       },
       validatorsOrThrow: validator,
       events: {
-        beforeCreate: (input) => this.events.beforeCreate(input.base),
+        beforeCreate: (input) => events.beforeCreate(input.base),
       },
     });
   }

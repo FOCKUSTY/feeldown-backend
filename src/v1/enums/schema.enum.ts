@@ -5,7 +5,7 @@ export const SchemaEnumeration = new Enumeration({
   BLOCK_FILTER: "BlockFilterSchema",
   FOLLOW_CREATE: "FollowCreateSchema",
   FOLLOW_FILTER: "FollowFilterSchema",
-  FRIENDSHIP_CREATE: "FriendshipFilterSchema",
+  FRIENDSHIP_CREATE: "FriendshipCreateSchema",
   FRIENDSHIP_FILTER: "FriendshipFilterSchema",
   FRIENDSHIP_UPDATE: "FriendshipUpdateSchema",
   POST_CREATE: "PostCreateSchema",
