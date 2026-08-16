@@ -33,8 +33,16 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
     POST: "/",
     PUT: "/:id",
     PATCH: "/:id",
+    DELETE: "/:id",
+    DELETE_BY_USER: "",
   } as const,
   operations: {
+    DELETE: {
+      summary: "Delete a request",
+    },
+    DELETE_BY_USER: {
+      summary: "Delete a request by user",
+    },
     GET_USER_FRIENDS: {
       summary: "Get friends of a user",
       description:

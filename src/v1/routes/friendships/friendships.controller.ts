@@ -4,12 +4,13 @@ import {
   Controller,
   Injectable,
   Get,
-  Param,
+  Param as Parameter,
   Post,
   Body,
   UseGuards,
   Put,
   Patch,
+  Delete,
 } from "@nestjs/common";
 
 import { ApiDocumentation, Me, Queries, UserFindOptions } from "@/decorators";
@@ -20,6 +21,7 @@ import {
   FriendshipCreateDto,
   FriendshipUpdateDto,
   FriendshipFilterDto,
+  FriendshipDeleteDto,
 } from "./dto";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./friendships.routes";
@@ -44,7 +46,7 @@ export class FriendshipsController {
 
   @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
-  public getOne(@Param(Parameters.id) id: string, @Me() me: ServerUser) {
+  public getOne(@Parameter(Parameters.id) id: string, @Me() me: ServerUser) {
     return this.service.getOne({
       where: { id },
       meUserId: me.user.id,
@@ -63,7 +65,7 @@ export class FriendshipsController {
   @ApiDocumentation(OPERATIONS.PUT)
   @Put(ROUTES.PUT)
   public put(
-    @Param(Parameters.id) id: string,
+    @Parameter(Parameters.id) id: string,
     @Queries(FriendshipUpdateDto) data: FriendshipUpdateDto,
     @Me() me: ServerUser,
   ) {
@@ -77,13 +79,31 @@ export class FriendshipsController {
   @ApiDocumentation(OPERATIONS.PATCH)
   @Patch(ROUTES.PATCH)
   public patch(
-    @Param(Parameters.id) id: string,
+    @Parameter(Parameters.id) id: string,
     @Queries(FriendshipUpdateDto) data: FriendshipUpdateDto,
     @Me() me: ServerUser,
   ) {
     return this.service.update({
       where: { id },
       data,
+      meUserId: me.user.id,
+    });
+  }
+
+  @ApiDocumentation(OPERATIONS.DELETE_BY_USER)
+  @Delete(ROUTES.DELETE_BY_USER)
+  public deleteByUser(
+    @Queries(FriendshipDeleteDto) query: FriendshipDeleteDto,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.deleteByUsers(me.user.id, query.userId);
+  }
+
+  @ApiDocumentation(OPERATIONS.DELETE)
+  @Delete(ROUTES.DELETE)
+  public delete(@Parameter(Parameters.id) id: string, @Me() me: ServerUser) {
+    return this.service.delete({
+      where: { id },
       meUserId: me.user.id,
     });
   }

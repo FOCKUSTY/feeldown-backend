@@ -1,5 +1,5 @@
-import { Schema } from "@1/enums";
 import type { FriendRequest } from "@1/types";
+import { Schema } from "@1/enums";
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 

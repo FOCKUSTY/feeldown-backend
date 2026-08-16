@@ -1,9 +1,10 @@
 import type { ResolvedUsernameSlug } from "@1/types";
-import type { PipeTransform } from "@nestjs/common";
-import { UsersService } from "@1/routes";
+import { Injectable, type PipeTransform } from "@nestjs/common";
+import { PrismaService } from "@/database";
 
+@Injectable()
 export class ResolvedSlugToIdPipe implements PipeTransform {
-  public constructor(private readonly userService: UsersService) {}
+  public constructor(private readonly prisma: PrismaService) {}
 
   public async transform(value: ResolvedUsernameSlug): Promise<string> {
     if (value.id) {
@@ -14,7 +15,9 @@ export class ResolvedSlugToIdPipe implements PipeTransform {
   }
 
   private async getUser(username: string) {
-    const user = await this.userService.getOne({ username });
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { username },
+    });
     return user.id;
   }
 }

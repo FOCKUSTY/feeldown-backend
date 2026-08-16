@@ -2,7 +2,7 @@ import type { FriendshipUpdateDto, FriendshipCreateDto } from "./dto";
 import type { User } from "@1/entities";
 import type { FriendRequest, FriendshipFilter } from "@1/types";
 
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 
 import { FriendRequestStatus } from "@1/types";
 import { PrismaService } from "@/database";
@@ -17,6 +17,7 @@ export class FriendshipsService extends CrudService<
   {
     getOne: { where: { id: string }; meUserId: string };
     create: FriendshipCreateDto & { senderId: string };
+    delete: { where: { id: string }; meUserId: string };
     update: {
       where: { id: string };
       data: FriendshipUpdateDto;
@@ -33,12 +34,22 @@ export class FriendshipsService extends CrudService<
         where: {
           getOne: (input) => this.getWhere(input),
           update: (input) => this.getWhere(input),
+          delete: (input) => this.getWhere(input),
         },
       },
       events: protectEvents({
         create: ({ result }) => this.onCreate(result),
         update: ({ result }) => this.onUpdate(result),
       }),
+      validatorsOrThrow: {
+        validateCreate: async (input) => {
+          if (input.receiverId === input.senderId) {
+            throw new HttpException("Can not friend yourself", 400);
+          }
+
+          return true;
+        },
+      },
     });
   }
 
@@ -57,7 +68,7 @@ export class FriendshipsService extends CrudService<
     });
 
     const users = friendships.map(({ receiver, sender }) => {
-      if (sender.id === userId) {
+      if (sender.id !== userId) {
         return sender;
       }
 
