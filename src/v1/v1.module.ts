@@ -3,6 +3,7 @@ import type { NestModule, MiddlewareConsumer } from "@nestjs/common";
 import { Module } from "@nestjs/common";
 import { DocumentBuilder } from "@nestjs/swagger";
 
+import { EventEmitterModule } from "@nestjs/event-emitter";
 import { CacheModule } from "@nestjs/cache-manager";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD, APP_INTERCEPTOR, RouterModule } from "@nestjs/core";
@@ -56,6 +57,7 @@ export const v1Swagger = createSwaggerConfig({
       module,
       RouterModule.register([{ path: "v1", module }]),
     ]),
+    EventEmitterModule.forRoot(),
     ThrottlerModule.forRoot([
       {
         ttl: +env.THROLLER_TIME_TO_LIVE_IN_MILLISECONDS,
