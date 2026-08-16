@@ -38,8 +38,8 @@ export class FriendshipsService extends CrudService<
         },
       },
       events: protectEvents({
-        create: ({ result }) => this.onCreate(result),
-        update: ({ result }) => this.onUpdate(result),
+        afterCreate: ({ result }) => this.onCreate(result),
+        afterUpdate: ({ result }) => this.onUpdate(result),
       }),
       validatorsOrThrow: {
         validateCreate: async (input) => {
@@ -59,8 +59,10 @@ export class FriendshipsService extends CrudService<
   ): Promise<User[]> {
     const friendships = await this.get({
       ...filter,
-      status: filter.status || FriendRequestStatus.ACCEPTED,
-      OR: this.getOr(userId),
+      where: {
+        status: filter.status || FriendRequestStatus.ACCEPTED,
+        OR: this.getOr(userId),
+      },
       select: {
         sender: true,
         receiver: true,
@@ -89,16 +91,18 @@ export class FriendshipsService extends CrudService<
     });
   }
 
-  protected onCreate(request: FriendRequest) {
-    return this.emitter.execute(request, FriendRequestStatus.PENDING);
+  protected async onCreate(request: FriendRequest) {
+    await this.emitter.execute(request, FriendRequestStatus.PENDING);
+    return;
   }
 
-  protected onUpdate(request: FriendRequest) {
+  protected async onUpdate(request: FriendRequest) {
     if (request.status !== FriendRequestStatus.ACCEPTED) {
-      return null;
+      return;
     }
 
-    return this.emitter.execute(request, FriendRequestStatus.ACCEPTED);
+    this.emitter.execute(request, FriendRequestStatus.ACCEPTED);
+    return;
   }
 
   private getWhere<W, T extends { meUserId: string; where: W }>(input: T) {

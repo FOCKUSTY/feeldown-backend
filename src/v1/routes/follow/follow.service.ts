@@ -56,6 +56,15 @@ export class FollowService extends CrudService<
     });
   }
 
+  public async deleteByUser(followerId: string, followeeId: string) {
+    return this.prisma.follow.deleteMany({
+      where: {
+        followerId,
+        followeeId,
+      },
+    });
+  }
+
   public async deleteByUsers(userA: string, userB: string) {
     return this.prisma.follow.deleteMany({
       where: {

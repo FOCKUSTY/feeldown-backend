@@ -79,7 +79,7 @@ export abstract class CrudService<
     const execute = () =>
       //@ts-ignore
       this.model.findMany({
-        where: modifiedWhere,
+        ...modifiedWhere,
         orderBy,
         skip,
         cursor: cursorObject,

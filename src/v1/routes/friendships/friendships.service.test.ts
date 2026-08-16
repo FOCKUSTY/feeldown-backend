@@ -114,13 +114,31 @@ describe("FriendshipsService", () => {
 
       await service.getUsers(filter, userIdA);
 
-      expect(prismaMock.friendRequest.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            status: FriendRequestStatus.ACCEPTED,
-          }),
-        }),
-      );
+      expect(prismaMock.friendRequest.findMany).toHaveBeenCalledWith({
+        where: {
+          status: FriendRequestStatus.ACCEPTED,
+          OR: [
+            {
+              senderId: userIdA,
+            },
+            {
+              receiverId: userIdA,
+            },
+          ],
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+        select: {
+          receiver: true,
+          sender: true,
+        },
+        skip: 0,
+        take: 10,
+        cursor: undefined,
+        include: undefined,
+        omit: undefined,
+      });
     });
   });
 

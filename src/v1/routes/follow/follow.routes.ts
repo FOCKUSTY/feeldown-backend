@@ -21,8 +21,12 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
     GET_FOLLOWING: "/following",
     POST: "/",
     DELETE: "/:id",
+    DELETE_BY_USER: "/",
   } as const,
   operations: {
+    DELETE_BY_USER: {
+      summary: "Delete follow by user",
+    },
     GET: {
       summary: "Get follow records where current user is the follower",
       description:

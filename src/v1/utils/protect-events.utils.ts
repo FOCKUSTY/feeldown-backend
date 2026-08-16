@@ -9,7 +9,7 @@ export const protectEvents = <const T extends Events>(events: T) => {
     const func = (...parameters: Parameters<typeof event>) => {
       return tryCatch(
         () => {
-          return event(parameters);
+          return event(...parameters);
         },
         (error: unknown): null => {
           if (error instanceof HttpException) {
