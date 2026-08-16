@@ -8,14 +8,12 @@ import { PrismaService } from "@/database";
 
 @Injectable()
 export class WebSocketAuthGuard implements CanActivate {
-  public constructor(
-    private readonly service: WebSocketAuthGuardService
-  ) {}
+  public constructor(private readonly service: WebSocketAuthGuardService) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const websocket = context.switchToWs();
     const client = websocket.getClient<Socket>();
-    
+
     if (client.data.user) {
       return true;
     }

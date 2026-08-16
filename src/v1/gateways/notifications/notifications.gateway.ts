@@ -1,6 +1,13 @@
 import type { Namespace, Socket } from "socket.io";
-import type { OnGatewayConnection, OnGatewayDisconnect } from "@nestjs/websockets";
-import { WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
+import type {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+} from "@nestjs/websockets";
+import {
+  WebSocketGateway,
+  WebSocketServer,
+  WsException,
+} from "@nestjs/websockets";
 import { UseGuards } from "@nestjs/common";
 import { WebSocketAuthGuard } from "@1/guards";
 import { Notification } from "@1/entities";
@@ -8,12 +15,14 @@ import { GATEWAYS } from "./notifications.gateways";
 
 @WebSocketGateway({
   cors: {
-    origin: "*"
+    origin: "*",
   },
-  namespace: "/notifications"
+  namespace: "/notifications",
 })
 @UseGuards(WebSocketAuthGuard)
-export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class NotificationsGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   public readonly server: Namespace;
 
@@ -37,18 +46,15 @@ export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisco
     client.leave(room);
   }
 
-  public notify(
-    userId: string,
-    notification: Notification
-  ) {
+  public notify(userId: string, notification: Notification) {
     const room = this.getPersonalRoomByUserId(userId);
     this.server.to(room).emit(GATEWAYS.NOTIFY, notification);
   }
 
   private getPersonalRoomByUserId(userId: string) {
-    return `personal:${userId}`
+    return `personal:${userId}`;
   }
-  
+
   private getPersonalRoom(client: Socket) {
     return this.getPersonalRoomByUserId(client.data.user.user.id);
   }
