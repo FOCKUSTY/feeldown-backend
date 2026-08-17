@@ -31,8 +31,8 @@ export const env = Env.create(process.env)({
     "ENCODING_TYPE",
     "PORT",
     "CACHE_TIME_TO_LIVE_IN_MILLISECONDS",
-    "THROLLER_TIME_TO_LIVE_IN_MILLISECONDS",
-    "THROLLER_LIMIT",
+    "THROTTLER_TIME_TO_LIVE_IN_MILLISECONDS",
+    "THROTTLER_LIMIT",
   ] as const,
 
   default: {
@@ -40,8 +40,8 @@ export const env = Env.create(process.env)({
     ENCODING_TYPE: "hex",
     PORT: "8080",
     CACHE_TIME_TO_LIVE_IN_MILLISECONDS: "300000",
-    THROLLER_TIME_TO_LIVE_IN_MILLISECONDS: "20000",
-    THROLLER_LIMIT: "20",
+    THROTTLER_TIME_TO_LIVE_IN_MILLISECONDS: "20000",
+    THROTTLER_LIMIT: "20",
   },
 
   unique: {

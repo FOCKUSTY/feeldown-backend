@@ -125,19 +125,19 @@ docker-compose down
 
 Основные переменные (полный список в `.env`):
 
-| Переменная                                                | Назначение                           |
-| --------------------------------------------------------- | ------------------------------------ |
-| `DATABASE_URL`                                            | Строка подключения к PostgreSQL      |
-| `SESSION_SECRET`                                          | Секрет для express-session           |
-| `HASH_KEY`                                                | Ключ для JWT                         |
-| `TOKEN_EXPIRATION`                                        | Время жизни токена (например, `28d`) |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`                | OAuth2 Google                        |
-| `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`                | OAuth2 GitHub                        |
-| `CALLBACK_URL`                                            | URL для редиректа после OAuth2       |
-| `CLIENT_URL`                                              | URL фронтенда (для CORS)             |
-| `PORT`                                                    | Порт приложения (по умолчанию 8080)  |
-| `ENCODING_TYPE`                                           | Кодировка токена (hex/base64)        |
-| `THROLLER_LIMIT`, `THROLLER_TIME_TO_LIVE_IN_MILLISECONDS` | Ограничение запросов (throttler)     |
+| Переменная                                                  | Назначение                           |
+| ----------------------------------------------------------- | ------------------------------------ |
+| `DATABASE_URL`                                              | Строка подключения к PostgreSQL      |
+| `SESSION_SECRET`                                            | Секрет для express-session           |
+| `HASH_KEY`                                                  | Ключ для JWT                         |
+| `TOKEN_EXPIRATION`                                          | Время жизни токена (например, `28d`) |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`                  | OAuth2 Google                        |
+| `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`                  | OAuth2 GitHub                        |
+| `CALLBACK_URL`                                              | URL для редиректа после OAuth2       |
+| `CLIENT_URL`                                                | URL фронтенда (для CORS)             |
+| `PORT`                                                      | Порт приложения (по умолчанию 8080)  |
+| `ENCODING_TYPE`                                             | Кодировка токена (hex/base64)        |
+| `THROTTLER_LIMIT`, `THROTTLER_TIME_TO_LIVE_IN_MILLISECONDS` | Ограничение запросов (throttler)     |
 
 ---
 

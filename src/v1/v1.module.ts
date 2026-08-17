@@ -60,8 +60,8 @@ export const v1Swagger = createSwaggerConfig({
     EventEmitterModule.forRoot(),
     ThrottlerModule.forRoot([
       {
-        ttl: +env.THROLLER_TIME_TO_LIVE_IN_MILLISECONDS,
-        limit: +env.THROLLER_LIMIT,
+        ttl: +env.THROTTLER_TIME_TO_LIVE_IN_MILLISECONDS,
+        limit: +env.THROTTLER_LIMIT,
       },
     ]),
     CacheModule.register({
