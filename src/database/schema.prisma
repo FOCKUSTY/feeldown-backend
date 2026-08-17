@@ -209,18 +209,27 @@ model CommentReaction {
 }
 
 enum NotificationType {
+  CREATE_POST
+
   REACT_POST
   REACT_COMMENT
+  
   COMMENT_POST
   REPLY_COMMENT
+
   FRIEND_REQUEST
   FRIEND_ACCEPT
+
+  MENTION
+  FOLLOW
 }
 
 enum ReferenceType {
   POST
   COMMENT
   FRIENDS
+  FOLLOW
+  USER
 }
 
 model Notification {
