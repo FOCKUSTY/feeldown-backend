@@ -5,8 +5,10 @@ import type {
   User,
 } from "@1/types";
 
+import { EventEmitter2 as EventEmitter } from "@nestjs/event-emitter";
 import { Injectable } from "@nestjs/common";
 
+import { Events } from "@1/enums";
 import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 
@@ -23,6 +25,7 @@ export class FollowService extends CrudService<
   public constructor(
     protected readonly prisma: PrismaService,
     validator: FollowValidator,
+    emitter: EventEmitter,
   ) {
     super(prisma.follow, {
       modificators: {
@@ -31,6 +34,11 @@ export class FollowService extends CrudService<
         },
       },
       validatorsOrThrow: validator,
+      events: {
+        afterCreate: async (input) => {
+          emitter.emit(Events.FOLLOW_CREATED, input.result);
+        },
+      },
     });
   }
 

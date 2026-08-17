@@ -6,6 +6,7 @@ export * from "./posts.controller";
 export * from "./posts.service";
 export * from "./posts.module";
 export * from "./posts.validator";
+export * from "./post.listener";
 
 export * as POSTS_ROUTES from "./posts.routes";
 

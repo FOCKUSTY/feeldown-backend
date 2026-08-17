@@ -1,7 +1,9 @@
 import type { PostsDeleteInput, PostsUpdateInput } from "@1/types";
 
+import { EventEmitter2 as EventEmitter } from "@nestjs/event-emitter";
 import { Injectable } from "@nestjs/common";
 
+import { Events } from "@1/enums";
 import { CrudService } from "@1/services";
 import { PrismaService } from "@/database";
 
@@ -21,6 +23,7 @@ export class PostsService extends CrudService<
 > {
   public constructor(
     protected readonly prisma: PrismaService,
+    emitter: EventEmitter,
     validator: PostsValidator,
   ) {
     super(prisma.post, {
@@ -31,6 +34,11 @@ export class PostsService extends CrudService<
         },
       },
       validatorsOrThrow: validator,
+      events: {
+        afterCreate: async (input) => {
+          emitter.emit(Events.POST_CREATED, input.result);
+        },
+      },
     });
   }
 

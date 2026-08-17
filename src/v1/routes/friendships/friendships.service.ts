@@ -1,15 +1,15 @@
 import type { FriendshipUpdateDto, FriendshipCreateDto } from "./dto";
+import type { FriendshipFilter } from "@1/types";
 import type { User } from "@1/entities";
-import type { FriendRequest, FriendshipFilter } from "@1/types";
 
 import { HttpException, Injectable } from "@nestjs/common";
 
 import { FriendRequestStatus } from "@1/types";
 import { PrismaService } from "@/database";
 import { CrudService } from "@1/services";
-import { protectEvents } from "@1/utils";
+import { Events } from "@1/enums";
 
-import { FriendshipNotificationsEmitter } from "../notifications";
+import { EventEmitter2 as EventEmitter } from "@nestjs/event-emitter";
 
 @Injectable()
 export class FriendshipsService extends CrudService<
@@ -27,7 +27,7 @@ export class FriendshipsService extends CrudService<
 > {
   public constructor(
     protected readonly prisma: PrismaService,
-    private readonly emitter: FriendshipNotificationsEmitter,
+    emitter: EventEmitter,
   ) {
     super(prisma.friendRequest, {
       modificators: {
@@ -37,10 +37,14 @@ export class FriendshipsService extends CrudService<
           delete: (input) => this.getWhere(input),
         },
       },
-      events: protectEvents({
-        afterCreate: ({ result }) => this.onCreate(result),
-        afterUpdate: ({ result }) => this.onUpdate(result),
-      }),
+      events: {
+        afterCreate: async ({ result }) => {
+          emitter.emit(Events.FRIENDSHIP_REQUEST_CREATED, result);
+        },
+        afterUpdate: async ({ result }) => {
+          emitter.emit(Events.FRIENDSHIP_REQUEST_UPDATED, result);
+        },
+      },
       validatorsOrThrow: {
         validateCreate: async (input) => {
           if (input.receiverId === input.senderId) {
@@ -89,20 +93,6 @@ export class FriendshipsService extends CrudService<
         ],
       },
     });
-  }
-
-  protected async onCreate(request: FriendRequest) {
-    await this.emitter.execute(request, FriendRequestStatus.PENDING);
-    return;
-  }
-
-  protected async onUpdate(request: FriendRequest) {
-    if (request.status !== FriendRequestStatus.ACCEPTED) {
-      return;
-    }
-
-    this.emitter.execute(request, FriendRequestStatus.ACCEPTED);
-    return;
   }
 
   private getWhere<W, T extends { meUserId: string; where: W }>(input: T) {
