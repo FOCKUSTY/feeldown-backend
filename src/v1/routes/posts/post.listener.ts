@@ -11,7 +11,7 @@ import { Events } from "@1/enums";
 export class PostListener implements CrudListener<"afterCreate"> {
   public constructor(private readonly emitter: PostNotificationsEmitter) {}
 
-  @OnEvent(Events.POST_CREATED, { async: true })
+  @OnEvent(Events.POST_CREATED)
   public async afterCreate(post: PostEntity) {
     await this.emitter.execute(post);
   }

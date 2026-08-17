@@ -1,21 +1,34 @@
-import { tryCatch } from "@/utils";
-import { HttpException } from "@nestjs/common";
+import { tryCatch, tryCatchAsync } from "@/utils";
 
 type Events = Record<string, (...parameters: any[]) => any>;
+type AsyncEvents = Record<string, (...parameters: any[]) => Promise<any>>;
 
 export const protectEvents = <const T extends Events>(events: T) => {
   const entries = Object.entries(events);
   const map = entries.map(([name, event]) => {
     const func = (...parameters: Parameters<typeof event>) => {
       return tryCatch(
+        () => event(...parameters),
         () => {
-          return event(...parameters);
+          return null;
         },
-        (error: unknown): null => {
-          if (error instanceof HttpException) {
-            throw error;
-          }
+      );
+    };
 
+    return [name, func];
+  });
+
+  const protectedEvents = Object.fromEntries(map);
+  return protectedEvents;
+};
+
+export const protectEventsAsync = <const T extends AsyncEvents>(events: T) => {
+  const entries = Object.entries(events);
+  const map = entries.map(([name, event]) => {
+    const func = (...parameters: Parameters<typeof event>) => {
+      return tryCatchAsync(
+        () => event(...parameters),
+        async () => {
           return null;
         },
       );

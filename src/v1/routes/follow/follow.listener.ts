@@ -11,7 +11,7 @@ import { Events } from "@1/enums";
 export class FollowListener implements CrudListener<"afterCreate"> {
   public constructor(private readonly emitter: FollowNotificationsEmitter) {}
 
-  @OnEvent(Events.FOLLOW_CREATED, { async: true })
+  @OnEvent(Events.FOLLOW_CREATED)
   public async afterCreate(follow: FollowEntity) {
     await this.emitter.execute(follow);
   }
