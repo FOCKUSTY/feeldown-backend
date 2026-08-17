@@ -9,7 +9,7 @@ export const protectEvents = <const T extends Events>(events: T) => {
     const func = (...parameters: Parameters<typeof event>) => {
       return tryCatch(
         () => event(...parameters),
-        () => {
+        (): null => {
           return null;
         },
       );
@@ -28,7 +28,7 @@ export const protectEventsAsync = <const T extends AsyncEvents>(events: T) => {
     const func = (...parameters: Parameters<typeof event>) => {
       return tryCatchAsync(
         () => event(...parameters),
-        async () => {
+        async (): Promise<null> => {
           return null;
         },
       );
