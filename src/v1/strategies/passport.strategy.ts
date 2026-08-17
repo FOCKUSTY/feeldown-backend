@@ -1,16 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
-
 import type { Auth, User } from "@1/entities";
+
+import { PASSPORT_STRATEGY_ERRORS } from "@1/errors";
 import { AuthTypes } from "@1/types";
 
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Next,
-  Req,
-  Res,
-} from "@nestjs/common";
+import { Injectable, Next, Req, Res } from "@nestjs/common";
 import { StrategiesService } from "../services";
 
 import passport from "passport";
@@ -70,10 +64,7 @@ export class PassportStrategy {
       return true;
     }
 
-    throw new HttpException(
-      `Method ${method} not found. Try next: ${Object.keys(AuthTypes)}`,
-      HttpStatus.BAD_REQUEST,
-    );
+    throw PASSPORT_STRATEGY_ERRORS.METHOD_NOT_FOUND.execute({ method });
   }
 
   private validateStrategyByMethod(method: string) {
