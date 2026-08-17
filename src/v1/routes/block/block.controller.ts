@@ -10,18 +10,19 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-import { ApiDocumentation, Me, Queries } from "@/decorators";
+import { ApiDocumentation, Me, NoCache, Queries } from "@/decorators";
 import { AuthGuard } from "@1/guards";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./block.routes";
 import { BlockService } from "./block.service";
-import { BlockCreateDto, BlockFilterDto } from "./dto";
+import { BlockCreateDto, BlockFilterDto, BlockDeleteDto } from "./dto";
 
 @Controller(ROUTE)
 @UseGuards(AuthGuard)
 export class BlockController {
   public constructor(private readonly service: BlockService) {}
 
+  @NoCache()
   @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   public get(
@@ -49,6 +50,15 @@ export class BlockController {
       ...data,
       blockerId: me.user.id,
     });
+  }
+
+  @ApiDocumentation(OPERATIONS.DELETE_BY_USER)
+  @Delete(ROUTES.DELETE_BY_USER)
+  public deleteByUser(
+    @Queries(BlockDeleteDto) query: BlockDeleteDto,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.deleteByUser(me.user.id, query.userId);
   }
 
   @ApiDocumentation(OPERATIONS.DELETE)

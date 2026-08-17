@@ -33,4 +33,13 @@ export class BlockService extends CrudService<
       },
     });
   }
+
+  public async deleteByUser(blockerId: string, blockedId: string) {
+    return this.prisma.block.deleteMany({
+      where: {
+        blockerId,
+        blockedId,
+      },
+    });
+  }
 }

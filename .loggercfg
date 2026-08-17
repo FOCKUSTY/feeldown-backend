@@ -1,5 +1,5 @@
 {
-  "logging": false,
+  "logging": true,
   "dir": "./",
   "level": "info",
   "defaultLevel": "info",
@@ -11,8 +11,8 @@
   "deletion_interval": 7,
   "date": true,
   "colors": [
-    "\u001b[32m",
-    "\u001b[32m"
+    "\u001b[0m",
+    "\u001b[0m"
   ],
   "loggers": {
     "[BAD]": {

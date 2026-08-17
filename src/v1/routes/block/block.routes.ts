@@ -1,6 +1,6 @@
 import { Routes } from "@/utils";
 
-import { BlockCreateDto, BlockFilterDto } from "./dto";
+import { BlockCreateDto, BlockFilterDto, BlockDeleteDto } from "./dto";
 import { getSchemaPath } from "@nestjs/swagger";
 import { BlockEntity } from "@1/entities";
 
@@ -12,6 +12,11 @@ const ID_PARAMETER = {
   description: "Block record UUID",
 };
 
+const USER_ID_QUERY = {
+  in: "query" as const,
+  type: BlockDeleteDto,
+};
+
 export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
   route: "block",
   routes: {
@@ -19,6 +24,7 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
     GET_ONE: "/:id",
     POST: "/",
     DELETE: "/:id",
+    DELETE_BY_USER: "/",
   } as const,
   operations: {
     GET: {
@@ -105,9 +111,9 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
       },
     },
     DELETE: {
-      summary: "Unblock a user",
+      summary: "Unblock a user by block ID",
       description: "Deletes a block relationship. Only the blocker can delete.",
-      operationId: "deleteBlock",
+      operationId: "deleteBlockById",
       tags: ["Block"],
       security: [{ bearerAuth: [] }],
       parameters: [ID_PARAMETER],
@@ -117,6 +123,32 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
           content: {
             "application/json": {
               schema: { $ref: getSchemaPath(BlockEntity) },
+            },
+          },
+        },
+        "403": { description: "You are not the blocker" },
+        "404": { description: "Block record not found" },
+        "401": { description: "Missing or invalid token" },
+      },
+    },
+    DELETE_BY_USER: {
+      summary: "Unblock a user by user ID",
+      description:
+        "Deletes a block relationship by specifying the blocked user ID. " +
+        "Only the blocker can perform this action.",
+      operationId: "deleteBlockByUser",
+      tags: ["Block"],
+      security: [{ bearerAuth: [] }],
+      parameters: [USER_ID_QUERY],
+      responses: {
+        "200": {
+          description: "Block deleted",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: { count: { type: "number" } },
+              },
             },
           },
         },
