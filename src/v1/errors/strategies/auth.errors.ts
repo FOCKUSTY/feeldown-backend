@@ -4,6 +4,12 @@ import { fockerorFactory } from "@/errors";
 export const AUTH_STRATEGIES_ERRORS = fockerorFactory.execute(
   "AUTH STRATEGY EXCEPTION",
   {
+    USER_ALREADY_EXISTS: {
+      message: "User with username ${{ username }} already exists",
+      description: "Попытка зарегистрировать пользователя с уже занятым именем",
+      status: HttpStatus.CONFLICT,
+    },
+
     AUTH_NOT_FOUND: {
       message: "Authorization not found. (where:{key} with {value})",
       description:

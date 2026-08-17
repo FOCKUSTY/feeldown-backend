@@ -4,7 +4,7 @@ import type {
   SignUpData,
 } from "@1/entities";
 
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { sign } from "jsonwebtoken";
 
@@ -181,10 +181,9 @@ export class AuthStrategy {
     });
 
     if (existedUser) {
-      throw new HttpException(
-        `User with username "${username}" is exists`,
-        HttpStatus.CONFLICT,
-      );
+      throw AUTH_STRATEGIES_ERRORS.USER_ALREADY_EXISTS.execute({
+        username: existedUser.username,
+      });
     }
 
     const id = uuid();

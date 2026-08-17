@@ -2,7 +2,7 @@ import type { FriendshipUpdateDto, FriendshipCreateDto } from "./dto";
 import type { FriendshipFilter } from "@1/types";
 import type { User } from "@1/entities";
 
-import { HttpException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { FriendRequestStatus } from "@1/types";
 import { PrismaService } from "@/database";
@@ -10,6 +10,7 @@ import { CrudService } from "@1/services";
 import { Events } from "@1/enums";
 
 import { EventEmitter2 as EventEmitter } from "@nestjs/event-emitter";
+import { FRIENDSHIP_ERRORS } from "@1/errors";
 
 @Injectable()
 export class FriendshipsService extends CrudService<
@@ -48,7 +49,7 @@ export class FriendshipsService extends CrudService<
       validatorsOrThrow: {
         validateCreate: async (input) => {
           if (input.receiverId === input.senderId) {
-            throw new HttpException("Can not friend yourself", 400);
+            throw FRIENDSHIP_ERRORS.CANNOT_FRIEND_SELF.exception;
           }
 
           return true;
