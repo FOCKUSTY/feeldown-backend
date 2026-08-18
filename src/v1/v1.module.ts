@@ -33,6 +33,10 @@ import {
   PingModule,
 } from "./routes";
 
+import KeyvRedis from '@keyv/redis';
+import { Keyv } from 'keyv';
+import { KeyvCacheableMemory } from 'cacheable';
+
 export const v1Modules = [
   AuthModule,
   UsersModule,
@@ -66,9 +70,17 @@ export const v1Swagger = createSwaggerConfig({
         limit: +env.THROTTLER_LIMIT,
       },
     ]),
-    CacheModule.register({
-      ttl: +env.CACHE_TIME_TO_LIVE_IN_MILLISECONDS,
-      isGlobal: true,
+    CacheModule.registerAsync({
+      useFactory: async () => {
+        return {
+          stores: [
+            new Keyv({
+              store: new KeyvCacheableMemory({ ttl: 60000, lruSize: 5000 }),
+            }),
+            new KeyvRedis(env.REDIS_URL),
+          ],
+        };
+      },
     }),
     GuardsModule,
   ],

@@ -23,6 +23,7 @@ export const env = Env.create(process.env)({
 
     "SESSION_SECRET",
     "HASH_KEY",
+    "REDIS_URL",
     "DATABASE_URL",
   ] as const,
 

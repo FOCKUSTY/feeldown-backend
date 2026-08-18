@@ -3,6 +3,9 @@ import type { Express } from "express";
 
 import session from "express-session";
 
+import { RedisStore } from 'connect-redis';
+import { createClient } from 'redis';
+
 export const ONE_WEEK = 60000 * 60 * 24 * 7;
 
 export class Session<T extends INestApplication<unknown> | Express> {
@@ -35,9 +38,15 @@ export class Session<T extends INestApplication<unknown> | Express> {
     this._cookie = data?.cookie || this._cookie;
   }
 
-  public create() {
+  public async create() {
+    const redisClient = createClient({ url: process.env.REDIS_URL });
+    await redisClient.connect();
+  
+    const store = new RedisStore({ client: redisClient });
+
     return this._app.use(
       session({
+        store,
         secret: this._secret,
         resave: this._resave,
         saveUninitialized: this._save_uninitialized,
