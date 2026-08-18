@@ -39,6 +39,8 @@ export type NotificationFilter = BaseFilter &
 
 export type FriendshipFilter = BaseFilter & {
   status?: FriendRequestStatus;
+  receiverId?: string;
+  senderId?: string;
   sortBy: (typeof AVAILABLE_FRIENDSHIP_SORT_TYPES)[number];
 };
 

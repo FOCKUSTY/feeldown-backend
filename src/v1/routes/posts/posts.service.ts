@@ -1,4 +1,8 @@
-import type { PostsDeleteInput, PostsUpdateInput } from "@1/types";
+import type {
+  PostsDeleteInput,
+  PostsUpdateInput,
+  ResolvedPostnameSlug,
+} from "@1/types";
 
 import { EventEmitter2 as EventEmitter } from "@nestjs/event-emitter";
 import { Injectable } from "@nestjs/common";
@@ -42,9 +46,23 @@ export class PostsService extends CrudService<
     });
   }
 
+  public async getOneWithUser(where: ResolvedPostnameSlug, meUserId?: string) {
+    const post = await this.prisma.post.findUniqueOrThrow({
+      where,
+      include: {
+        user: true,
+      },
+    });
+
+    return {
+      ...post,
+      isAuthor: meUserId === post.userId,
+    };
+  }
+
   public create(data: PostCreateDto & { userId: string }) {
     return super.create({
-      postname: uuid(),
+      postname: data.postname ?? uuid(),
       ...data,
     });
   }

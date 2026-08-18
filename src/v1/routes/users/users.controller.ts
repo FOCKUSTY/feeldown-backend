@@ -17,7 +17,11 @@ import {
   OnlyMe,
   UserFindOptions,
   ApiDocumentation,
+  Queries,
+  NoCache,
 } from "@/decorators";
+
+import { ResolvedSlugToIdPipe } from "@1/pipes";
 import { Parameters } from "@1/enums";
 import { AuthGuard } from "@1/guards";
 
@@ -25,13 +29,18 @@ import { UserUpdateDto } from "./dto";
 
 import { ROUTE, ROUTES, OPERATIONS } from "./users.routes";
 import { UsersService as Service } from "./users.service";
+import { PostsFilterDto, PostsService } from "../posts";
 
 @Injectable()
 @Controller(ROUTE)
 @UseGuards(AuthGuard)
 export class UsersController {
-  public constructor(private readonly service: Service) {}
+  public constructor(
+    private readonly service: Service,
+    private readonly postsService: PostsService,
+  ) {}
 
+  @NoCache()
   @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   @Public()
@@ -39,6 +48,18 @@ export class UsersController {
     @UserFindOptions(Parameters.slug) options: ResolvedUsernameSlug,
   ) {
     return this.service.getOne(options);
+  }
+
+  @ApiDocumentation(OPERATIONS.GET_USER_POSTS)
+  @Get(ROUTES.GET_USER_POSTS)
+  public getUserPosts(
+    @UserFindOptions(Parameters.slug, ResolvedSlugToIdPipe) userId: string,
+    @Queries(PostsFilterDto) query: PostsFilterDto,
+  ) {
+    return this.postsService.get({
+      ...query,
+      where: { userId },
+    });
   }
 
   @ApiDocumentation(OPERATIONS.PUT)

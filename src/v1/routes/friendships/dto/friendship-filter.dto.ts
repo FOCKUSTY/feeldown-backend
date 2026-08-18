@@ -5,7 +5,7 @@ import { FriendRequestStatus } from "@1/types";
 import { BaseFilterDto } from "@1/dto";
 
 import { ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
-import { IsEnum, IsIn, IsOptional } from "class-validator";
+import { IsEnum, IsIn, IsOptional, IsString } from "class-validator";
 import { Schema } from "@1/enums";
 
 @ApiSchema({
@@ -23,6 +23,15 @@ export class FriendshipFilterDto
   @IsOptional()
   @IsIn(AVAILABLE_FRIENDSHIP_SORT_TYPES)
   sortBy: (typeof AVAILABLE_FRIENDSHIP_SORT_TYPES)[number] = "createdAt";
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  receiverId?: string | undefined;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  senderId?: string | undefined;
 
   @ApiPropertyOptional({
     enum: FriendRequestStatus,

@@ -13,11 +13,11 @@ export class NotificationsService extends CrudService<"Notification"> {
     super(prisma.notification, CrudService.DEFAULT_DEPENDENCIES);
   }
 
-  public async unreadCount(userId: string): Promise<number> {
+  public async unreadCount(userId: string): Promise<{ count: number }> {
     const count = await this.prisma.notification.count({
       where: { recipientId: userId },
     });
-    return count;
+    return { count };
   }
 
   public async read(id: string, userId: string): Promise<Notification> {

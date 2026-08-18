@@ -26,7 +26,6 @@ import {
 
 import { ROUTE, ROUTES, OPERATIONS } from "./friendships.routes";
 import { FriendshipsService as Service } from "./friendships.service";
-import { FollowFilterDto } from "../follow";
 import { ResolvedSlugToIdPipe } from "@1/pipes";
 
 @Injectable()
@@ -37,11 +36,29 @@ export class FriendshipsController {
 
   @ApiDocumentation(OPERATIONS.GET_USER_FRIENDS)
   @Get(ROUTES.GET_USER_FRIENDS)
-  public get(
-    @Queries(FollowFilterDto) query: FriendshipFilterDto,
+  public getUserFriends(
+    @Queries(FriendshipFilterDto) query: FriendshipFilterDto,
     @UserFindOptions(Parameters.userSlug, ResolvedSlugToIdPipe) id: string,
   ) {
     return this.service.getUsers(query, id);
+  }
+
+  @ApiDocumentation(OPERATIONS.GET)
+  @Get(ROUTES.GET)
+  public get(
+    @Queries(FriendshipFilterDto) query: FriendshipFilterDto,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.getMany(query, me.user.id);
+  }
+
+  @ApiDocumentation(OPERATIONS.GET_ONE_BY_USER)
+  @Get(ROUTES.GET_ONE_BY_USER)
+  public getOneByUser(
+    @Parameter(Parameters.userId) userId: string,
+    @Me() me: ServerUser,
+  ) {
+    return this.service.getByUsers(userId, me.user.id);
   }
 
   @ApiDocumentation(OPERATIONS.GET_ONE)

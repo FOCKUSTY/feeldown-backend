@@ -58,6 +58,46 @@ export class FriendshipsService extends CrudService<
     });
   }
 
+  public async getByUsers(userA: string, userB: string) {
+    return this.prisma.friendRequest.findFirst({
+      where: {
+        OR: [
+          {
+            receiverId: userA,
+            senderId: userB,
+          },
+          {
+            receiverId: userB,
+            senderId: userA,
+          },
+        ],
+      },
+    });
+  }
+
+  public async getMany(filter: FriendshipFilter, meUserId: string) {
+    const OR = (() => {
+      if (filter.receiverId !== undefined) {
+        return [];
+      }
+
+      if (filter.senderId !== undefined) {
+        return [];
+      }
+
+      return this.getOr(meUserId);
+    })();
+
+    return this.get({
+      ...filter,
+      where: {
+        receiverId: this.resolveMe(filter.receiverId, meUserId),
+        senderId: this.resolveMe(filter.senderId, meUserId),
+        OR,
+      },
+    });
+  }
+
   public async getUsers(
     filter: FriendshipFilter,
     userId: string,
@@ -94,6 +134,14 @@ export class FriendshipsService extends CrudService<
         ],
       },
     });
+  }
+
+  private resolveMe(value: string | undefined, meUserId: string) {
+    if (value === "me") {
+      return meUserId;
+    }
+
+    return value;
   }
 
   private getWhere<W, T extends { meUserId: string; where: W }>(input: T) {

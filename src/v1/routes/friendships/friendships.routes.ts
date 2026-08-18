@@ -28,6 +28,8 @@ const USER_SLUG_PARAMETER = {
 export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
   route: "friendships",
   routes: {
+    GET: "/",
+    GET_ONE_BY_USER: "/by-user/:userId",
     GET_ONE: "/:id",
     GET_USER_FRIENDS: "/:userSlug/friends",
     POST: "/",
@@ -37,6 +39,12 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
     DELETE_BY_USER: "",
   } as const,
   operations: {
+    GET: {
+      summary: "get friendships",
+    },
+    GET_ONE_BY_USER: {
+      summary: "get friendship by user id",
+    },
     DELETE: {
       summary: "Delete a request",
     },

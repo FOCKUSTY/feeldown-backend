@@ -25,8 +25,9 @@ export class NotificationWhereDto implements Omit<
     description: "Тип сущности (например, POST, COMMENT)",
     example: ReferenceType.POST,
   })
+  @IsOptional()
   @IsEnum(ReferenceType)
-  referenceType: ReferenceType;
+  referenceType?: ReferenceType;
 
   @ApiPropertyOptional({
     description: "ID сущности, к которой относится уведомление",

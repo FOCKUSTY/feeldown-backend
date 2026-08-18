@@ -27,11 +27,15 @@ export const { ROUTE, ROUTES, OPERATIONS } = new Routes({
   route: "users",
   routes: {
     GET_ONE: "/:slug",
+    GET_USER_POSTS: "/:slug/posts",
     PUT: "/:slug",
     PATCH: "/:slug",
     DELETE: "/:id",
   },
   operations: {
+    GET_USER_POSTS: {
+      summary: "Get user posts",
+    },
     GET_ONE: {
       summary: "Get user by slug",
       description:

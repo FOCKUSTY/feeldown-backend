@@ -12,9 +12,15 @@ import {
   Patch,
 } from "@nestjs/common";
 
-import { ApiDocumentation, Me, Public, Queries } from "@/decorators";
 import { PostnameSlugPipe } from "@1/pipes";
 import { Parameters } from "@1/enums";
+import {
+  ApiDocumentation,
+  Me,
+  OptionalMe,
+  Public,
+  Queries,
+} from "@/decorators";
 
 import { PostCreateDto, PostUpdateDto, PostsFilterDto } from "./dto";
 
@@ -30,12 +36,7 @@ export class PostsController {
   @Get(ROUTES.GET)
   @Public()
   public async get(@Queries(PostsFilterDto) query: PostsFilterDto) {
-    try {
-      return await this.service.get(query);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return this.service.get(query);
   }
 
   @ApiDocumentation(OPERATIONS.GET_ONE)
@@ -44,8 +45,9 @@ export class PostsController {
   public getOne(
     @Parameter(Parameters.slug, PostnameSlugPipe)
     where: ResolvedPostnameSlug,
+    @OptionalMe() me?: ServerUser,
   ) {
-    return this.service.getOne(where);
+    return this.service.getOneWithUser(where, me?.user.id);
   }
 
   @ApiDocumentation(OPERATIONS.POST)

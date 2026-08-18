@@ -12,7 +12,14 @@ import {
   Put,
 } from "@nestjs/common";
 
-import { ApiDocumentation, Me, OnlyMe, Public, Queries } from "@/decorators";
+import {
+  ApiDocumentation,
+  Me,
+  NoCache,
+  OnlyMe,
+  Public,
+  Queries,
+} from "@/decorators";
 import { ACTIONS } from "@1/constants";
 import { AuthGuard } from "@1/guards";
 import { Parameters } from "@1/enums";
@@ -28,6 +35,7 @@ import { NotificationsService as Service } from "./notifications.service";
 export class NotificationsController {
   public constructor(private readonly service: Service) {}
 
+  @NoCache()
   @ApiDocumentation(OPERATIONS.GET)
   @Get(ROUTES.GET)
   @Public()
@@ -41,17 +49,18 @@ export class NotificationsController {
     });
   }
 
+  @NoCache()
+  @ApiDocumentation(OPERATIONS.GET_COUNT)
+  @Get(ROUTES.GET_COUNT)
+  public getCount(@Me() me: ServerUser) {
+    return this.service.unreadCount(me.user.id);
+  }
+
   @ApiDocumentation(OPERATIONS.GET_ONE)
   @Get(ROUTES.GET_ONE)
   @OnlyMe(Parameters.id, "id")
   public getOne(@Parameter(Parameters.id) id: string) {
     return this.service.getOne({ id });
-  }
-
-  @ApiDocumentation(OPERATIONS.GET_COUNT)
-  @Get(ROUTES.GET_COUNT)
-  public getCount(@Me() me: ServerUser) {
-    return this.service.unreadCount(me.user.id);
   }
 
   @ApiDocumentation(OPERATIONS.PATCH)

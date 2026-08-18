@@ -6,6 +6,7 @@ import { UsernameSlugPipe } from "@1/pipes";
 
 import { AUTH_ERRORS, HASH_ERRORS } from "@1/errors";
 import { HashService, ServerUserService } from "@1/services";
+import { Prefix } from "@1/enums";
 
 @Injectable()
 export class OnlyMeGuardService {
@@ -34,7 +35,7 @@ export class OnlyMeGuardService {
       throw AUTH_ERRORS.PARAMETER_IS_NOT_DEFINED.execute({ parameter });
     }
 
-    if (value === "@me") {
+    if (value === `${Prefix.username}me`) {
       return true;
     }
 
