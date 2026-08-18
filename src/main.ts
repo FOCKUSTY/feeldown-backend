@@ -9,10 +9,6 @@ import passport from "passport";
 
 import { Session } from "./app.session";
 import { AppModule } from "./app.module";
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
 
 import { swagger } from "./swagger";
 
@@ -21,7 +17,7 @@ import { swagger } from "./swagger";
     return swagger();
   }
 
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+  const app = await NestFactory.create(AppModule);
 
   app.enableCors({
     origin: [env.CLIENT_URL],
