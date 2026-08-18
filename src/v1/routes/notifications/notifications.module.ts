@@ -6,7 +6,6 @@ import { NotificationsService } from "./notifications.service";
 import {
   AUTH_GUARD_PROVIDERS,
   ONLY_ME_GUARD_PROVIDERS,
-  WEBSOCKET_AUTH_GUARD_PROVIDERS,
 } from "@1/guards";
 
 import { SERVER_USER_PROVIDERS } from "@1/services";
@@ -18,7 +17,6 @@ import { PrismaService } from "@/database";
   providers: [
     NotificationsService,
     PrismaService,
-    ...WEBSOCKET_AUTH_GUARD_PROVIDERS,
     ...AUTH_GUARD_PROVIDERS,
     ...ONLY_ME_GUARD_PROVIDERS,
     ...SERVER_USER_PROVIDERS,

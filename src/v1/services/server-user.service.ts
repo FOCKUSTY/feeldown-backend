@@ -1,6 +1,5 @@
 import type { ServerUser } from "@1/types";
 import type { Request } from "express";
-import type { Socket } from "socket.io";
 
 import { Injectable } from "@nestjs/common";
 
@@ -84,10 +83,6 @@ export class ServerUserService {
 
   public getByRequest(request: Request): Promise<ServerUser | null> {
     return tryCatchNullAsync(() => this.getByRequestOrThrow(request));
-  }
-
-  public setInSocket(socket: Socket, user: ServerUser) {
-    socket.data.user = user;
   }
 
   public setInRequest(request: Request, user: ServerUser) {
