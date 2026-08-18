@@ -20,9 +20,9 @@ import { swagger } from "./swagger";
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: [env.CLIENT_URL],
-    methods: ['GET', 'POST', 'PUT', "PATCH", 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: env.CLIENT_URL,
+    methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization',
     credentials: true
   });
 
