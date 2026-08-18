@@ -16,6 +16,7 @@ export * from "./notifications";
 export * from "./friendships";
 export * from "./follow";
 export * from "./block";
+export * from "./ping";
 
 export const DTO = [
   BlockCreateDto,

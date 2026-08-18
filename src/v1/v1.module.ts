@@ -30,6 +30,7 @@ import {
   BlockModule,
   FollowModule,
   DTO,
+  PingModule,
 } from "./routes";
 
 export const v1Modules = [
@@ -40,6 +41,7 @@ export const v1Modules = [
   FriendshipsModule,
   FollowModule,
   BlockModule,
+  PingModule,
 ];
 export const v1Swagger = createSwaggerConfig({
   version: "v1",
