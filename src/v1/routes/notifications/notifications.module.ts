@@ -10,7 +10,6 @@ import {
 } from "@1/guards";
 
 import { SERVER_USER_PROVIDERS } from "@1/services";
-import { NotificationsGateway } from "@1/gateways";
 import { PrismaService } from "@/database";
 
 @Module({
@@ -19,7 +18,6 @@ import { PrismaService } from "@/database";
   providers: [
     NotificationsService,
     PrismaService,
-    NotificationsGateway,
     ...WEBSOCKET_AUTH_GUARD_PROVIDERS,
     ...AUTH_GUARD_PROVIDERS,
     ...ONLY_ME_GUARD_PROVIDERS,
