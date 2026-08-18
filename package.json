@@ -51,7 +51,6 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "fenviee": "^0.1.2",
-    "fock-logger": "^6.3.2",
     "fockeror": "^0.4.3",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
