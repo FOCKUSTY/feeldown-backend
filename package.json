@@ -11,6 +11,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "nest build",
+    "generate": "pnpx prisma generate",
     "swagger": "set PROGRAM_MODE=swagger&& nest start",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "set PROGRAM_MODE=production&& nest start",
