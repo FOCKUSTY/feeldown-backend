@@ -17,8 +17,13 @@ import { swagger } from "./swagger";
     return swagger();
   }
 
-  const app = await NestFactory.create(AppModule, {
-    cors: { origin: [env.CLIENT_URL], credentials: true },
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: [env.CLIENT_URL],
+    methods: ['GET', 'POST', 'PUT', "PATCH", 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
   });
 
   new Session(env.SESSION_SECRET, app).create();
